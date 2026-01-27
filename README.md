@@ -7,12 +7,18 @@ Official website of the Pacific Northwest Software Quality Conference.
 | Layer | Choice | Why |
 |-------|--------|-----|
 | Markup | Plain HTML | AI generates pages directly from markdown; no templating language needed |
-| Styling | Tailwind CSS (CDN) | Utility classes, responsive design, zero build step |
+| Styling | Tailwind CSS (CLI) | Utility classes, responsive design; CLI generates a small, purged CSS file |
 | Shared layout | `_partials/` (header/footer snippets) | Keeps nav and footer consistent across all pages |
 | Hosting | GitHub Pages / Netlify / Cloudflare Pages | Free, fast CDN, deploy on `git push` |
 | Content source | Markdown files in `content/` | Authors edit markdown, AI regenerates HTML |
 
-No framework, no build pipeline, no CMS.
+No framework, no CMS. The only build step is running the Tailwind CLI to generate a minified CSS file:
+
+```bash
+npx @tailwindcss/cli -i css/input.css -o css/site.css --minify
+```
+
+Re-run this when HTML classes change. The output `css/site.css` is committed to the repo.
 
 ## Content Workflow
 

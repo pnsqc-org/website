@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  /* PNSQC Brand Colors - derived from old site's yellow/gold and blue */
+  --color-pnsqc-gold: #D4A843;
+  --color-pnsqc-gold-light: #F0D078;
+  --color-pnsqc-gold-dark: #B8922E;
+  --color-pnsqc-blue: #1B3A5C;
+  --color-pnsqc-blue-light: #2A5A8C;
+  --color-pnsqc-blue-dark: #0F2440;
+  --color-pnsqc-navy: #0A1929;
+  --color-pnsqc-cyan: #38BDF8;
+  --color-pnsqc-slate: #94A3B8;
+}
+
+/* Global smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glow utility for futuristic accents */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(212, 168, 67, 0.3), 0 0 60px rgba(212, 168, 67, 0.1);
+}
+
+.glow-blue {
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3), 0 0 60px rgba(56, 189, 248, 0.1);
+}
+
+.glow-text-gold {
+  text-shadow: 0 0 20px rgba(212, 168, 67, 0.5);
+}
+
+/* Animated gradient background for hero */
+.hero-gradient {
+  background: linear-gradient(135deg, #0A1929 0%, #1B3A5C 40%, #0F2440 70%, #0A1929 100%);
+}
+
+/* Grid pattern overlay */
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Subtle animated pulse for CTA buttons */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 168, 67, 0.4); }
+  50% { box-shadow: 0 0 30px rgba(212, 168, 67, 0.6), 0 0 60px rgba(212, 168, 67, 0.2); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Card hover lift */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.1);
+}
+
+/* Gradient border effect */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #D4A843, #38BDF8);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Navigation backdrop blur */
+.nav-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Horizontal rule with gradient */
+.hr-gradient {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D4A843, #38BDF8, transparent);
+}

@@ -1,0 +1,7 @@
+{
+  "baseUrl": "https://example.com",
+  "siteName": "PNSQC — Pacific NW Software Quality Conference",
+  "defaultDescription": "PNSQC is a nonprofit software quality conference built by the community, for the community. Join practitioners in the Pacific Northwest for talks, workshops, and networking.",
+  "defaultOgImage": "/images/og-default.png",
+  "locale": "en_US"
+}

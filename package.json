@@ -4,6 +4,9 @@
   "description": "Official website of the Pacific Northwest Software Quality Conference.",
   "main": "index.js",
   "scripts": {
+    "build": "node build.mjs && npx @tailwindcss/cli -i css/input.css -o css/site.css --minify",
+    "build:html": "node build.mjs",
+    "build:css": "npx @tailwindcss/cli -i css/input.css -o css/site.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

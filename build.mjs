@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, statSync, readdirSync } from 'fs';
-import { join, relative } from 'path';
+import { readFileSync, writeFileSync, statSync, readdirSync, mkdirSync, cpSync, rmSync, existsSync } from 'fs';
+import { join, relative, dirname } from 'path';
 
 const ROOT = new URL('.', import.meta.url).pathname;
 
@@ -160,9 +160,65 @@ function generateRobotsTxt(config) {
   console.log('  robots.txt');
 }
 
+// ── Assemble dist/ ──────────────────────────────────────────────────
+
+const DIST = join(ROOT, 'dist');
+
+// Directories and files that should never be published.
+const SKIP = new Set([
+  'dist', 'node_modules', '.git', '.claude',
+  '_partials', 'content',
+  'build.mjs', 'package.json', 'package-lock.json',
+  'site.config.json', 'README.md', 'LICENSE',
+  '.gitignore', '.DS_Store',
+]);
+
+function assembleDist() {
+  // Start fresh
+  if (existsSync(DIST)) rmSync(DIST, { recursive: true });
+  mkdirSync(DIST, { recursive: true });
+
+  let count = 0;
+
+  for (const entry of readdirSync(ROOT, { withFileTypes: true })) {
+    if (entry.name.startsWith('.') && entry.name !== '.nojekyll') continue;
+    if (SKIP.has(entry.name)) continue;
+
+    const src = join(ROOT, entry.name);
+    const dest = join(DIST, entry.name);
+
+    if (entry.isDirectory()) {
+      cpSync(src, dest, { recursive: true });
+    } else {
+      // Skip Tailwind source; only publish compiled output
+      if (entry.name === 'input.css') continue;
+      mkdirSync(dirname(dest), { recursive: true });
+      cpSync(src, dest);
+    }
+    count++;
+  }
+
+  // Ensure css/ only contains the compiled output
+  const inputCss = join(DIST, 'css', 'input.css');
+  if (existsSync(inputCss)) rmSync(inputCss);
+
+  console.log(`  dist/  (${count} entries copied)`);
+}
+
 // ── Main ────────────────────────────────────────────────────────────
 
 function main() {
+  const command = process.argv[2];
+
+  // `node build.mjs dist` — only assemble the dist/ folder
+  if (command === 'dist') {
+    console.log('\nbuild.mjs — assembling dist/\n');
+    assembleDist();
+    console.log('\ndone.\n');
+    return;
+  }
+
+  // Default: process HTML, generate sitemap/robots
   const config = loadConfig();
   const files = findHtmlFiles();
 

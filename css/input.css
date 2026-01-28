@@ -91,3 +91,52 @@ html {
   height: 1px;
   background: linear-gradient(90deg, transparent, #D4A843, #38BDF8, transparent);
 }
+
+/* Light Theme */
+[data-theme="light"] {
+  --color-pnsqc-navy: #f8fafc;
+  --color-pnsqc-blue-dark: #e2e8f0;
+  --color-pnsqc-blue: #cbd5e1;
+  --color-pnsqc-slate: #475569;
+  --color-white: #1e293b;
+  --color-pnsqc-gold: #b8922e;
+  --color-pnsqc-gold-light: #d4a843;
+  --color-pnsqc-gold-dark: #9a7a1f;
+  --color-pnsqc-cyan: #0284c7;
+}
+
+[data-theme="light"] .hero-gradient {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 40%, #dbeafe 70%, #f8fafc 100%);
+}
+
+[data-theme="light"] .grid-overlay {
+  background-image: linear-gradient(rgba(2, 132, 199, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 132, 199, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+[data-theme="light"] .glow-gold {
+  box-shadow: 0 0 20px rgba(184, 146, 46, 0.15), 0 0 60px rgba(184, 146, 46, 0.05);
+}
+
+[data-theme="light"] .glow-blue {
+  box-shadow: 0 0 20px rgba(2, 132, 199, 0.15), 0 0 60px rgba(2, 132, 199, 0.05);
+}
+
+[data-theme="light"] .glow-text-gold {
+  text-shadow: 0 0 20px rgba(184, 146, 46, 0.3);
+}
+
+[data-theme="light"] .nav-blur {
+  backdrop-filter: blur(12px);
+  background-color: rgba(248, 250, 252, 0.8);
+}
+
+[data-theme="light"] .card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08), 0 0 20px rgba(2, 132, 199, 0.1);
+}
+
+[data-theme="light"] .gradient-border:before {
+  background: linear-gradient(135deg, #b8922e, #0284c7);
+}

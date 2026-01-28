@@ -1,7 +1,7 @@
 # PNSQC Website
 
 Official website of the Pacific Northwest Software Quality Conference.
- 
+
 ## Tech Stack
 
 | Layer | Choice | Why |

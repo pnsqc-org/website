@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500&amp;display=swap');
+    </style>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#D4A017"/>
+
+  <g transform="translate(512, 420)" text-anchor="middle">
+    <text font-family="'Nasalization', 'Michroma', sans-serif" font-weight="400" font-size="260" fill="#1a1a1a" letter-spacing="28" dominant-baseline="central" stroke="#1a1a1a" stroke-width="8" paint-order="stroke" textLength="840" lengthAdjust="spacing">PNSQC</text>
+  </g>
+
+  <text x="512" y="565" text-anchor="middle" font-family="'Futura', 'Futura Medium', 'Jost', sans-serif" font-weight="400" font-size="34" fill="#1a1a1a" letter-spacing="1.5">Pacific Northwest Software Quality Conference</text>
+
+  <g transform="translate(940, 940)">
+    <polygon points="0,-20 6,-6 20,0 6,6 0,20 -6,6 -20,0 -6,-6" fill="#F5E6B8" opacity="0.85"/>
+  </g>
+</svg>

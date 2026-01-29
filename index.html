@@ -30,12 +30,12 @@ og_image: /images/og-default.png
        HEADER (from _partials/header.html)
        ============================================================ -->
   <!-- PNSQC Header Navigation -->
-  <header class="fixed top-0 left-0 right-0 z-50 nav-blur bg-pnsqc-navy/80 border-b border-white/5">
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-50 nav-blur bg-pnsqc-navy/80 border-b border-white/5 transition-all duration-300">
     <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div id="header-inner" class="flex items-center justify-between transition-all duration-300" style="height: 120px">
         <!-- Logo -->
         <a href="/" class="flex items-center group">
-          <img src="logo.svg" alt="PNSQC — Pacific Northwest Software Quality Conference" class="h-9 w-auto rounded-lg">
+          <img id="header-logo" src="images/pnsqc-logo.webp" alt="PNSQC — Pacific Northwest Software Quality Conference" class="w-auto rounded-lg transition-all duration-300" style="height: 108px">
         </a>
   
         <!-- Desktop Navigation -->
@@ -88,6 +88,74 @@ og_image: /images/og-default.png
       </div>
     </nav>
   </header>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.classList.remove('h-[120px]');
+        headerInner.classList.add('h-16');
+        headerLogo.classList.remove('h-16');
+        headerLogo.classList.add('h-9');
+      } else {
+        headerInner.classList.remove('h-16');
+        headerInner.classList.add('h-[120px]');
+        headerLogo.classList.remove('h-9');
+        headerLogo.classList.add('h-16');
+      }
+    });
+  </script>
 
   <!-- ============================================================
        HERO SECTION
@@ -102,13 +170,13 @@ og_image: /images/og-default.png
         <!-- Badge -->
         <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-8">
           <span class="w-2 h-2 bg-pnsqc-gold rounded-full animate-pulse"></span>
-          <span class="text-pnsqc-gold text-sm font-medium">2026 Conference &mdash; Coming This Fall</span>
+          <span class="text-pnsqc-gold text-sm font-medium">2026 Conference &mdash; Oct. 12&ndash;14</span>
         </div>
 
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-          <span class="text-white">Enabling Quality</span><br>
+          <span class="text-white">Quality in the Age of</span><br>
           <span class="bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent glow-text-gold">
-            Through Community
+            Autonomy
           </span>
         </h1>
 
@@ -119,9 +187,12 @@ og_image: /images/og-default.png
 
         <div class="mt-10 flex flex-wrap gap-4">
           <a href="/cfp/"
-             class="inline-flex items-center gap-2 px-6 py-3 bg-pnsqc-gold text-pnsqc-navy font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors pulse-glow">
-            Call for Proposals
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+             class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
+            Submit Proposal
+          </a>
+          <a href="#"
+             class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
+            Registration &mdash; Early Bird
           </a>
         </div>
 
@@ -533,7 +604,7 @@ og_image: /images/og-default.png
         <!-- Brand Column -->
         <div class="md:col-span-1">
           <div class="flex items-center mb-4">
-            <img src="logo.svg" alt="PNSQC — Pacific Northwest Software Quality Conference" class="h-9 w-auto rounded-lg">
+            <img src="images/pnsqc-logo.webp" alt="PNSQC — Pacific Northwest Software Quality Conference" class="h-9 w-auto rounded-lg">
           </div>
           <p class="text-pnsqc-slate text-sm leading-relaxed">
             Enabling Quality Through Community. A 501(c)(3) nonprofit conference built by practitioners, for practitioners.

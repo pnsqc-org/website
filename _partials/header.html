@@ -1,10 +1,10 @@
 <!-- PNSQC Header Navigation -->
-<header class="fixed top-0 left-0 right-0 z-50 nav-blur bg-pnsqc-navy/80 border-b border-white/5">
+<header id="main-header" class="fixed top-0 left-0 right-0 z-50 nav-blur bg-pnsqc-navy/80 border-b border-white/5 transition-all duration-300">
   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-16">
+    <div id="header-inner" class="flex items-center justify-between transition-all duration-300" style="height: 120px">
       <!-- Logo -->
       <a href="/" class="flex items-center group">
-        <img src="logo.svg" alt="PNSQC — Pacific Northwest Software Quality Conference" class="h-9 w-auto rounded-lg">
+        <img id="header-logo" src="images/pnsqc-logo.webp" alt="PNSQC — Pacific Northwest Software Quality Conference" class="w-auto rounded-lg transition-all duration-300" style="height: 108px">
       </a>
 
       <!-- Desktop Navigation -->
@@ -57,3 +57,19 @@
     </div>
   </nav>
 </header>
+<script>
+  // Header shrink on scroll
+  const header = document.getElementById('main-header');
+  const headerInner = document.getElementById('header-inner');
+  const headerLogo = document.getElementById('header-logo');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) {
+      headerInner.style.height = '64px';
+      headerLogo.style.height = '58px'; // 90% of 64px
+    } else {
+      headerInner.style.height = '120px';
+      headerLogo.style.height = '108px'; // 90% of 120px
+    }
+  });
+</script>

@@ -192,6 +192,70 @@ og_image: /images/og-default.png
   
     window.addEventListener('scroll', () => {
       if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
         headerInner.classList.remove('h-[120px]');
         headerInner.classList.add('h-16');
         headerLogo.classList.remove('h-16');
@@ -208,60 +272,61 @@ og_image: /images/og-default.png
   <!-- ============================================================
        HERO SECTION
        ============================================================ -->
-  <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
-    <!-- Hero background image -->
-    <img src="images/hero-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" aria-hidden="true">
-    <!-- Gradient overlay for text legibility -->
-    <div class="absolute inset-0 bg-gradient-to-r from-pnsqc-navy via-pnsqc-navy/90 to-transparent pointer-events-none"></div>
-    <div class="absolute inset-0 bg-pnsqc-navy/40 pointer-events-none"></div>
-    <!-- Decorative orbs -->
-    <div class="absolute top-1/4 -left-32 w-96 h-96 bg-pnsqc-gold/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-pnsqc-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
-
+  <section class="relative min-h-screen flex items-center pt-16">
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-      <div class="max-w-3xl">
-        <!-- Badge -->
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-8">
-          <span class="w-2 h-2 bg-pnsqc-gold rounded-full animate-pulse"></span>
-          <span class="text-pnsqc-gold text-sm font-medium">2026 Conference &mdash; Oct. 12&ndash;14</span>
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Left: Text Content -->
+        <div>
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-8">
+            <span class="w-2 h-2 bg-pnsqc-gold rounded-full animate-pulse"></span>
+            <span class="text-pnsqc-gold text-sm font-medium">2026 Conference &mdash; Oct. 12&ndash;14</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+            <span class="text-white">Quality in the Age of</span><br>
+            <span class="bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent glow-text-gold">
+              Autonomy
+            </span>
+          </h1>
+
+          <p class="mt-6 text-lg sm:text-xl text-pnsqc-slate leading-relaxed">
+            The Pacific Northwest Software Quality Conference brings together practitioners,
+            researchers, and leaders to share real-world knowledge and build a stronger quality community.
+          </p>
+
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="/cfp/"
+               class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
+              Submit Proposal
+            </a>
+            <a href="#"
+               class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
+              Registration &mdash; Early Bird
+            </a>
+          </div>
+
+          <!-- Quick stats -->
+          <div class="mt-16 grid grid-cols-3 gap-8 max-w-md">
+            <div>
+              <div class="text-2xl sm:text-3xl font-bold text-pnsqc-gold">30+</div>
+              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Years Running</div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-3xl font-bold text-pnsqc-cyan">100+</div>
+              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Speakers</div>
+            </div>
+            <div>
+              <div class="text-2xl sm:text-3xl font-bold text-white">501(c)(3)</div>
+              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Nonprofit</div>
+            </div>
+          </div>
         </div>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-          <span class="text-white">Quality in the Age of</span><br>
-          <span class="bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent glow-text-gold">
-            Autonomy
-          </span>
-        </h1>
-
-        <p class="mt-6 text-lg sm:text-xl text-pnsqc-slate leading-relaxed max-w-2xl">
-          The Pacific Northwest Software Quality Conference brings together practitioners,
-          researchers, and leaders to share real-world knowledge and build a stronger quality community.
-        </p>
-
-        <div class="mt-10 flex flex-wrap gap-4">
-          <a href="/cfp/"
-             class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
-            Submit Proposal
-          </a>
-          <a href="#"
-             class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
-            Registration &mdash; Early Bird
-          </a>
-        </div>
-
-        <!-- Quick stats -->
-        <div class="mt-16 grid grid-cols-3 gap-8 max-w-md">
-          <div>
-            <div class="text-2xl sm:text-3xl font-bold text-pnsqc-gold">30+</div>
-            <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Years Running</div>
-          </div>
-          <div>
-            <div class="text-2xl sm:text-3xl font-bold text-pnsqc-cyan">100+</div>
-            <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Speakers</div>
-          </div>
-          <div>
-            <div class="text-2xl sm:text-3xl font-bold text-white">501(c)(3)</div>
-            <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Nonprofit</div>
+        <!-- Right: Hero Image -->
+        <div class="relative lg:block hidden">
+          <div class="rounded-2xl overflow-hidden border border-pnsqc-gold/20 shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-teal-50">
+            <img src="images/hero-collaboration.png" alt="Software quality professionals collaborating" class="w-full h-auto">
           </div>
         </div>
       </div>

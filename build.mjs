@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, statSync, readdirSync, mkdirSync, cpSync, rmSync, existsSync } from 'fs';
-import { join, relative, dirname } from 'path';
+import { readFileSync, writeFileSync, statSync, readdirSync, cpSync, rmSync, existsSync } from 'fs';
+import { join, relative } from 'path';
 
 const ROOT = new URL('.', import.meta.url).pathname;
+const SRC = join(ROOT, 'src');
+const DIST = join(ROOT, 'dist');
 
 // ── Config ──────────────────────────────────────────────────────────
 
@@ -11,12 +13,11 @@ function loadConfig() {
   return JSON.parse(readFileSync(join(ROOT, 'site.config.json'), 'utf8'));
 }
 
-// ── Find HTML files (recursive, skips _partials and node_modules) ───
+// ── Find HTML files (recursive) ─────────────────────────────────────
 
-function findHtmlFiles(dir = ROOT) {
+function findHtmlFiles(dir = SRC) {
   const results = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    if (entry.name.startsWith('_') || entry.name === 'node_modules') continue;
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
       results.push(...findHtmlFiles(full));
@@ -46,7 +47,7 @@ function injectHead(html, meta, config, filePath) {
   const title = meta.title || config.siteName;
   const description = meta.description || config.defaultDescription;
   const ogImage = meta.og_image || config.defaultOgImage;
-  const relPath = relative(ROOT, filePath);
+  const relPath = relative(SRC, filePath);
   const urlPath = '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
   const canonical = config.baseUrl + urlPath;
 
@@ -133,7 +134,7 @@ function injectPartials(html) {
 
 function generateSitemap(files, config) {
   const urls = files.map(f => {
-    const rel = relative(ROOT, f);
+    const rel = relative(SRC, f);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
     return `  <url>\n    <loc>${config.baseUrl}${urlPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
@@ -145,8 +146,8 @@ function generateSitemap(files, config) {
     urls.join('\n') + '\n' +
     `</urlset>\n`;
 
-  writeFileSync(join(ROOT, 'sitemap.xml'), xml);
-  console.log(`  sitemap.xml  (${files.length} URLs)`);
+  writeFileSync(join(SRC, 'sitemap.xml'), xml);
+  console.log(`  src/sitemap.xml  (${files.length} URLs)`);
 }
 
 // ── Generate robots.txt ─────────────────────────────────────────────
@@ -156,53 +157,25 @@ function generateRobotsTxt(config) {
     `User-agent: *\n` +
     `Allow: /\n\n` +
     `Sitemap: ${config.baseUrl}/sitemap.xml\n`;
-  writeFileSync(join(ROOT, 'robots.txt'), content);
-  console.log('  robots.txt');
+  writeFileSync(join(SRC, 'robots.txt'), content);
+  console.log('  src/robots.txt');
 }
 
 // ── Assemble dist/ ──────────────────────────────────────────────────
 
-const DIST = join(ROOT, 'dist');
-
-// Directories and files that should never be published.
-const SKIP = new Set([
-  'dist', 'node_modules', '.git', '.claude',
-  '_partials', 'content',
-  'build.mjs', 'package.json', 'package-lock.json',
-  'site.config.json', 'README.md', 'LICENSE',
-  '.gitignore', '.DS_Store',
-]);
-
 function assembleDist() {
   // Start fresh
   if (existsSync(DIST)) rmSync(DIST, { recursive: true });
-  mkdirSync(DIST, { recursive: true });
 
-  let count = 0;
+  // Copy src/ to dist/
+  cpSync(SRC, DIST, { recursive: true });
 
-  for (const entry of readdirSync(ROOT, { withFileTypes: true })) {
-    if (entry.name.startsWith('.') && entry.name !== '.nojekyll') continue;
-    if (SKIP.has(entry.name)) continue;
-
-    const src = join(ROOT, entry.name);
-    const dest = join(DIST, entry.name);
-
-    if (entry.isDirectory()) {
-      cpSync(src, dest, { recursive: true });
-    } else {
-      // Skip Tailwind source; only publish compiled output
-      if (entry.name === 'input.css') continue;
-      mkdirSync(dirname(dest), { recursive: true });
-      cpSync(src, dest);
-    }
-    count++;
-  }
-
-  // Ensure css/ only contains the compiled output
+  // Remove Tailwind source file (keep only compiled output)
   const inputCss = join(DIST, 'css', 'input.css');
   if (existsSync(inputCss)) rmSync(inputCss);
 
-  console.log(`  dist/  (${count} entries copied)`);
+  const count = readdirSync(DIST, { recursive: true }).length;
+  console.log(`  dist/  (${count} files copied from src/)`);
 }
 
 // ── Main ────────────────────────────────────────────────────────────
@@ -232,7 +205,7 @@ function main() {
     html = injectHead(html, meta, config, file);
 
     writeFileSync(file, html);
-    console.log(`  ✓ ${relative(ROOT, file)}`);
+    console.log(`  ✓ src/${relative(SRC, file)}`);
   }
 
   console.log('');

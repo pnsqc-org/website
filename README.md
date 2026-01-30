@@ -117,7 +117,7 @@ website/
 │   ├── header.html
 │   └── footer.html
 ├── content/                         # markdown source files
-├── scripts/                         # utility scripts
+├── skills/                          # Codex skills (includes image-gen CLI)
 ├── design/                          # design references
 │
 ├── ─── Publishable Source ────────────────────────

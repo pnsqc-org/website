@@ -160,6 +160,22 @@ og_image: /images/og-default.png
   
     window.addEventListener('scroll', () => {
       if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
         headerInner.classList.remove('h-[120px]');
         headerInner.classList.add('h-16');
         headerLogo.classList.remove('h-16');
@@ -176,7 +192,12 @@ og_image: /images/og-default.png
   <!-- ============================================================
        HERO SECTION
        ============================================================ -->
-  <section class="relative hero-gradient grid-overlay min-h-screen flex items-center pt-16 overflow-hidden">
+  <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <!-- Hero background image -->
+    <img src="images/hero-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" aria-hidden="true">
+    <!-- Gradient overlay for text legibility -->
+    <div class="absolute inset-0 bg-gradient-to-r from-pnsqc-navy via-pnsqc-navy/90 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-0 bg-pnsqc-navy/40 pointer-events-none"></div>
     <!-- Decorative orbs -->
     <div class="absolute top-1/4 -left-32 w-96 h-96 bg-pnsqc-gold/10 rounded-full blur-3xl pointer-events-none"></div>
     <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-pnsqc-cyan/10 rounded-full blur-3xl pointer-events-none"></div>

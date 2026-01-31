@@ -169,6 +169,70 @@ og_image: /images/og-default.png
     });
   </script>
   <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
     (() => {
       const headerInner = document.getElementById('header-inner');
       const headerLogo = document.getElementById('header-logo');
@@ -237,26 +301,9 @@ og_image: /images/og-default.png
                class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
               Submit Proposal
             </a>
-            <a href="#"
-               class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
-              Registration &mdash; Early Bird
-            </a>
-          </div>
-
-          <!-- Quick stats -->
-          <div class="mt-8 grid grid-cols-3 gap-6 max-w-md">
-            <div>
-              <div class="text-2xl sm:text-3xl font-bold text-pnsqc-gold">30+</div>
-              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Years Running</div>
-            </div>
-            <div>
-              <div class="text-2xl sm:text-3xl font-bold text-pnsqc-cyan">100+</div>
-              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Speakers</div>
-            </div>
-            <div>
-              <div class="text-2xl sm:text-3xl font-bold text-white">501(c)(3)</div>
-              <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Nonprofit</div>
-            </div>
+            <span class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/30 text-white/50 font-medium rounded-lg cursor-not-allowed opacity-60">
+              Registration &mdash; Open Soon
+            </span>
           </div>
         </div>
 
@@ -271,138 +318,74 @@ og_image: /images/og-default.png
   </section>
 
   <!-- ============================================================
-       UPCOMING EVENTS
+       THEME INTRODUCTION
        ============================================================ -->
-  <section id="events" class="relative bg-pnsqc-blue-dark/50 py-24">
+  <section class="relative py-24 bg-gradient-to-b from-pnsqc-navy to-pnsqc-blue-dark/30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="text-lg sm:text-xl text-pnsqc-slate leading-relaxed">
+          Software systems are becoming faster, more interconnected, and increasingly capable of acting with reduced human oversight.
+        </p>
+        <p class="mt-6 text-lg sm:text-xl text-pnsqc-slate leading-relaxed">
+          <span class="text-pnsqc-gold font-semibold">Quality in the Age of Autonomy</span> examines how quality practices evolve across this spectrum,
+          from primarily human-driven teams to highly automated and AI-enabled systems. Regardless of tooling or maturity,
+          quality remains grounded in intent, evidence, accountability, and learning.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       UPCOMING EVENTS BANNER
+       ============================================================ -->
+  <section class="relative py-12 bg-gradient-to-r from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-gold/10 border-y border-pnsqc-gold/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Header -->
-      <div class="text-center mb-16">
-        <span class="text-pnsqc-cyan text-sm font-medium uppercase tracking-widest">What&rsquo;s Next</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Upcoming Events</h2>
-        <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
+      <div class="text-center mb-8">
+        <span class="inline-flex items-center gap-2 text-pnsqc-gold text-sm font-semibold uppercase tracking-widest">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Coming Soon
+        </span>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-8">
-        <!-- Quality Jam Card -->
-        <div class="card-hover gradient-border rounded-2xl bg-pnsqc-navy/80 p-8">
-          <div class="flex items-start justify-between mb-4">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pnsqc-gold/10 text-pnsqc-gold text-xs font-semibold uppercase tracking-wider">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
-              Networking
-            </span>
-            <span class="text-pnsqc-slate text-sm">Hybrid Event</span>
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <!-- Quality Jam -->
+        <div class="rounded-xl bg-pnsqc-navy/80 border border-pnsqc-gold/30 p-6 hover:border-pnsqc-gold/50 transition-colors">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-white">Come Jam With Us!</h3>
+            <span class="text-xs text-pnsqc-slate whitespace-nowrap">Jan 22 &bull; 5-9 PM</span>
           </div>
-          <h3 class="text-2xl font-bold text-white mb-3">Come Jam With Us!</h3>
-          <p class="text-pnsqc-slate text-sm leading-relaxed mb-4">
-            An evening of networking, refreshments, and lightning talks. Kick off the call for proposals for the 2026 conference year with the quality community.
+          <p class="text-sm text-pnsqc-slate mb-4">
+            Networking, lightning talks, and refreshments. Kick off the 2026 conference year with the quality community.
           </p>
-          <div class="flex items-center gap-4 text-sm text-pnsqc-slate mb-6">
-            <span class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              January 22, 2026
-            </span>
-            <span class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              5&ndash;9 PM PST
-            </span>
-          </div>
-          <h4 class="text-white font-semibold text-sm mb-3">Lightning Talks:</h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate mb-6">
-            <li class="flex items-start gap-2">
-              <span class="text-pnsqc-gold mt-0.5">&bull;</span>
-              &ldquo;Testing the Future: From Testing Code to Testing Intelligence&rdquo; &mdash; Premi Vinayagam
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-pnsqc-gold mt-0.5">&bull;</span>
-              &ldquo;The OWASP Top 10 Isn&rsquo;t a Vulnerability List&mdash;It&rsquo;s a Mirror&rdquo; &mdash; Caroline Wong
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-pnsqc-gold mt-0.5">&bull;</span>
-              &ldquo;Every Day Use of MCP&rdquo; &mdash; Joseph Petsche
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-pnsqc-gold mt-0.5">&bull;</span>
-              &ldquo;Formally Secure Hardware with Rust&rdquo; &mdash; Calvin Deutschbein
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="text-pnsqc-gold mt-0.5">&bull;</span>
-              <span>&plus; 4 more talks</span>
-            </li>
-          </ul>
           <div class="flex items-center gap-3">
             <a href="https://mms.pnsqc.org/members/evr/reg_event.php?evid=59881345&orgcode=PNSQ"
-               class="px-5 py-2.5 bg-pnsqc-gold text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors">
+               class="px-4 py-2 bg-pnsqc-gold text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors">
               Register Free
             </a>
             <a href="/blog/2026-01-03-workshops.html"
-               class="text-pnsqc-gold text-sm font-medium hover:text-pnsqc-gold-light transition-colors">
-              Read more &rarr;
+               class="text-pnsqc-gold text-sm hover:text-pnsqc-gold-light transition-colors">
+              Details &rarr;
             </a>
           </div>
-          <p class="mt-4 text-xs text-pnsqc-slate/60">Sponsored in part by PLUS QA</p>
         </div>
 
-        <!-- Workshop Day Card -->
-        <div class="card-hover gradient-border rounded-2xl bg-pnsqc-navy/80 p-8">
-          <div class="flex items-start justify-between mb-4">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-pnsqc-cyan/10 text-pnsqc-cyan text-xs font-semibold uppercase tracking-wider">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              Hands-On
-            </span>
-            <span class="text-pnsqc-slate text-sm">Free &bull; Full Day</span>
+        <!-- Workshop Day -->
+        <div class="rounded-xl bg-pnsqc-navy/80 border border-pnsqc-cyan/30 p-6 hover:border-pnsqc-cyan/50 transition-colors">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-lg font-bold text-white">Workshop Day</h3>
+            <span class="text-xs text-pnsqc-slate whitespace-nowrap">Jan 23 &bull; Full Day</span>
           </div>
-          <h3 class="text-2xl font-bold text-white mb-3">Workshop Day</h3>
-          <p class="text-pnsqc-slate text-sm leading-relaxed mb-4">
-            A full day of hands-on, instructor-led workshops focused on practical quality skills&mdash;from foundational testing practices to AI-driven approaches. Not a marketing event.
+          <p class="text-sm text-pnsqc-slate mb-4">
+            Hands-on workshops: AI Orchestration, QA Re-Bootcamp, MCP Integration, and Test Plan Writing.
           </p>
-          <div class="flex items-center gap-4 text-sm text-pnsqc-slate mb-6">
-            <span class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              January 23, 2026
-            </span>
-            <span class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              8:30 AM &ndash; 4:30 PM
-            </span>
-          </div>
-
-          <div class="space-y-4 mb-6">
-            <div>
-              <h4 class="text-white font-semibold text-sm mb-2">Morning (8:30 AM &ndash; 12:00 PM)</h4>
-              <ul class="space-y-1.5 text-sm text-pnsqc-slate">
-                <li class="flex items-start gap-2">
-                  <span class="text-pnsqc-cyan mt-0.5">&bull;</span>
-                  AI Orchestration: Dual Stewardship &mdash; John Cvetko
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-pnsqc-cyan mt-0.5">&bull;</span>
-                  QA Re-Bootcamp &mdash; Heather Wilcox &amp; Bhushan Gupta
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 class="text-white font-semibold text-sm mb-2">Afternoon (1:00 PM &ndash; 4:30 PM)</h4>
-              <ul class="space-y-1.5 text-sm text-pnsqc-slate">
-                <li class="flex items-start gap-2">
-                  <span class="text-pnsqc-cyan mt-0.5">&bull;</span>
-                  Integrate MCP Into Your Workflow &mdash; Joe Petsche
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-pnsqc-cyan mt-0.5">&bull;</span>
-                  Writing Practical Test Plans &mdash; Wayne Roseberry
-                </li>
-              </ul>
-            </div>
-          </div>
-
           <div class="flex items-center gap-3">
             <a href="https://mms.pnsqc.org/members/evr/reg_event.php?evid=59880123&orgcode=PNSQ"
-               class="px-5 py-2.5 bg-pnsqc-cyan text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-sky-300 transition-colors">
+               class="px-4 py-2 bg-pnsqc-cyan text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-sky-300 transition-colors">
               Register Free
             </a>
             <a href="/blog/2026-01-03-workshops.html"
-               class="text-pnsqc-cyan text-sm font-medium hover:text-sky-300 transition-colors">
-              Full details &rarr;
+               class="text-pnsqc-cyan text-sm hover:text-sky-300 transition-colors">
+              Details &rarr;
             </a>
           </div>
         </div>
@@ -411,211 +394,200 @@ og_image: /images/og-default.png
   </section>
 
   <!-- ============================================================
-       ABOUT / MISSION
+       CONFERENCE TRACKS
        ============================================================ -->
   <section class="relative py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div>
-          <span class="text-pnsqc-gold text-sm font-medium uppercase tracking-widest">About PNSQC</span>
-          <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white leading-tight">
-            Built by Practitioners,<br>
-            <span class="text-pnsqc-gold">for Practitioners</span>
-          </h2>
-          <p class="mt-6 text-pnsqc-slate leading-relaxed">
-            PNSQC is a 501(c)(3) nonprofit conference focused on real-world software quality.
-            For over 30 years, we&rsquo;ve brought together testers, developers, architects, and leaders
-            to share knowledge and elevate the craft of quality engineering.
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <span class="text-pnsqc-cyan text-sm font-medium uppercase tracking-widest">Submit Your Proposal</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Four Tracks for 2026</h2>
+        <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
+        <p class="mt-6 text-pnsqc-slate max-w-3xl mx-auto">
+          Whether you're a first-time author or experienced practitioner, PNSQC welcomes real-world experience and transferable insights.
+        </p>
+      </div>
+
+      <!-- Tracks Grid -->
+      <div class="grid md:grid-cols-2 gap-8">
+
+        <!-- Track 1: Quality Engineering & Systems Reliability -->
+        <div class="group card-hover rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-pnsqc-gold/20 p-8 hover:border-pnsqc-gold/40 transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-pnsqc-gold/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-pnsqc-gold uppercase tracking-wider px-2 py-1 rounded bg-pnsqc-gold/10">Track 1</span>
+          </div>
+
+          <h3 class="text-2xl font-bold text-white mb-3">Quality Engineering &amp; Systems Reliability</h3>
+          <p class="text-sm text-pnsqc-slate mb-6 leading-relaxed">
+            Engineering practices, architectures, metrics, and reliability techniques grounded in evidence and real-world experience.
           </p>
-          <p class="mt-4 text-pnsqc-slate leading-relaxed">
-            No vendor pitches. No hype. Just practitioners sharing what works&mdash;and what doesn&rsquo;t.
-            Everything from technical papers and hands-on workshops to keynote talks and community networking.
+
+          <div class="space-y-2 mb-6">
+            <p class="text-xs text-pnsqc-slate font-medium uppercase tracking-wider">Topics Include:</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Test Design</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Automation</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Observability</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Integration Testing</span>
+            </div>
+          </div>
+
+          <details class="group/details">
+            <summary class="cursor-pointer text-sm text-pnsqc-gold hover:text-pnsqc-gold-light transition-colors flex items-center gap-2">
+              <span>Example paper titles</span>
+              <svg class="w-4 h-4 transition-transform group-open/details:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <ul class="mt-4 space-y-2 text-sm text-pnsqc-slate pl-4">
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-gold mt-1">&bull;</span>
+                <span>Exploratory Testing as a Reliability Signal, Not a Last Resort</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-gold mt-1">&bull;</span>
+                <span>What Actually Improved System Stability: Lessons from Production Defects</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-gold mt-1">&bull;</span>
+                <span>Coverage Isn't Confidence: Rethinking What Our Tests Really Tell Us</span>
+              </li>
+            </ul>
+          </details>
+        </div>
+
+        <!-- Track 2: Organizational Quality & Leadership -->
+        <div class="group card-hover rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-pnsqc-cyan/20 p-8 hover:border-pnsqc-cyan/40 transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-pnsqc-cyan/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-pnsqc-cyan uppercase tracking-wider px-2 py-1 rounded bg-pnsqc-cyan/10">Track 2</span>
+          </div>
+
+          <h3 class="text-2xl font-bold text-white mb-3">Organizational Quality &amp; Leadership</h3>
+          <p class="text-sm text-pnsqc-slate mb-6 leading-relaxed">
+            Quality governance, decision frameworks, culture, and organizational strategy tied to measurable outcomes.
           </p>
-          <div class="mt-8 flex flex-wrap gap-4">
-            <a href="/about/" class="px-5 py-2.5 border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
-              Learn More
-            </a>
-            <a href="/cfp/" class="text-pnsqc-slate text-sm font-medium hover:text-white transition-colors flex items-center gap-1.5">
-              Submit a paper
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-          </div>
-        </div>
 
-        <!-- Feature cards -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="rounded-xl bg-white/5 border border-white/5 p-6">
-            <div class="w-10 h-10 rounded-lg bg-pnsqc-gold/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          <div class="space-y-2 mb-6">
+            <p class="text-xs text-pnsqc-slate font-medium uppercase tracking-wider">Topics Include:</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Agile Practices</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Test Management</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Risk-Based Testing</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Leadership</span>
             </div>
-            <h3 class="text-white font-semibold text-sm mb-1">Technical Papers</h3>
-            <p class="text-pnsqc-slate text-xs leading-relaxed">Peer-reviewed papers on real-world quality practices.</p>
           </div>
-          <div class="rounded-xl bg-white/5 border border-white/5 p-6">
-            <div class="w-10 h-10 rounded-lg bg-pnsqc-cyan/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+
+          <details class="group/details">
+            <summary class="cursor-pointer text-sm text-pnsqc-cyan hover:text-sky-300 transition-colors flex items-center gap-2">
+              <span>Example paper titles</span>
+              <svg class="w-4 h-4 transition-transform group-open/details:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <ul class="mt-4 space-y-2 text-sm text-pnsqc-slate pl-4">
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-cyan mt-1">&bull;</span>
+                <span>Test Management That Supports Teams Instead of Slowing Them Down</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-cyan mt-1">&bull;</span>
+                <span>How We Made Better Quality Decisions with Fewer Metrics</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-pnsqc-cyan mt-1">&bull;</span>
+                <span>Quality Governance When You Don't Own the Code</span>
+              </li>
+            </ul>
+          </details>
+        </div>
+
+        <!-- Track 3: Emerging Technologies and AI Systems -->
+        <div class="group card-hover rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-purple-400/20 p-8 hover:border-purple-400/40 transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-purple-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
             </div>
-            <h3 class="text-white font-semibold text-sm mb-1">Workshops</h3>
-            <p class="text-pnsqc-slate text-xs leading-relaxed">Hands-on sessions led by experienced practitioners.</p>
+            <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider px-2 py-1 rounded bg-purple-400/10">Track 3</span>
           </div>
-          <div class="rounded-xl bg-white/5 border border-white/5 p-6">
-            <div class="w-10 h-10 rounded-lg bg-pnsqc-gold/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+
+          <h3 class="text-2xl font-bold text-white mb-3">Emerging Technologies &amp; AI Systems</h3>
+          <p class="text-sm text-pnsqc-slate mb-6 leading-relaxed">
+            Testing, evaluating, governing, and assuring trustworthy AI-enabled and intelligent technologies.
+          </p>
+
+          <div class="space-y-2 mb-6">
+            <p class="text-xs text-pnsqc-slate font-medium uppercase tracking-wider">Topics Include:</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">AI Testing</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Bias &amp; Fairness</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Explainability</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Governance</span>
             </div>
-            <h3 class="text-white font-semibold text-sm mb-1">Community</h3>
-            <p class="text-pnsqc-slate text-xs leading-relaxed">Networking with Pacific NW quality professionals.</p>
           </div>
-          <div class="rounded-xl bg-white/5 border border-white/5 p-6">
-            <div class="w-10 h-10 rounded-lg bg-pnsqc-cyan/10 flex items-center justify-center mb-4">
-              <svg class="w-5 h-5 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+
+          <details class="group/details">
+            <summary class="cursor-pointer text-sm text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-2">
+              <span>Example paper titles</span>
+              <svg class="w-4 h-4 transition-transform group-open/details:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <ul class="mt-4 space-y-2 text-sm text-pnsqc-slate pl-4">
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 mt-1">&bull;</span>
+                <span>Testing AI Features When Expected Results Aren't Deterministic</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 mt-1">&bull;</span>
+                <span>Introducing AI Testing into a Traditional QA Organization</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-purple-400 mt-1">&bull;</span>
+                <span>Human Oversight Models That Actually Work for AI Systems</span>
+              </li>
+            </ul>
+          </details>
+        </div>
+
+        <!-- Track 4: Tools and Productivity (Placeholder) -->
+        <div class="group card-hover rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-emerald-400/20 p-8 hover:border-emerald-400/40 transition-all">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 rounded-lg bg-emerald-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             </div>
-            <h3 class="text-white font-semibold text-sm mb-1">Keynotes</h3>
-            <p class="text-pnsqc-slate text-xs leading-relaxed">Industry leaders sharing insights and vision.</p>
+            <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider px-2 py-1 rounded bg-emerald-400/10">Track 4</span>
           </div>
+
+          <h3 class="text-2xl font-bold text-white mb-3">Tools &amp; Productivity</h3>
+          <p class="text-sm text-pnsqc-slate mb-6 leading-relaxed italic">
+            Track description coming soon. This half-track will focus on practical tools, frameworks, and productivity techniques for quality practitioners.
+          </p>
+
+          <div class="space-y-2 mb-6">
+            <p class="text-xs text-pnsqc-slate font-medium uppercase tracking-wider">Topics Include:</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Tooling</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Productivity</span>
+              <span class="text-xs px-2 py-1 rounded bg-white/5 text-pnsqc-slate">Frameworks</span>
+            </div>
+          </div>
+
+          <p class="text-xs text-emerald-400/60 italic">More details to be announced</p>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ============================================================
-       2025 KEYNOTE SPEAKERS
-       ============================================================ -->
-  <section class="relative bg-pnsqc-blue-dark/30 py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-pnsqc-gold text-sm font-medium uppercase tracking-widest">Speakers</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">2025 Keynote Speakers</h2>
-        <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <a href="/conference/2025/keynotes.html" class="card-hover group text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pnsqc-gold/20 to-pnsqc-cyan/20 border border-white/10 flex items-center justify-center mb-4 group-hover:border-pnsqc-gold/40 transition-colors">
-            <span class="text-2xl font-bold text-pnsqc-gold">JK</span>
-          </div>
-          <h3 class="text-white font-semibold text-sm group-hover:text-pnsqc-gold transition-colors">Joshua Kerievsky</h3>
+      <!-- CTA -->
+      <div class="mt-12 text-center">
+        <a href="/cfp/"
+           class="inline-flex items-center gap-2 px-8 py-4 bg-pnsqc-gold text-pnsqc-navy font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors shadow-lg">
+          Submit Your Proposal
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
-        <a href="/conference/2025/keynotes.html" class="card-hover group text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pnsqc-gold/20 to-pnsqc-cyan/20 border border-white/10 flex items-center justify-center mb-4 group-hover:border-pnsqc-gold/40 transition-colors">
-            <span class="text-2xl font-bold text-pnsqc-gold">AM</span>
-          </div>
-          <h3 class="text-white font-semibold text-sm group-hover:text-pnsqc-gold transition-colors">April K. Mills</h3>
-        </a>
-        <a href="/conference/2025/keynotes.html" class="card-hover group text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pnsqc-gold/20 to-pnsqc-cyan/20 border border-white/10 flex items-center justify-center mb-4 group-hover:border-pnsqc-gold/40 transition-colors">
-            <span class="text-2xl font-bold text-pnsqc-cyan">BS</span>
-          </div>
-          <h3 class="text-white font-semibold text-sm group-hover:text-pnsqc-gold transition-colors">Ben Simo</h3>
-        </a>
-        <a href="/conference/2025/keynotes.html" class="card-hover group text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pnsqc-gold/20 to-pnsqc-cyan/20 border border-white/10 flex items-center justify-center mb-4 group-hover:border-pnsqc-gold/40 transition-colors">
-            <span class="text-2xl font-bold text-pnsqc-cyan">AJ</span>
-          </div>
-          <h3 class="text-white font-semibold text-sm group-hover:text-pnsqc-gold transition-colors">Allan Rennebo Jepsen</h3>
-        </a>
+        <p class="mt-4 text-sm text-pnsqc-slate">
+          First-time authors and practitioners without prior conference publishing experience are encouraged to submit.
+        </p>
       </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       GET INVOLVED / CTA
-       ============================================================ -->
-  <section class="relative py-24 overflow-hidden">
-    <!-- Decorative -->
-    <div class="absolute inset-0 hero-gradient grid-overlay opacity-50 pointer-events-none"></div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-pnsqc-cyan text-sm font-medium uppercase tracking-widest">Join Us</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Get Involved</h2>
-        <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
-      </div>
-
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <a href="/cfp/" class="card-hover group rounded-xl bg-white/5 border border-white/5 p-6 text-center hover:border-pnsqc-gold/30">
-          <div class="w-12 h-12 mx-auto rounded-lg bg-pnsqc-gold/10 flex items-center justify-center mb-4 group-hover:bg-pnsqc-gold/20 transition-colors">
-            <svg class="w-6 h-6 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-          </div>
-          <h3 class="text-white font-semibold mb-1">Submit a Paper</h3>
-          <p class="text-pnsqc-slate text-xs">Share your expertise through our call for proposals.</p>
-        </a>
-        <a href="#" class="card-hover group rounded-xl bg-white/5 border border-white/5 p-6 text-center hover:border-pnsqc-cyan/30">
-          <div class="w-12 h-12 mx-auto rounded-lg bg-pnsqc-cyan/10 flex items-center justify-center mb-4 group-hover:bg-pnsqc-cyan/20 transition-colors">
-            <svg class="w-6 h-6 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
-          </div>
-          <h3 class="text-white font-semibold mb-1">Volunteer</h3>
-          <p class="text-pnsqc-slate text-xs">Help shape the conference. Every role matters.</p>
-        </a>
-        <a href="#" class="card-hover group rounded-xl bg-white/5 border border-white/5 p-6 text-center hover:border-pnsqc-gold/30">
-          <div class="w-12 h-12 mx-auto rounded-lg bg-pnsqc-gold/10 flex items-center justify-center mb-4 group-hover:bg-pnsqc-gold/20 transition-colors">
-            <svg class="w-6 h-6 text-pnsqc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          </div>
-          <h3 class="text-white font-semibold mb-1">Become a Member</h3>
-          <p class="text-pnsqc-slate text-xs">Join the community and access exclusive resources.</p>
-        </a>
-        <a href="mailto:treasurer@pnsqc.org" class="card-hover group rounded-xl bg-white/5 border border-white/5 p-6 text-center hover:border-pnsqc-cyan/30">
-          <div class="w-12 h-12 mx-auto rounded-lg bg-pnsqc-cyan/10 flex items-center justify-center mb-4 group-hover:bg-pnsqc-cyan/20 transition-colors">
-            <svg class="w-6 h-6 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-          </div>
-          <h3 class="text-white font-semibold mb-1">Sponsor</h3>
-          <p class="text-pnsqc-slate text-xs">Support a nonprofit conference and reach practitioners.</p>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       SPONSORS & PARTNERS
-       ============================================================ -->
-  <section class="relative bg-pnsqc-blue-dark/30 py-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-pnsqc-gold text-sm font-medium uppercase tracking-widest">Thank You</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Sponsors &amp; Partners</h2>
-        <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
-      </div>
-
-      <!-- Gold Sponsors -->
-      <div class="mb-12">
-        <h3 class="text-center text-pnsqc-gold font-semibold text-sm uppercase tracking-widest mb-8">2025 Gold Sponsors</h3>
-        <div class="flex flex-wrap justify-center items-center gap-12">
-          <a href="https://testrigor.com/" class="group px-8 py-4 rounded-xl bg-white/5 border border-white/5 hover:border-pnsqc-gold/30 transition-colors">
-            <span class="text-xl font-bold text-white group-hover:text-pnsqc-gold transition-colors">testRigor</span>
-          </a>
-          <a href="https://www.plusqa.com/" class="group px-8 py-4 rounded-xl bg-white/5 border border-white/5 hover:border-pnsqc-gold/30 transition-colors">
-            <span class="text-xl font-bold text-white group-hover:text-pnsqc-gold transition-colors">PLUS QA</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Exhibitors -->
-      <div class="mb-12">
-        <h3 class="text-center text-pnsqc-slate font-semibold text-sm uppercase tracking-widest mb-8">2025 Exhibitors</h3>
-        <div class="flex flex-wrap justify-center items-center gap-8">
-          <a href="https://www.techoregon.org/" class="px-6 py-3 rounded-lg bg-white/5 border border-white/5 hover:border-white/20 transition-colors">
-            <span class="text-sm font-medium text-pnsqc-slate hover:text-white transition-colors">Technology Association of Oregon</span>
-          </a>
-          <a href="https://www.projectledo.org/" class="px-6 py-3 rounded-lg bg-white/5 border border-white/5 hover:border-white/20 transition-colors">
-            <span class="text-sm font-medium text-pnsqc-slate hover:text-white transition-colors">Project LEDO</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Partners -->
-      <div>
-        <h3 class="text-center text-pnsqc-slate font-semibold text-sm uppercase tracking-widest mb-8">2025 Partners</h3>
-        <div class="flex flex-wrap justify-center items-center gap-8">
-          <a href="https://blacksintechnology.org/" class="px-6 py-3 rounded-lg bg-white/5 border border-white/5 hover:border-white/20 transition-colors">
-            <span class="text-sm font-medium text-pnsqc-slate hover:text-white transition-colors">Blacks in Technology Foundation</span>
-          </a>
-        </div>
-      </div>
-
-      <p class="text-center mt-12 text-pnsqc-slate text-sm">
-        Interested in sponsoring? Contact
-        <a href="mailto:treasurer@pnsqc.org" class="text-pnsqc-gold hover:text-pnsqc-gold-light transition-colors">Phil Lew</a>
-        for sponsorship opportunities. Contributions may be tax-deductible.
-      </p>
     </div>
   </section>
 

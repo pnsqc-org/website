@@ -27,6 +27,17 @@ npm run build:css    # just Tailwind CSS
 npm run build:dist   # just assemble dist/
 ```
 
+## URL Conventions
+
+**Use clean URLs** — link to pages without `.html` extensions:
+
+```html
+<a href="/about">About</a>
+<a href="/conference/2025">2025 Conference</a>
+```
+
+Files are still named `about.html`, `index.html`, etc., but Cloudflare Pages (and similar hosts) serve them at clean URLs automatically.
+
 ## Build Script (`build.mjs`)
 
 The build script handles five things:

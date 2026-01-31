@@ -153,6 +153,22 @@ og_image: /images/og-default.png
     });
   </script>
   <script>
+    // Header shrink on scroll
+    const header = document.getElementById('main-header');
+    const headerInner = document.getElementById('header-inner');
+    const headerLogo = document.getElementById('header-logo');
+  
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        headerInner.style.height = '64px';
+        headerLogo.style.height = '58px'; // 90% of 64px
+      } else {
+        headerInner.style.height = '120px';
+        headerLogo.style.height = '108px'; // 90% of 120px
+      }
+    });
+  </script>
+  <script>
     (() => {
       const headerInner = document.getElementById('header-inner');
       const headerLogo = document.getElementById('header-logo');

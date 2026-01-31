@@ -16,6 +16,16 @@
 /* Global smooth scrolling */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: var(--header-offset, 120px);
+}
+
+/* Fixed-header offset (set dynamically in JS) */
+:root {
+  --header-offset: 120px;
+}
+
+.has-fixed-header {
+  padding-top: var(--header-offset, 120px);
 }
 
 /* Glow utility for warm accents */

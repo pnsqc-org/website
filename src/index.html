@@ -24,7 +24,7 @@ og_image: /images/og-default.png
   <meta name="twitter:description" content="PNSQC is a nonprofit software quality conference built by the community, for the community. Join practitioners in the Pacific Northwest for talks, workshops, and networking.">
   <meta name="twitter:image" content="https://example.com/images/og-default.png">
 </head>
-<body class="bg-pnsqc-navy text-white antialiased">
+<body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
 
   <!-- ============================================================
        HEADER (from _partials/header.html)
@@ -153,149 +153,70 @@ og_image: /images/og-default.png
     });
   </script>
   <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
-      }
-    });
-  </script>
-  <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
-  
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.classList.remove('h-[120px]');
-        headerInner.classList.add('h-16');
-        headerLogo.classList.remove('h-16');
-        headerLogo.classList.add('h-9');
-      } else {
-        headerInner.classList.remove('h-16');
-        headerInner.classList.add('h-[120px]');
-        headerLogo.classList.remove('h-9');
-        headerLogo.classList.add('h-16');
-      }
-    });
+    (() => {
+      const headerInner = document.getElementById('header-inner');
+      const headerLogo = document.getElementById('header-logo');
+      if (!headerInner || !headerLogo) return;
+
+      const expandedHeaderHeightPx = 120;
+      const collapsedHeaderHeightPx = 64;
+      const expandedLogoHeightPx = 108;
+      const collapsedLogoHeightPx = 58;
+      const root = document.documentElement;
+
+      const setHeaderState = (isCollapsed) => {
+        const headerHeightPx = isCollapsed ? collapsedHeaderHeightPx : expandedHeaderHeightPx;
+        headerInner.style.height = `${headerHeightPx}px`;
+        headerLogo.style.height = `${isCollapsed ? collapsedLogoHeightPx : expandedLogoHeightPx}px`;
+        root.style.setProperty('--header-offset', `${headerHeightPx}px`);
+      };
+
+      const updateFromScroll = () => setHeaderState(window.scrollY > 10);
+      updateFromScroll();
+
+      window.addEventListener('scroll', updateFromScroll, { passive: true });
+    })();
   </script>
 
   <!-- ============================================================
        HERO SECTION
        ============================================================ -->
-  <section class="relative min-h-screen flex items-center pt-16">
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
+  <section class="relative flex items-center">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+      <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <!-- Left: Text Content -->
         <div>
-          <!-- Badge -->
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-8">
-            <span class="w-2 h-2 bg-pnsqc-gold rounded-full animate-pulse"></span>
-            <span class="text-pnsqc-gold text-sm font-medium">2026 Conference &mdash; Oct. 12&ndash;14</span>
-          </div>
-
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-            <span class="text-white">Quality in the Age of</span><br>
-            <span class="bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent glow-text-gold">
-              Autonomy
+          <h1 class="font-bold leading-tight">
+            <span class="block text-2xl sm:text-3xl text-white tracking-wider mb-2">44<sup class="text-sm sm:text-base align-super">th</sup> ANNUAL PNSQC</span>
+            <span class="block text-5xl sm:text-6xl lg:text-6xl italic bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent glow-text-gold">
+              Quality in the Age of Autonomy
             </span>
           </h1>
 
-          <p class="mt-6 text-lg sm:text-xl text-pnsqc-slate leading-relaxed">
-            The Pacific Northwest Software Quality Conference brings together practitioners,
+          <!-- Location & Date -->
+          <div class="mt-4 flex flex-wrap items-center gap-4 text-pnsqc-cyan">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span class="text-lg font-medium">Portland, Oregon</span>
+            </div>
+            <span class="text-pnsqc-slate">&bull;</span>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+              <span class="text-lg font-medium">October 12&ndash;14, 2026</span>
+            </div>
+          </div>
+
+          <p class="mt-4 text-lg sm:text-xl text-pnsqc-slate leading-relaxed">
+            The Pacific Northwest's premier software quality conference brings together practitioners,
             researchers, and leaders to share real-world knowledge and build a stronger quality community.
           </p>
 
-          <div class="mt-10 flex flex-wrap gap-4">
+          <div class="mt-6 flex flex-wrap gap-4">
             <a href="/cfp/"
                class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
               Submit Proposal
@@ -307,7 +228,7 @@ og_image: /images/og-default.png
           </div>
 
           <!-- Quick stats -->
-          <div class="mt-16 grid grid-cols-3 gap-8 max-w-md">
+          <div class="mt-8 grid grid-cols-3 gap-6 max-w-md">
             <div>
               <div class="text-2xl sm:text-3xl font-bold text-pnsqc-gold">30+</div>
               <div class="text-xs sm:text-sm text-pnsqc-slate mt-1">Years Running</div>

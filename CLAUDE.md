@@ -55,31 +55,36 @@ og_image: /images/og-default.png
 ```
 
 **CRITICAL RULES:**
-1. **Empty placeholder tags:** `<header></header>` and `<footer></footer>` MUST be empty — the build script replaces the entire section with content from `_partials/`
-   - ⚠️ **NEVER put any content between these tags** — not even comments or whitespace
-   - ⚠️ **If placeholders contain content, running the build will duplicate/append content** on every build
+1. **Empty placeholder tags:** `<header></header>` and `<footer></footer>` MUST be empty in `src/` files — the build script injects content from `_partials/` into `dist/` files
+   - ⚠️ **NEVER put any content between these tags in `src/` files** — not even comments or whitespace
    - ✅ Correct: `<header></header>`
    - ❌ Wrong: `<header>...any content...</header>`
 2. **No SEO meta tags:** Don't add `<title>`, `<meta description>`, Open Graph, or Twitter Card tags — the build script injects these from the meta block
 3. **Meta block required:** Add page-specific metadata at the top (before `<!DOCTYPE html>`)
 
 **What the build script does:**
-- Reads meta block → injects SEO tags into `<head>`
-- Finds `<header></header>` placeholder → replaces with `_partials/header.html`
-- Finds `<footer></footer>` placeholder → replaces with `_partials/footer.html`
-- Generates sitemap and robots.txt
-- Copies everything to `dist/`
+1. Copies all files from `src/` to `dist/`
+2. Processes HTML files **in `dist/`** only:
+   - Reads meta block → injects SEO tags into `<head>`
+   - Finds `<header></header>` placeholder → replaces with `_partials/header.html`
+   - Finds `<footer></footer>` placeholder → replaces with `_partials/footer.html`
+3. Generates sitemap and robots.txt in `dist/`
+
+**Important:** The build script **leaves `src/` files untouched**:
+- Source files in `src/` always contain empty `<header></header>` and `<footer></footer>` placeholders
+- Only `dist/` files have the full header/footer content
+- `dist/` is what gets published to the web
+- To edit headers/footers, modify the files in `_partials/` and rebuild
 
 ## Troubleshooting
 
-### ❌ Problem: Header/Footer Duplicating on Every Build
+### ❌ Problem: Header/Footer Content in Source Files
 
 **Symptoms:**
-- Multiple headers or footers appearing in HTML files
-- Content getting appended instead of replaced
-- File size grows after each build
+- `src/` HTML files contain full header/footer HTML instead of empty placeholders
+- This shouldn't happen with the current build script, but may occur if files are manually edited
 
-**Cause:** Header or footer placeholder tags in `src/` files contain content instead of being empty
+**Cause:** Manually copying header/footer content into `src/` files instead of keeping them as empty placeholders
 
 **Solution:**
 1. Open the affected file in `src/` (NOT `dist/`)
@@ -97,9 +102,10 @@ og_image: /images/og-default.png
         ============================================================ -->
    <footer></footer>
    ```
-4. Run `npm run build` to regenerate properly
+4. Run `npm run build` to regenerate `dist/` properly
 
 **Prevention:**
-- Always use empty `<header></header>` and `<footer></footer>` tags in source files
-- Never manually copy header/footer HTML into these tags
-- The build script will inject the correct content from `_partials/`
+- Always use empty `<header></header>` and `<footer></footer>` tags in `src/` files
+- Never manually edit header/footer content in `src/` files
+- The build script processes `dist/` files only, leaving `src/` untouched
+- To edit headers/footers, modify `_partials/header.html` or `_partials/footer.html`

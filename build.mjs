@@ -43,11 +43,11 @@ function parseMeta(html) {
 
 // ── Inject <head> meta tags ─────────────────────────────────────────
 
-function injectHead(html, meta, config, filePath) {
+function injectHead(html, meta, config, filePath, baseDir) {
   const title = meta.title || config.siteName;
   const description = meta.description || config.defaultDescription;
   const ogImage = meta.og_image || config.defaultOgImage;
-  const relPath = relative(SRC, filePath);
+  const relPath = relative(baseDir, filePath);
   const urlPath = '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
   const canonical = config.baseUrl + urlPath;
 
@@ -132,9 +132,9 @@ function injectPartials(html) {
 
 // ── Generate sitemap.xml ────────────────────────────────────────────
 
-function generateSitemap(files, config) {
+function generateSitemap(files, config, targetDir) {
   const urls = files.map(f => {
-    const rel = relative(SRC, f);
+    const rel = relative(targetDir, f);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
     return `  <url>\n    <loc>${config.baseUrl}${urlPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
@@ -146,19 +146,19 @@ function generateSitemap(files, config) {
     urls.join('\n') + '\n' +
     `</urlset>\n`;
 
-  writeFileSync(join(SRC, 'sitemap.xml'), xml);
-  console.log(`  src/sitemap.xml  (${files.length} URLs)`);
+  writeFileSync(join(targetDir, 'sitemap.xml'), xml);
+  console.log(`  sitemap.xml  (${files.length} URLs)`);
 }
 
 // ── Generate robots.txt ─────────────────────────────────────────────
 
-function generateRobotsTxt(config) {
+function generateRobotsTxt(config, targetDir) {
   const content =
     `User-agent: *\n` +
     `Allow: /\n\n` +
     `Sitemap: ${config.baseUrl}/sitemap.xml\n`;
-  writeFileSync(join(SRC, 'robots.txt'), content);
-  console.log('  src/robots.txt');
+  writeFileSync(join(targetDir, 'robots.txt'), content);
+  console.log('  robots.txt');
 }
 
 // ── Assemble dist/ ──────────────────────────────────────────────────
@@ -181,36 +181,31 @@ function assembleDist() {
 // ── Main ────────────────────────────────────────────────────────────
 
 function main() {
-  const command = process.argv[2];
+  // Step 1: Copy src/ to dist/
+  console.log('\nbuild.mjs — assembling dist/\n');
+  assembleDist();
 
-  // `node build.mjs dist` — only assemble the dist/ folder
-  if (command === 'dist') {
-    console.log('\nbuild.mjs — assembling dist/\n');
-    assembleDist();
-    console.log('\ndone.\n');
-    return;
-  }
-
-  // Default: process HTML, generate sitemap/robots
+  // Step 2: Process HTML files in dist/ (NOT src/)
   const config = loadConfig();
-  const files = findHtmlFiles();
+  const files = findHtmlFiles(DIST);  // Find HTML in dist/, not src/
 
-  console.log(`\nbuild.mjs — processing ${files.length} HTML file(s)\n`);
+  console.log(`\nbuild.mjs — processing ${files.length} HTML file(s) in dist/\n`);
 
   for (const file of files) {
     let html = readFileSync(file, 'utf8');
     const meta = parseMeta(html);
 
     html = injectPartials(html);
-    html = injectHead(html, meta, config, file);
+    html = injectHead(html, meta, config, file, DIST);  // Pass DIST as baseDir
 
     writeFileSync(file, html);
-    console.log(`  ✓ src/${relative(SRC, file)}`);
+    console.log(`  ✓ dist/${relative(DIST, file)}`);
   }
 
+  // Step 3: Generate sitemap/robots in dist/
   console.log('');
-  generateSitemap(files, config);
-  generateRobotsTxt(config);
+  generateSitemap(files, config, DIST);
+  generateRobotsTxt(config, DIST);
   console.log('\ndone.\n');
 }
 

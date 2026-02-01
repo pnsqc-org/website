@@ -19,13 +19,7 @@ No framework, no CMS. The build step is a single command:
 npm run build
 ```
 
-This runs three steps in order: `build.mjs` (partials + SEO), the Tailwind CLI (CSS), then `build.mjs dist` (assembles the publish directory). You can also run them separately:
-
-```bash
-npm run build:html   # just partials + SEO
-npm run build:css    # just Tailwind CSS
-npm run build:dist   # just assemble dist/
-```
+This runs two steps: Tailwind CLI (compiles CSS to `src/`), then `build.mjs` (copies to `dist/` and injects partials + SEO).
 
 ## URL Conventions
 
@@ -40,13 +34,15 @@ Files are still named `about.html`, `index.html`, etc., but Cloudflare Pages (an
 
 ## Build Script (`build.mjs`)
 
-The build script handles five things:
+The build script:
 
-1. **Partial injection** — replaces header/footer marker blocks in every HTML file in `src/` with the contents of `_partials/header.html` and `_partials/footer.html`
-2. **SEO meta injection** — reads a `<!-- meta ... -->` comment block from each HTML file and injects `<title>`, `<meta description>`, Open Graph, Twitter Card, and canonical URL tags into `<head>`
-3. **Sitemap generation** — walks all `.html` files in `src/` and writes `src/sitemap.xml`
-4. **robots.txt generation** — writes `src/robots.txt` with a sitemap reference
-5. **Dist assembly** (`node build.mjs dist`) — copies `src/` to `dist/`, excluding only the Tailwind source file (`input.css`)
+1. **Copies** `src/` → `dist/` (excluding Tailwind source file `input.css`)
+2. **Processes HTML in `dist/`** only:
+   - Injects header/footer from `_partials/` into empty `<header></header>` and `<footer></footer>` tags
+   - Reads `<!-- meta ... -->` blocks and injects SEO tags (`<title>`, meta description, Open Graph, etc.) into `<head>`
+3. **Generates** `dist/sitemap.xml` and `dist/robots.txt`
+
+**Important:** Source files in `src/` remain untouched. Only `dist/` files are modified.
 
 ### Site configuration
 
@@ -80,7 +76,7 @@ All fields are optional — the build script falls back to `site.config.json` de
 
 ### Partial markers
 
-HTML files in `src/` **MUST use empty tags** as placeholders for header and footer:
+HTML files in `src/` **MUST use empty tags** as placeholders:
 
 ```html
 <!-- ============================================================
@@ -94,85 +90,47 @@ HTML files in `src/` **MUST use empty tags** as placeholders for header and foot
 <footer></footer>
 ```
 
-**⚠️ IMPORTANT:** The tags MUST be empty. DO NOT put any content inside `<header>` or `<footer>` tags — the build script replaces the entire section (from the marker comment through the closing tag) with fresh content from `_partials/`.
-
-**What happens during build:**
-
-BEFORE (what you write in `src/`):
-```html
-<header></header>
-```
-
-AFTER (what the build script creates):
-```html
-<header id="main-header" class="...">
-  <nav>
-    <!-- Full navigation markup from _partials/header.html -->
-  </nav>
-</header>
-```
-
-If you accidentally include content inside the placeholder tags, the build script will still replace it, but this wastes effort and can cause confusion.
+**⚠️ CRITICAL:** Tags must be empty in `src/` files. The build script injects full content into `dist/` files only.
 
 ### Source directory (`src/`) and publish directory (`dist/`)
 
-All publishable content lives in `src/`: HTML pages, CSS, images, and generated files (`sitemap.xml`, `robots.txt`). The repo root contains only build tooling and non-published source files.
+- **`src/`** — source content (HTML with empty header/footer tags, CSS, images)
+- **`dist/`** — build output with injected partials, SEO, sitemap, robots.txt (git-ignored)
 
-Running `npm run build` (or `npm run build:dist`) copies `src/` to `dist/`, excluding only the Tailwind source file (`input.css`). Point your static host's publish directory at `dist/`.
-
-Both `src/sitemap.xml`, `src/robots.txt`, and `dist/` are git-ignored and rebuilt from scratch on every build.
+The build copies `src/` → `dist/`, then processes `dist/` files. Point your static host at `dist/`.
 
 ## Content Workflow
 
-1. Edit or create a markdown file in `content/`
-2. Use AI to generate the HTML page from the markdown + a template example
-3. Add a `<!-- meta ... -->` block at the top with title, description, and og_image
-4. Add the partial marker comments for header and footer
-5. Place the HTML file in `src/` (e.g., `src/about/index.html`)
-6. Run `npm run build`
-7. Commit and push — the site deploys automatically
+1. Edit/create markdown in `content/`
+2. Generate HTML from markdown (with AI)
+3. Add `<!-- meta ... -->` block and empty header/footer tags
+4. Place in `src/`
+5. Run `npm run build`
+6. Commit and push
 
 ## Project Structure
 
 ```
 website/
-├── ─── Config & Build ────────────────────────────
-├── build.mjs                        # build script (partials, SEO, sitemap, dist)
-├── site.config.json                 # site-wide config (base URL, defaults)
+├── build.mjs                        # build script
+├── site.config.json                 # site-wide config
 ├── package.json
 │
-├── ─── Build Inputs (not published) ──────────────
-├── _partials/
-│   ├── header.html
-│   └── footer.html
-├── content/                         # markdown source files
-├── skills/                          # Codex skills (includes image-gen CLI)
+├── _partials/                       # header/footer snippets
+├── content/                         # markdown sources
+├── skills/                          # Claude Code skills
 ├── design/                          # design references
 │
-├── ─── Publishable Source ────────────────────────
-├── src/
+├── src/                             # source files (HTML, CSS, images)
 │   ├── index.html
-│   ├── sitemap.xml                  # generated by build
-│   ├── robots.txt                   # generated by build
 │   ├── css/
-│   │   ├── input.css                # Tailwind source (not published)
-│   │   └── site.css                 # Tailwind output
-│   ├── images/
-│   ├── about/
-│   │   └── index.html
-│   ├── cfp/
-│   │   └── index.html
-│   ├── blog/
-│   │   └── 2026-01-03-workshops.html
-│   └── conference/
-│       ├── 2025/
-│       │   ├── index.html
-│       │   ├── papers.html
-│       │   ├── workshops.html
-│       │   └── keynotes.html
-│       └── 2024/
-│           └── ...
+│   │   ├── input.css                # Tailwind source
+│   │   └── site.css                 # compiled CSS
+│   └── ...
 │
-└── ─── Publish Output ────────────────────────────
-    dist/                            # copy of src/ (git-ignored)
+└── dist/                            # build output (git-ignored)
+    ├── index.html                   # with injected header/footer/SEO
+    ├── sitemap.xml                  # generated
+    ├── robots.txt                   # generated
+    └── ...
 ```

@@ -56,6 +56,10 @@ og_image: /images/og-default.png
 
 **CRITICAL RULES:**
 1. **Empty placeholder tags:** `<header></header>` and `<footer></footer>` MUST be empty — the build script replaces the entire section with content from `_partials/`
+   - ⚠️ **NEVER put any content between these tags** — not even comments or whitespace
+   - ⚠️ **If placeholders contain content, running the build will duplicate/append content** on every build
+   - ✅ Correct: `<header></header>`
+   - ❌ Wrong: `<header>...any content...</header>`
 2. **No SEO meta tags:** Don't add `<title>`, `<meta description>`, Open Graph, or Twitter Card tags — the build script injects these from the meta block
 3. **Meta block required:** Add page-specific metadata at the top (before `<!DOCTYPE html>`)
 
@@ -65,3 +69,37 @@ og_image: /images/og-default.png
 - Finds `<footer></footer>` placeholder → replaces with `_partials/footer.html`
 - Generates sitemap and robots.txt
 - Copies everything to `dist/`
+
+## Troubleshooting
+
+### ❌ Problem: Header/Footer Duplicating on Every Build
+
+**Symptoms:**
+- Multiple headers or footers appearing in HTML files
+- Content getting appended instead of replaced
+- File size grows after each build
+
+**Cause:** Header or footer placeholder tags in `src/` files contain content instead of being empty
+
+**Solution:**
+1. Open the affected file in `src/` (NOT `dist/`)
+2. Find the header section and replace it with just:
+   ```html
+   <!-- ============================================================
+        HEADER (from _partials/header.html)
+        ============================================================ -->
+   <header></header>
+   ```
+3. Find the footer section and replace it with just:
+   ```html
+   <!-- ============================================================
+        FOOTER (from _partials/footer.html)
+        ============================================================ -->
+   <footer></footer>
+   ```
+4. Run `npm run build` to regenerate properly
+
+**Prevention:**
+- Always use empty `<header></header>` and `<footer></footer>` tags in source files
+- Never manually copy header/footer HTML into these tags
+- The build script will inject the correct content from `_partials/`

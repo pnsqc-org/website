@@ -80,21 +80,39 @@ All fields are optional — the build script falls back to `site.config.json` de
 
 ### Partial markers
 
-HTML files use comment markers to indicate where partials should be injected:
+HTML files in `src/` **MUST use empty tags** as placeholders for header and footer:
 
 ```html
 <!-- ============================================================
      HEADER (from _partials/header.html)
      ============================================================ -->
-<header>...</header>
+<header></header>
 
 <!-- ============================================================
      FOOTER (from _partials/footer.html)
      ============================================================ -->
-<footer>...</footer>
+<footer></footer>
 ```
 
-The build script replaces everything from the marker comment through the closing `</header>` or `</footer>` tag with the current partial content.
+**⚠️ IMPORTANT:** The tags MUST be empty. DO NOT put any content inside `<header>` or `<footer>` tags — the build script replaces the entire section (from the marker comment through the closing tag) with fresh content from `_partials/`.
+
+**What happens during build:**
+
+BEFORE (what you write in `src/`):
+```html
+<header></header>
+```
+
+AFTER (what the build script creates):
+```html
+<header id="main-header" class="...">
+  <nav>
+    <!-- Full navigation markup from _partials/header.html -->
+  </nav>
+</header>
+```
+
+If you accidentally include content inside the placeholder tags, the build script will still replace it, but this wastes effort and can cause confusion.
 
 ### Source directory (`src/`) and publish directory (`dist/`)
 

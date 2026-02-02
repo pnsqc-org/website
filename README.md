@@ -53,7 +53,7 @@ Edit `site.config.json` to set site-wide defaults:
   "baseUrl": "https://example.com",
   "siteName": "PNSQC — Pacific NW Software Quality Conference",
   "defaultDescription": "...",
-  "defaultOgImage": "/images/og-default.png",
+  "defaultOgImage": "/images/hero/hero-collaboration.png",
   "locale": "en_US"
 }
 ```

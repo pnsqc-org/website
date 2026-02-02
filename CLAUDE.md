@@ -21,7 +21,7 @@ HTML files in `src/` must follow this structure:
 <!-- meta
 title: Page Title
 description: Page description
-og_image: /images/og-default.png
+og_image: /images/hero/hero-collaboration.png
 -->
 <!DOCTYPE html>
 <html lang="en">

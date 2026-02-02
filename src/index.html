@@ -366,55 +366,113 @@ og_image: /images/hero/hero-collaboration.png
        ============================================================ -->
   <section class="relative py-12 bg-gradient-to-r from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-gold/10 border-y border-pnsqc-gold/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-8">
-        <span class="inline-flex items-center gap-2 text-pnsqc-gold text-sm font-semibold uppercase tracking-widest">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Recent Events Hosted by PNSQC
-        </span>
-      </div>
+      <div class="max-w-5xl mx-auto" data-carousel="recent-events">
+        <div class="flex items-center justify-between mb-6">
+          <span class="inline-flex items-center gap-2 text-pnsqc-gold text-sm font-semibold uppercase tracking-widest">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Recent Events Hosted by PNSQC
+          </span>
 
-      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-        <!-- Quality Jam -->
-        <div class="rounded-xl bg-pnsqc-navy/80 border border-pnsqc-gold/30 p-6 hover:border-pnsqc-gold/50 transition-colors">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-bold text-white">Come Jam With Us!</h3>
-            <span class="text-xs text-pnsqc-slate whitespace-nowrap">Jan 22 &bull; 5-9 PM</span>
-          </div>
-          <p class="text-sm text-pnsqc-slate mb-4">
-            Networking, lightning talks, and refreshments. Kick off the 2026 conference year with the quality community.
-          </p>
-          <div class="flex items-center gap-3">
-            <a href="https://mms.pnsqc.org/members/evr/reg_event.php?evid=59881345&orgcode=PNSQ"
-               class="px-4 py-2 bg-pnsqc-gold text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors">
-              Register Free
-            </a>
-            <a href="/blog/2026-01-03-workshops.html"
-               class="text-pnsqc-gold text-sm hover:text-pnsqc-gold-light transition-colors">
-              Details &rarr;
-            </a>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/10 bg-pnsqc-navy/70 text-white/80 hover:text-white hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-pnsqc-gold/40 disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Previous event"
+              data-carousel-prev
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-white/10 bg-pnsqc-navy/70 text-white/80 hover:text-white hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-pnsqc-gold/40 disabled:opacity-40 disabled:cursor-not-allowed"
+              aria-label="Next event"
+              data-carousel-next
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Workshop Day -->
-        <div class="rounded-xl bg-pnsqc-navy/80 border border-pnsqc-cyan/30 p-6 hover:border-pnsqc-cyan/50 transition-colors">
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-lg font-bold text-white">Workshop Day</h3>
-            <span class="text-xs text-pnsqc-slate whitespace-nowrap">Jan 23 &bull; Full Day</span>
-          </div>
-          <p class="text-sm text-pnsqc-slate mb-4">
-            Hands-on workshops: AI Orchestration, QA Re-Bootcamp, MCP Integration, and Test Plan Writing.
-          </p>
-          <div class="flex items-center gap-3">
-            <a href="https://mms.pnsqc.org/members/evr/reg_event.php?evid=59880123&orgcode=PNSQ"
-               class="px-4 py-2 bg-pnsqc-cyan text-pnsqc-navy text-sm font-semibold rounded-lg hover:bg-sky-300 transition-colors">
-              Register Free
-            </a>
-            <a href="/blog/2026-01-03-workshops.html"
-               class="text-pnsqc-cyan text-sm hover:text-sky-300 transition-colors">
-              Details &rarr;
-            </a>
-          </div>
+        <div
+          class="recent-events-track flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 -mx-1 px-1"
+          tabindex="0"
+          aria-label="Recent events carousel"
+          data-carousel-track
+        >
+          <!-- Active event (keep first) -->
+          <article class="recent-event-card snap-start shrink-0 w-[92%] sm:w-[78%] md:w-[60%] rounded-xl bg-pnsqc-navy/90 border border-pnsqc-gold/30 p-6 hover:border-pnsqc-gold/50 transition-colors glow-gold" data-carousel-slide>
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <h3 class="text-lg font-bold text-white leading-snug">Get your resume seen! Talks to help your tech job search.</h3>
+              <span class="inline-flex items-center gap-2 whitespace-nowrap mt-1">
+                <span class="event-status event-status--active" aria-hidden="true"></span>
+                <span class="sr-only">Active event</span>
+              </span>
+            </div>
+
+            <div class="space-y-2 text-sm text-pnsqc-slate">
+              <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <p>Tuesday, Feb 17 &middot; 6:00 PM to 8:00 PM PST</p>
+              </div>
+              <div class="flex items-start gap-2">
+                <svg class="w-4 h-4 mt-0.5 text-pnsqc-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <p>Trimble, 5665 Meadows Rd #400 &middot; Lake Oswego, OR</p>
+              </div>
+            </div>
+
+            <div class="mt-5 rounded-lg bg-white/5 border border-white/10 p-4">
+              <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mb-2">Schedule (all times in PT)</p>
+              <ul class="space-y-1 text-sm text-pnsqc-slate">
+                <li><span class="text-white/80">6&ndash;6:30 PM:</span> Light refreshments and networking</li>
+                <li><span class="text-white/80">6:30&ndash;7:30 PM:</span> Talks/Presentation</li>
+                <li><span class="text-white/80">7:30&ndash;8 PM:</span> Q&amp;A and more networking</li>
+              </ul>
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-pnsqc-slate">
+              <span class="text-white/70 font-medium">Refreshments:</span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-pnsqc-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c4 0 8 2 9 6-4 1-10 7-11 12-3-2-6-6-6-10 0-4 4-8 8-8z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 11l2 2M9.5 13.5l2 2"/></svg>
+                Pizza
+              </span>
+              <span class="inline-flex items-center gap-2">
+                <svg class="w-4 h-4 text-pnsqc-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8l-1 14H9L8 7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7V5a3 3 0 013-3h0a3 3 0 013 3v2"/></svg>
+                Soft drinks
+              </span>
+            </div>
+          </article>
+
+          <!-- Past events (grayed out) -->
+          <article class="recent-event-card is-past snap-start shrink-0 w-[92%] sm:w-[78%] md:w-[60%] rounded-xl bg-pnsqc-navy/70 border border-pnsqc-gold/20 p-6" data-carousel-slide>
+            <div class="flex items-center justify-between mb-3 gap-4">
+              <h3 class="text-lg font-bold text-white">Come Jam With Us!</h3>
+              <span class="inline-flex items-center gap-2 text-xs text-pnsqc-slate whitespace-nowrap">
+                <span class="event-status event-status--inactive" aria-hidden="true"></span>
+                <span class="sr-only">Past event:</span>
+                Jan 22 &bull; 5&ndash;9 PM
+              </span>
+            </div>
+            <p class="text-sm text-pnsqc-slate">
+              Networking, lightning talks, and refreshments. Kick off the 2026 conference year with the quality community.
+            </p>
+          </article>
+
+          <article class="recent-event-card is-past snap-start shrink-0 w-[92%] sm:w-[78%] md:w-[60%] rounded-xl bg-pnsqc-navy/70 border border-pnsqc-cyan/20 p-6" data-carousel-slide>
+            <div class="flex items-center justify-between mb-3 gap-4">
+              <h3 class="text-lg font-bold text-white">Workshop Day</h3>
+              <span class="inline-flex items-center gap-2 text-xs text-pnsqc-slate whitespace-nowrap">
+                <span class="event-status event-status--inactive" aria-hidden="true"></span>
+                <span class="sr-only">Past event:</span>
+                Jan 23 &bull; Full Day
+              </span>
+            </div>
+            <p class="text-sm text-pnsqc-slate">
+              Hands-on workshops: AI Orchestration, QA Re-Bootcamp, MCP Integration, and Test Plan Writing.
+            </p>
+          </article>
         </div>
+
+        <div class="mt-4 flex items-center justify-center gap-2" aria-label="Carousel pagination" data-carousel-dots></div>
       </div>
     </div>
   </section>
@@ -453,6 +511,7 @@ og_image: /images/hero/hero-collaboration.png
 	  <footer></footer>
 
 	  <script src="/js/countdown.js" defer></script>
+	  <script src="/js/recent-events-carousel.js" defer></script>
 	  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
 	</body>
 	</html>

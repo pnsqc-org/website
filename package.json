@@ -1,0 +1,26 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Official website of the Pacific Northwest Software Quality Conference.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx @tailwindcss/cli -i src/css/input.css -o src/css/site.css --minify && node build.mjs",
+    "build:css": "npx @tailwindcss/cli -i src/css/input.css -o src/css/site.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pnsqc-org/website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pnsqc-org/website/issues"
+  },
+  "homepage": "https://github.com/pnsqc-org/website#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "tailwindcss": "^4.1.18"
+  }
+}

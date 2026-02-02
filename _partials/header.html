@@ -9,6 +9,10 @@
 
       <!-- Desktop Navigation -->
       <div class="hidden lg:flex items-center gap-1">
+        <a href="/volunteer/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+          Volunteer
+        </a>
+
         <!-- About Dropdown -->
         <div class="relative group" data-dropdown-root>
           <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
@@ -49,13 +53,13 @@
               <a href="/about/contact/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Contact</a>
             </div>
           </div>
-        </div>
+	        </div>
 
-        <a href="/cfp/"
-           class="ml-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg hover:bg-pnsqc-gold-light transition-colors">
-          Call for Proposals
-        </a>
-        <button id="theme-toggle" class="ml-2 p-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5" aria-label="Toggle theme">
+	        <a href="/cfp/"
+	           class="ml-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg hover:bg-pnsqc-gold-light transition-colors">
+	          Call for Proposals
+	        </a>
+	        <button id="theme-toggle" class="ml-2 p-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5" aria-label="Toggle theme">
           <svg id="theme-icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg id="theme-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         </button>
@@ -69,13 +73,17 @@
       </button>
     </div>
 
-    <!-- Mobile Navigation -->
-    <div id="mobile-menu" class="hidden lg:hidden pb-4">
-      <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
-        <!-- About Section (Expandable) -->
-        <div>
-          <button id="mobile-about-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
-            <span>About</span>
+	    <!-- Mobile Navigation -->
+	    <div id="mobile-menu" class="hidden lg:hidden pb-4">
+	      <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
+	        <a href="/volunteer/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+	          Volunteer
+	        </a>
+
+	        <!-- About Section (Expandable) -->
+	        <div>
+	          <button id="mobile-about-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+	            <span>About</span>
             <svg id="mobile-about-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
@@ -107,13 +115,13 @@
             <a href="/about/donate/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Donate</a>
             <a href="/about/contact/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Contact</a>
           </div>
-        </div>
+	        </div>
 
-        <a href="/cfp/"
-           class="mt-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg text-center hover:bg-pnsqc-gold-light transition-colors">
-          Call for Proposals
-        </a>
-        <button id="theme-toggle-mobile" class="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5" aria-label="Toggle theme">
+	        <a href="/cfp/"
+	           class="mt-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg text-center hover:bg-pnsqc-gold-light transition-colors">
+	          Call for Proposals
+	        </a>
+	        <button id="theme-toggle-mobile" class="mt-2 flex items-center gap-2 px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5" aria-label="Toggle theme">
           <svg id="theme-icon-sun-mobile" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
           <svg id="theme-icon-moon-mobile" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
           <span>Toggle Theme</span>

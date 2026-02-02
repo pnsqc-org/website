@@ -67,16 +67,50 @@ og_image: /images/og-default.png
             researchers, and leaders to share real-world knowledge and build a stronger quality community.
           </p>
 
-          <div class="mt-6 flex flex-wrap gap-4">
-            <a href="/cfp/"
-               class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
-              Submit Proposal
-            </a>
-            <span class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/30 text-white/50 font-medium rounded-lg cursor-not-allowed opacity-60">
-              Registration &mdash; Open Soon
-            </span>
-          </div>
-        </div>
+	          <div class="mt-6 flex flex-wrap gap-4">
+	            <a href="/cfp/"
+	               class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 text-white font-medium rounded-lg hover:bg-pnsqc-gold/10 transition-colors">
+	              Submit Proposal
+	            </a>
+	            <span class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/30 text-white/50 font-medium rounded-lg cursor-not-allowed opacity-60">
+	              Registration &mdash; Open Soon
+	            </span>
+	          </div>
+
+	          <!-- CFP Countdown (progressive enhancement) -->
+	          <div class="mt-6">
+	            <div class="rounded-xl bg-pnsqc-navy/70 border border-white/10 px-5 py-4">
+	              <p class="text-sm text-pnsqc-slate">
+	                Call for Proposals deadline:
+	                <time datetime="2026-04-20" class="text-white font-semibold">April 20, 2026</time>
+	              </p>
+	              <div
+	                class="mt-3 grid grid-cols-4 gap-2 sm:gap-3 max-w-md"
+	                data-countdown
+	                data-countdown-deadline="2026-04-20T23:59:59-07:00"
+	                data-countdown-expired-text="CFP deadline has passed."
+	              >
+	                <div class="rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-center">
+	                  <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white" data-countdown-days>—</div>
+	                  <div class="text-[11px] uppercase tracking-widest text-pnsqc-slate">Days</div>
+	                </div>
+	                <div class="rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-center">
+	                  <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white" data-countdown-hours>—</div>
+	                  <div class="text-[11px] uppercase tracking-widest text-pnsqc-slate">Hours</div>
+	                </div>
+	                <div class="rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-center">
+	                  <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white" data-countdown-minutes>—</div>
+	                  <div class="text-[11px] uppercase tracking-widest text-pnsqc-slate">Minutes</div>
+	                </div>
+	                <div class="rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-center">
+	                  <div class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white" data-countdown-seconds>—</div>
+	                  <div class="text-[11px] uppercase tracking-widest text-pnsqc-slate">Seconds</div>
+	                </div>
+	                <p class="sr-only" data-countdown-sr aria-live="polite"></p>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
 
         <!-- Right: Hero Image -->
         <div class="relative lg:block hidden">
@@ -413,11 +447,12 @@ og_image: /images/og-default.png
     </div>
   </section>  
 
-  <!-- ============================================================
-       FOOTER (from _partials/footer.html)
-       ============================================================ -->
-  <footer></footer>
+	  <!-- ============================================================
+	       FOOTER (from _partials/footer.html)
+	       ============================================================ -->
+	  <footer></footer>
 
-  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
-</body>
-</html>
+	  <script src="/js/countdown.js" defer></script>
+	  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
+	</body>
+	</html>

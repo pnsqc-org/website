@@ -122,43 +122,111 @@
     </div>
   </nav>
   <script>
-    // Header shrink on scroll
-    const header = document.getElementById('main-header');
-    const headerInner = document.getElementById('header-inner');
-    const headerLogo = document.getElementById('header-logo');
+    (() => {
+      // Header shrink on scroll
+      const headerInner = document.getElementById('header-inner');
+      const headerLogo = document.getElementById('header-logo');
 
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 10) {
-        headerInner.style.height = '64px';
-        headerLogo.style.height = '58px'; // 90% of 64px
-      } else {
-        headerInner.style.height = '120px';
-        headerLogo.style.height = '108px'; // 90% of 120px
+      if (headerInner && headerLogo) {
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 10) {
+            headerInner.style.height = '64px';
+            headerLogo.style.height = '58px'; // 90% of 64px
+          } else {
+            headerInner.style.height = '120px';
+            headerLogo.style.height = '108px'; // 90% of 120px
+          }
+        });
       }
-    });
 
-    // Mobile About menu toggle
-    const mobileAboutToggle = document.getElementById('mobile-about-toggle');
-    const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
-    const mobileAboutChevron = document.getElementById('mobile-about-chevron');
+      // Mobile main menu toggle
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
 
-    if (mobileAboutToggle) {
-      mobileAboutToggle.addEventListener('click', () => {
-        mobileAboutSubmenu.classList.toggle('hidden');
-        mobileAboutChevron.classList.toggle('rotate-180');
-      });
-    }
+      // Mobile About menu toggle
+      const mobileAboutToggle = document.getElementById('mobile-about-toggle');
+      const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
+      const mobileAboutChevron = document.getElementById('mobile-about-chevron');
 
-    // Mobile Governance menu toggle
-    const mobileGovernanceToggle = document.getElementById('mobile-governance-toggle');
-    const mobileGovernanceSubmenu = document.getElementById('mobile-governance-submenu');
-    const mobileGovernanceChevron = document.getElementById('mobile-governance-chevron');
+      if (mobileAboutToggle && mobileAboutSubmenu && mobileAboutChevron) {
+        mobileAboutToggle.addEventListener('click', () => {
+          mobileAboutSubmenu.classList.toggle('hidden');
+          mobileAboutChevron.classList.toggle('rotate-180');
+        });
+      }
 
-    if (mobileGovernanceToggle) {
-      mobileGovernanceToggle.addEventListener('click', () => {
-        mobileGovernanceSubmenu.classList.toggle('hidden');
-        mobileGovernanceChevron.classList.toggle('rotate-180');
-      });
-    }
+      // Mobile Governance menu toggle
+      const mobileGovernanceToggle = document.getElementById('mobile-governance-toggle');
+      const mobileGovernanceSubmenu = document.getElementById('mobile-governance-submenu');
+      const mobileGovernanceChevron = document.getElementById('mobile-governance-chevron');
+
+      if (mobileGovernanceToggle && mobileGovernanceSubmenu && mobileGovernanceChevron) {
+        mobileGovernanceToggle.addEventListener('click', () => {
+          mobileGovernanceSubmenu.classList.toggle('hidden');
+          mobileGovernanceChevron.classList.toggle('rotate-180');
+        });
+      }
+
+      // Theme switcher
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+      const sunIcon = document.getElementById('theme-icon-sun');
+      const moonIcon = document.getElementById('theme-icon-moon');
+      const sunIconMobile = document.getElementById('theme-icon-sun-mobile');
+      const moonIconMobile = document.getElementById('theme-icon-moon-mobile');
+
+      const setIconState = (theme) => {
+        const isLight = theme === 'light';
+        sunIcon?.classList.toggle('hidden', !isLight);
+        moonIcon?.classList.toggle('hidden', isLight);
+        sunIconMobile?.classList.toggle('hidden', !isLight);
+        moonIconMobile?.classList.toggle('hidden', isLight);
+      };
+
+      const getStoredTheme = () => {
+        try {
+          const theme = localStorage.getItem('theme');
+          return theme === 'light' || theme === 'dark' ? theme : null;
+        } catch {
+          return null;
+        }
+      };
+
+      const storeTheme = (theme) => {
+        try {
+          localStorage.setItem('theme', theme);
+        } catch {
+          // ignore
+        }
+      };
+
+      const getDefaultTheme = () => {
+        if (window.matchMedia?.('(prefers-color-scheme: light)').matches) return 'light';
+        return 'dark';
+      };
+
+      const applyTheme = (theme) => {
+        document.documentElement.setAttribute('data-theme', theme);
+        setIconState(theme);
+        storeTheme(theme);
+      };
+
+      const initialTheme = getStoredTheme() || getDefaultTheme();
+      applyTheme(initialTheme);
+
+      const toggleTheme = () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
+      };
+
+      themeToggle?.addEventListener('click', toggleTheme);
+      themeToggleMobile?.addEventListener('click', toggleTheme);
+    })();
   </script>
 </header>

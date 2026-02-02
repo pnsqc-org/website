@@ -418,57 +418,6 @@ og_image: /images/og-default.png
        ============================================================ -->
   <footer></footer>
 
-  <!-- Mobile menu toggle & Theme switcher -->
-  <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    });
-
-    // Theme switcher
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
-    const sunIcon = document.getElementById('theme-icon-sun');
-    const moonIcon = document.getElementById('theme-icon-moon');
-    const sunIconMobile = document.getElementById('theme-icon-sun-mobile');
-    const moonIconMobile = document.getElementById('theme-icon-moon-mobile');
-
-    // Check for saved theme preference or default to 'dark'
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-
-    // Apply theme on page load
-    function applyTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-
-      // Update icon visibility
-      if (theme === 'light') {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-        sunIconMobile.classList.remove('hidden');
-        moonIconMobile.classList.add('hidden');
-      } else {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-        sunIconMobile.classList.add('hidden');
-        moonIconMobile.classList.remove('hidden');
-      }
-
-      // Save preference
-      localStorage.setItem('theme', theme);
-    }
-
-    // Apply saved theme
-    applyTheme(currentTheme);
-
-    // Toggle theme on button click
-    function toggleTheme() {
-      const theme = document.documentElement.getAttribute('data-theme');
-      const newTheme = theme === 'dark' ? 'light' : 'dark';
-      applyTheme(newTheme);
-    }
-
-    themeToggle.addEventListener('click', toggleTheme);
-    themeToggleMobile.addEventListener('click', toggleTheme);
-  </script>
+  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
 </body>
 </html>

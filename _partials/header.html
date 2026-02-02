@@ -9,6 +9,22 @@
 
       <!-- Desktop Navigation -->
       <div class="hidden lg:flex items-center gap-1">
+        <!-- 2026 Conference Dropdown -->
+        <div class="relative group" data-dropdown-root>
+          <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
+            2026 Conference
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
+            <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+              <a href="/conference/2026/venue/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Venue</a>
+            </div>
+          </div>
+        </div>
+
         <a href="/volunteer/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
           Volunteer
         </a>
@@ -76,6 +92,19 @@
 	    <!-- Mobile Navigation -->
 	    <div id="mobile-menu" class="hidden lg:hidden pb-4">
 	      <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
+	        <!-- 2026 Conference Section (Expandable) -->
+	        <div>
+	          <button id="mobile-conference-2026-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+	            <span>2026 Conference</span>
+	            <svg id="mobile-conference-2026-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+	              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+	            </svg>
+	          </button>
+	          <div id="mobile-conference-2026-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+	            <a href="/conference/2026/venue/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Venue</a>
+	          </div>
+	        </div>
+
 	        <a href="/volunteer/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
 	          Volunteer
 	        </a>
@@ -249,22 +278,34 @@
         });
       }
 
-      // Mobile About menu toggle
-      const mobileAboutToggle = document.getElementById('mobile-about-toggle');
-      const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
-      const mobileAboutChevron = document.getElementById('mobile-about-chevron');
+	      // Mobile About menu toggle
+	      const mobileAboutToggle = document.getElementById('mobile-about-toggle');
+	      const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
+	      const mobileAboutChevron = document.getElementById('mobile-about-chevron');
 
-      if (mobileAboutToggle && mobileAboutSubmenu && mobileAboutChevron) {
-        mobileAboutToggle.addEventListener('click', () => {
-          mobileAboutSubmenu.classList.toggle('hidden');
-          mobileAboutChevron.classList.toggle('rotate-180');
-        });
-      }
+	      if (mobileAboutToggle && mobileAboutSubmenu && mobileAboutChevron) {
+	        mobileAboutToggle.addEventListener('click', () => {
+	          mobileAboutSubmenu.classList.toggle('hidden');
+	          mobileAboutChevron.classList.toggle('rotate-180');
+	        });
+	      }
 
-      // Mobile Governance menu toggle
-      const mobileGovernanceToggle = document.getElementById('mobile-governance-toggle');
-      const mobileGovernanceSubmenu = document.getElementById('mobile-governance-submenu');
-      const mobileGovernanceChevron = document.getElementById('mobile-governance-chevron');
+	      // Mobile 2026 Conference menu toggle
+	      const mobileConference2026Toggle = document.getElementById('mobile-conference-2026-toggle');
+	      const mobileConference2026Submenu = document.getElementById('mobile-conference-2026-submenu');
+	      const mobileConference2026Chevron = document.getElementById('mobile-conference-2026-chevron');
+
+	      if (mobileConference2026Toggle && mobileConference2026Submenu && mobileConference2026Chevron) {
+	        mobileConference2026Toggle.addEventListener('click', () => {
+	          mobileConference2026Submenu.classList.toggle('hidden');
+	          mobileConference2026Chevron.classList.toggle('rotate-180');
+	        });
+	      }
+
+	      // Mobile Governance menu toggle
+	      const mobileGovernanceToggle = document.getElementById('mobile-governance-toggle');
+	      const mobileGovernanceSubmenu = document.getElementById('mobile-governance-submenu');
+	      const mobileGovernanceChevron = document.getElementById('mobile-governance-chevron');
 
       if (mobileGovernanceToggle && mobileGovernanceSubmenu && mobileGovernanceChevron) {
         mobileGovernanceToggle.addEventListener('click', () => {

@@ -95,6 +95,20 @@ function escAttr(s) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
+// ── Convert absolute paths to relative paths ─────────────────────────
+
+function makePathsRelative(html, filePath, baseDir) {
+  const relPath = relative(baseDir, filePath);
+  const depth = relPath.split('/').length - 1; // -1 because the file itself doesn't count
+  const prefix = depth > 0 ? '../'.repeat(depth) : './';
+
+  // Convert absolute paths starting with / to relative paths
+  // Matches href="/...", src="/...", content="/..." (for og:image etc that use relative paths)
+  html = html.replace(/((?:href|src)=["'])\/(?!\/)/g, `$1${prefix}`);
+
+  return html;
+}
+
 // ── Inject partials ─────────────────────────────────────────────────
 
 function injectPartials(html) {
@@ -197,6 +211,7 @@ function main() {
 
     html = injectPartials(html);
     html = injectHead(html, meta, config, file, DIST);  // Pass DIST as baseDir
+    html = makePathsRelative(html, file, DIST);  // Convert absolute paths to relative
 
     writeFileSync(file, html);
     console.log(`  ✓ dist/${relative(DIST, file)}`);

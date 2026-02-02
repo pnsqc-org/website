@@ -4,18 +4,53 @@
     <div id="header-inner" class="flex items-center justify-between transition-all duration-300" style="height: 120px">
       <!-- Logo -->
       <a href="/" class="flex items-center group">
-        <img id="header-logo" src="images/pnsqc-logo.jpg" alt="PNSQC — Pacific Northwest Software Quality Conference" class="w-auto rounded-lg transition-all duration-300" style="height: 108px">
+        <img id="header-logo" src="/images/pnsqc-logo.jpg" alt="PNSQC — Pacific Northwest Software Quality Conference" class="w-auto rounded-lg transition-all duration-300" style="height: 108px">
       </a>
 
       <!-- Desktop Navigation -->
       <div class="hidden lg:flex items-center gap-1">
-        <a href="/conference/2025/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Conference</a>
-        <a href="/blog/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Blog</a>
-        <a href="/get-involved/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Get Involved</a>
-        <a href="/sponsors/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Sponsors</a>
-        <a href="/about/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">About</a>
-        <a href="/policies/" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Policies</a>
-        <a href="https://mms.pnsqc.org/members/portal" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Members</a>
+        <!-- About Dropdown -->
+        <div class="relative group">
+          <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
+            About
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <!-- Dropdown Menu -->
+          <div class="absolute left-0 mt-0 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+            <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+              <a href="/about/board_organization/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Board & Organization</a>
+
+              <!-- Governance with nested submenu -->
+              <div class="relative group/governance">
+                <a href="/about/governance/" class="flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">
+                  Governance
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+                <!-- Nested Submenu -->
+                <div class="absolute left-full top-0 ml-1 w-64 opacity-0 invisible group-hover/governance:opacity-100 group-hover/governance:visible transition-all duration-200">
+                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+                    <a href="/about/governance/code-of-conduct/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Code of Conduct</a>
+                    <a href="/about/governance/cancellation-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Cancellation Policy</a>
+                    <a href="/about/governance/generative-ai-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Generative AI Policy</a>
+                    <a href="/about/governance/conflict-of-interest-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Conflict of Interest Policy</a>
+                    <a href="/about/governance/document-retention-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Document Retention Policy</a>
+                    <a href="/about/governance/privacy-compliance-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Privacy & Compliance Policy</a>
+                    <a href="/about/governance/whistle-blower-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Whistle Blower Policy</a>
+                    <a href="/about/governance/financial-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Financial Policy</a>
+                  </div>
+                </div>
+              </div>
+
+              <a href="/about/donate/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Donate</a>
+              <a href="/about/contact/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Contact</a>
+            </div>
+          </div>
+        </div>
+
         <a href="/cfp/"
            class="ml-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg hover:bg-pnsqc-gold-light transition-colors">
           Call for Proposals
@@ -37,13 +72,43 @@
     <!-- Mobile Navigation -->
     <div id="mobile-menu" class="hidden lg:hidden pb-4">
       <div class="flex flex-col gap-1 pt-2 border-t border-white/10">
-        <a href="/conference/2025/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Conference</a>
-        <a href="/blog/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Blog</a>
-        <a href="/get-involved/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Get Involved</a>
-        <a href="/sponsors/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Sponsors &amp; Partners</a>
-        <a href="/about/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">About &amp; Governance</a>
-        <a href="/policies/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Policies &amp; Docs</a>
-        <a href="https://mms.pnsqc.org/members/portal" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Members Portal</a>
+        <!-- About Section (Expandable) -->
+        <div>
+          <button id="mobile-about-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+            <span>About</span>
+            <svg id="mobile-about-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div id="mobile-about-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+            <a href="/about/board_organization/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Board & Organization</a>
+
+            <!-- Governance Section (Expandable) -->
+            <div>
+              <button id="mobile-governance-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                <span>Governance</span>
+                <svg id="mobile-governance-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <div id="mobile-governance-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+                <a href="/about/governance/" class="px-3 py-2 text-sm text-pnsqc-cyan hover:text-white transition-colors rounded-lg hover:bg-white/5">Overview</a>
+                <a href="/about/governance/code-of-conduct/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Code of Conduct</a>
+                <a href="/about/governance/cancellation-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Cancellation Policy</a>
+                <a href="/about/governance/generative-ai-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Generative AI Policy</a>
+                <a href="/about/governance/conflict-of-interest-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Conflict of Interest</a>
+                <a href="/about/governance/document-retention-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Document Retention</a>
+                <a href="/about/governance/privacy-compliance-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Privacy & Compliance</a>
+                <a href="/about/governance/whistle-blower-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Whistle Blower</a>
+                <a href="/about/governance/financial-policy/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Financial Policy</a>
+              </div>
+            </div>
+
+            <a href="/about/donate/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Donate</a>
+            <a href="/about/contact/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Contact</a>
+          </div>
+        </div>
+
         <a href="/cfp/"
            class="mt-2 px-4 py-2 text-sm font-medium bg-pnsqc-gold text-pnsqc-navy rounded-lg text-center hover:bg-pnsqc-gold-light transition-colors">
           Call for Proposals
@@ -71,5 +136,29 @@
         headerLogo.style.height = '108px'; // 90% of 120px
       }
     });
+
+    // Mobile About menu toggle
+    const mobileAboutToggle = document.getElementById('mobile-about-toggle');
+    const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
+    const mobileAboutChevron = document.getElementById('mobile-about-chevron');
+
+    if (mobileAboutToggle) {
+      mobileAboutToggle.addEventListener('click', () => {
+        mobileAboutSubmenu.classList.toggle('hidden');
+        mobileAboutChevron.classList.toggle('rotate-180');
+      });
+    }
+
+    // Mobile Governance menu toggle
+    const mobileGovernanceToggle = document.getElementById('mobile-governance-toggle');
+    const mobileGovernanceSubmenu = document.getElementById('mobile-governance-submenu');
+    const mobileGovernanceChevron = document.getElementById('mobile-governance-chevron');
+
+    if (mobileGovernanceToggle) {
+      mobileGovernanceToggle.addEventListener('click', () => {
+        mobileGovernanceSubmenu.classList.toggle('hidden');
+        mobileGovernanceChevron.classList.toggle('rotate-180');
+      });
+    }
   </script>
 </header>

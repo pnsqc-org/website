@@ -10,7 +10,7 @@
       <!-- Desktop Navigation -->
       <div class="hidden lg:flex items-center gap-1">
         <!-- About Dropdown -->
-        <div class="relative group">
+        <div class="relative group" data-dropdown-root>
           <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
             About
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,12 +18,12 @@
             </svg>
           </button>
           <!-- Dropdown Menu -->
-          <div class="absolute left-0 mt-0 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+          <div class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
             <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
               <a href="/about/board_organization/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Board & Organization</a>
 
               <!-- Governance with nested submenu -->
-              <div class="relative group/governance">
+              <div class="relative group/governance" data-submenu-root>
                 <a href="/about/governance/" class="flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">
                   Governance
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@
                   </svg>
                 </a>
                 <!-- Nested Submenu -->
-                <div class="absolute left-full top-0 ml-1 w-64 opacity-0 invisible group-hover/governance:opacity-100 group-hover/governance:visible transition-all duration-200">
+                <div class="absolute left-full top-0 ml-1 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/governance:opacity-100 group-hover/governance:visible transition-all duration-200" data-submenu-menu>
                   <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
                     <a href="/about/governance/code-of-conduct/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Code of Conduct</a>
                     <a href="/about/governance/cancellation-policy/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Cancellation Policy</a>
@@ -123,6 +123,99 @@
   </nav>
   <script>
     (() => {
+      // Tailwind safelist (classes toggled via JS):
+      // right-0 right-auto left-0 left-auto right-full left-full mr-1 ml-1 mr-0 ml-0
+
+      const VIEWPORT_PADDING_PX = 8;
+
+      const isVisibleInDom = (el) => !!el && el.nodeType === Node.ELEMENT_NODE;
+
+      const applyDropdownAlign = (menuEl, align) => {
+        if (!isVisibleInDom(menuEl)) return;
+        const alignRight = align === 'right';
+        menuEl.classList.toggle('left-0', !alignRight);
+        menuEl.classList.toggle('right-0', alignRight);
+        menuEl.classList.toggle('left-auto', alignRight);
+        menuEl.classList.toggle('right-auto', !alignRight);
+      };
+
+      const fitDropdownToViewport = (menuEl) => {
+        if (!isVisibleInDom(menuEl)) return;
+        applyDropdownAlign(menuEl, 'left');
+        let rect = menuEl.getBoundingClientRect();
+        if (rect.right > window.innerWidth - VIEWPORT_PADDING_PX) {
+          applyDropdownAlign(menuEl, 'right');
+          rect = menuEl.getBoundingClientRect();
+        }
+        if (rect.left < VIEWPORT_PADDING_PX) applyDropdownAlign(menuEl, 'left');
+      };
+
+      const applyFlyoutDirection = (menuEl, direction) => {
+        if (!isVisibleInDom(menuEl)) return;
+        const openLeft = direction === 'left';
+
+        menuEl.classList.toggle('left-full', !openLeft);
+        menuEl.classList.toggle('right-full', openLeft);
+        menuEl.classList.toggle('ml-1', !openLeft);
+        menuEl.classList.toggle('mr-1', openLeft);
+
+        menuEl.classList.toggle('left-auto', openLeft);
+        menuEl.classList.toggle('right-auto', !openLeft);
+        menuEl.classList.toggle('ml-0', openLeft);
+        menuEl.classList.toggle('mr-0', !openLeft);
+      };
+
+      const fitFlyoutToViewport = (menuEl) => {
+        if (!isVisibleInDom(menuEl)) return;
+        applyFlyoutDirection(menuEl, 'right');
+        let rect = menuEl.getBoundingClientRect();
+        if (rect.right > window.innerWidth - VIEWPORT_PADDING_PX) {
+          applyFlyoutDirection(menuEl, 'left');
+          rect = menuEl.getBoundingClientRect();
+        }
+        if (rect.left < VIEWPORT_PADDING_PX) applyFlyoutDirection(menuEl, 'right');
+      };
+
+      const setupDesktopMenuViewportAwareness = () => {
+        const dropdownRoots = Array.from(document.querySelectorAll('[data-dropdown-root]'));
+        const submenuRoots = Array.from(document.querySelectorAll('[data-submenu-root]'));
+
+        const handlers = [];
+
+        for (const root of dropdownRoots) {
+          const menu = root.querySelector('[data-dropdown-menu]');
+          if (!menu) continue;
+
+          const handler = () => fitDropdownToViewport(menu);
+          root.addEventListener('mouseenter', handler);
+          root.addEventListener('focusin', handler);
+          handlers.push(handler);
+        }
+
+        for (const root of submenuRoots) {
+          const menu = root.querySelector('[data-submenu-menu]');
+          if (!menu) continue;
+
+          const handler = () => fitFlyoutToViewport(menu);
+          root.addEventListener('mouseenter', handler);
+          root.addEventListener('focusin', handler);
+          handlers.push(handler);
+        }
+
+        window.addEventListener('resize', () => {
+          for (const root of dropdownRoots) {
+            const menu = root.querySelector('[data-dropdown-menu]');
+            if (menu) fitDropdownToViewport(menu);
+          }
+          for (const root of submenuRoots) {
+            const menu = root.querySelector('[data-submenu-menu]');
+            if (menu) fitFlyoutToViewport(menu);
+          }
+        });
+      };
+
+      setupDesktopMenuViewportAwareness();
+
       // Header shrink on scroll
       const headerInner = document.getElementById('header-inner');
       const headerLogo = document.getElementById('header-logo');

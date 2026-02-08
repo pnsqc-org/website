@@ -8,27 +8,19 @@
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+  const getSlideWidth = (track) => track?.clientWidth ?? 0;
+
   const getActiveIndex = (track, slides) => {
-    const left = track.scrollLeft;
-    let bestIndex = 0;
-    let bestDistance = Number.POSITIVE_INFINITY;
-    for (let i = 0; i < slides.length; i++) {
-      const distance = Math.abs(slides[i].offsetLeft - left);
-      if (distance < bestDistance) {
-        bestDistance = distance;
-        bestIndex = i;
-      }
-    }
-    return bestIndex;
+    const slideWidth = getSlideWidth(track);
+    if (!slideWidth || slides.length === 0) return 0;
+    return clamp(Math.round(track.scrollLeft / slideWidth), 0, slides.length - 1);
   };
 
   const scrollToIndex = (track, slides, index) => {
+    const slideWidth = getSlideWidth(track);
+    if (!slideWidth || slides.length === 0) return;
     const safeIndex = clamp(index, 0, slides.length - 1);
-    const slide = slides[safeIndex];
-    if (!slide) return;
-
-    const left = slide.offsetLeft;
-    track.scrollTo({ left, behavior: scrollBehavior });
+    track.scrollTo({ left: safeIndex * slideWidth, behavior: scrollBehavior });
   };
 
   const initCarousel = (root) => {
@@ -80,6 +72,16 @@
 
     track.addEventListener('scroll', scheduleUpdate, { passive: true });
 
+    const resizeObserver =
+      typeof window !== 'undefined' && 'ResizeObserver' in window
+        ? new ResizeObserver(() => {
+            const index = getActiveIndex(track, slides);
+            scrollToIndex(track, slides, index);
+            scheduleUpdate();
+          })
+        : null;
+    if (resizeObserver) resizeObserver.observe(track);
+
     if (prevButton) {
       prevButton.addEventListener('click', () => {
         const index = getActiveIndex(track, slides);
@@ -101,6 +103,8 @@
       scrollToIndex(track, slides, index + (e.key === 'ArrowRight' ? 1 : -1));
     });
 
+    // Align to an exact slide boundary on load (prevents partial-card starts).
+    scrollToIndex(track, slides, getActiveIndex(track, slides));
     updateUi();
   };
 
@@ -115,4 +119,3 @@
     init();
   }
 })();
-

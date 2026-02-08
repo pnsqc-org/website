@@ -152,6 +152,16 @@ html {
 }
 
 /* Recent events carousel */
+.recent-events-track {
+  scroll-snap-type: x mandatory;
+}
+
+.recent-events-track > .recent-event-card {
+  flex: 0 0 100%;
+  max-width: 100%;
+  scroll-snap-stop: always;
+}
+
 .recent-events-track:focus-visible {
   outline: 2px solid rgba(229, 168, 80, 0.45);
   outline-offset: 6px;

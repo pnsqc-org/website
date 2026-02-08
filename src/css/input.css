@@ -226,3 +226,116 @@ html {
   background: rgba(255, 255, 255, 0.12);
   border-radius: 999px;
 }
+
+/* Author FAQ page content styles */
+.author-faq-content {
+  color: var(--color-pnsqc-slate);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.author-faq-content h1 {
+  margin-bottom: 1.25rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: transparent;
+  background: linear-gradient(90deg, var(--color-pnsqc-gold), var(--color-pnsqc-gold-light));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.author-faq-content h2,
+.author-faq-content h3,
+.author-faq-content h4 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.author-faq-content h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2rem);
+}
+
+.author-faq-content h3 {
+  font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+}
+
+.author-faq-content h4 {
+  font-size: 1.15rem;
+}
+
+.author-faq-content p {
+  margin-top: 1rem;
+}
+
+.author-faq-content ul,
+.author-faq-content ol {
+  margin-top: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.author-faq-content ul {
+  list-style: disc;
+}
+
+.author-faq-content ol {
+  list-style: decimal;
+}
+
+.author-faq-content li + li {
+  margin-top: 0.4rem;
+}
+
+.author-faq-content a {
+  color: var(--color-pnsqc-gold);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.author-faq-content a:hover {
+  color: var(--color-pnsqc-gold-light);
+}
+
+.author-faq-content table {
+  width: 100%;
+  margin-top: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+  border: 1px solid rgba(229, 168, 80, 0.35);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: rgba(59, 107, 116, 0.08);
+  font-size: 0.98rem;
+}
+
+.author-faq-content th,
+.author-faq-content td {
+  border: 1px solid rgba(229, 168, 80, 0.2);
+  padding: 0.65rem 0.75rem;
+  vertical-align: top;
+}
+
+.author-faq-content th {
+  color: var(--color-white);
+  background: rgba(59, 107, 116, 0.22);
+  font-weight: 700;
+}
+
+.author-faq-content strong {
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .author-faq-content {
+    font-size: 1rem;
+  }
+
+  .author-faq-content th,
+  .author-faq-content td {
+    padding: 0.55rem 0.6rem;
+  }
+}

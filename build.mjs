@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import { readFileSync, writeFileSync, statSync, readdirSync, cpSync, rmSync, existsSync } from 'fs';
-import { join, relative } from 'path';
+import path, { join, relative } from 'path';
+import { fileURLToPath } from 'url';
 
-const ROOT = new URL('.', import.meta.url).pathname;
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
 

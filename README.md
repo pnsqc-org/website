@@ -19,7 +19,7 @@ No framework, no CMS. The build step is a single command:
 npm run build
 ```
 
-This runs two steps: Tailwind CLI (compiles CSS to `src/`), then `build.mjs` (copies to `dist/` and injects partials + SEO).
+This runs two steps: `build.mjs` (copies to `dist/` and injects partials + SEO), then Tailwind CLI (compiles `src/css/input.css` to `dist/css/site.css`).
 
 ## URL Conventions
 
@@ -51,6 +51,7 @@ The build script:
 3. **Generates** `dist/sitemap.xml` and `dist/robots.txt`
 
 **Important:** Source files in `src/` remain untouched. Only `dist/` files are modified.
+The `npm run build` script then generates the compiled CSS file at `dist/css/site.css`.
 
 ### Site configuration
 
@@ -102,7 +103,7 @@ HTML files in `src/` **MUST use empty tags** as placeholders:
 
 ### Source directory (`src/`) and publish directory (`dist/`)
 
-- **`src/`** — source content (HTML with empty header/footer tags, CSS, images)
+- **`src/`** — source content (HTML with empty header/footer tags, Tailwind input CSS, images)
 - **`dist/`** — build output with injected partials, SEO, sitemap, robots.txt (git-ignored)
 
 The build copies `src/` → `dist/`, then processes `dist/` files. Point your static host at `dist/`.
@@ -133,11 +134,11 @@ website/
 │   ├── index.html
 │   ├── css/
 │   │   ├── input.css                # Tailwind source
-│   │   └── site.css                 # compiled CSS
 │   └── ...
 │
 └── dist/                            # build output (git-ignored)
     ├── index.html                   # with injected header/footer/SEO
+    ├── css/site.css                 # compiled CSS
     ├── sitemap.xml                  # generated
     ├── robots.txt                   # generated
     └── ...

@@ -186,7 +186,7 @@ function assembleDist() {
   // Copy src/ to dist/
   cpSync(SRC, DIST, { recursive: true });
 
-  // Remove Tailwind source file (keep only compiled output)
+  // Remove Tailwind source file from publish output
   const inputCss = join(DIST, 'css', 'input.css');
   if (existsSync(inputCss)) rmSync(inputCss);
 

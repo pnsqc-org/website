@@ -96,20 +96,6 @@ function escAttr(s) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
-// ── Convert absolute paths to relative paths ─────────────────────────
-
-function makePathsRelative(html, filePath, baseDir) {
-  const relPath = relative(baseDir, filePath);
-  const depth = relPath.split('/').length - 1; // -1 because the file itself doesn't count
-  const prefix = depth > 0 ? '../'.repeat(depth) : './';
-
-  // Convert absolute paths starting with / to relative paths
-  // Matches href="/...", src="/...", content="/..." (for og:image etc that use relative paths)
-  html = html.replace(/((?:href|src)=["'])\/(?!\/)/g, `$1${prefix}`);
-
-  return html;
-}
-
 // ── Inject partials ─────────────────────────────────────────────────
 
 function injectPartials(html) {
@@ -186,7 +172,7 @@ function assembleDist() {
   // Copy src/ to dist/
   cpSync(SRC, DIST, { recursive: true });
 
-  // Remove Tailwind source file (keep only compiled output)
+  // Remove Tailwind source file from publish output
   const inputCss = join(DIST, 'css', 'input.css');
   if (existsSync(inputCss)) rmSync(inputCss);
 
@@ -211,13 +197,9 @@ function main() {
     let html = readFileSync(file, 'utf8');
     const meta = parseMeta(html);
     const relFile = relative(DIST, file);
-    const isNotFoundPage = relFile === '404.html';
 
     html = injectPartials(html);
     html = injectHead(html, meta, config, file, DIST);  // Pass DIST as baseDir
-    if (!isNotFoundPage) {
-      html = makePathsRelative(html, file, DIST);  // Convert absolute paths to relative
-    }
 
     writeFileSync(file, html);
     console.log(`  ✓ dist/${relFile}`);

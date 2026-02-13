@@ -26,34 +26,6 @@
 	          </div>
 	        </div>
 
-        <!-- Archive Dropdown -->
-        <div class="relative group" data-dropdown-root>
-          <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
-            Archive
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="absolute left-0 mt-0 w-48 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
-            <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
-              <!-- 2025 with nested submenu -->
-              <div class="relative group/archive2025" data-submenu-root>
-                <button class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">
-                  2025
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                  </svg>
-                </button>
-                <div class="absolute left-full top-0 ml-1 w-48 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/archive2025:opacity-100 group-hover/archive2025:visible transition-all duration-200" data-submenu-menu>
-                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
-                    <a href="/conference/2025/at-a-glance/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">At-A-Glance</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
 	        <a href="/#recent-events" class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
 	          <span class="inline-flex items-center gap-2">
 	            Events
@@ -78,6 +50,34 @@
             <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
               <a href="/sponsor/sponsors/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Sponsors</a>
               <a href="/sponsor/become-a-sponsor/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Become a Sponsor</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Archive Dropdown -->
+        <div class="relative group" data-dropdown-root>
+          <button class="px-2.5 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5 flex items-center gap-1">
+            Archive
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="absolute left-0 mt-0 w-48 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
+            <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+              <!-- 2025 with nested submenu -->
+              <div class="relative group/archive2025" data-submenu-root>
+                <button class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">
+                  2025
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </button>
+                <div class="absolute left-full top-0 ml-1 w-48 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/archive2025:opacity-100 group-hover/archive2025:visible transition-all duration-200" data-submenu-menu>
+                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+                    <a href="/conference/2025/at-a-glance/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">At-A-Glance</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -159,30 +159,6 @@
 		          </div>
 		        </div>
 
-          <!-- Archive Section (Expandable) -->
-          <div>
-            <button id="mobile-archive-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
-              <span>Archive</span>
-              <svg id="mobile-archive-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </button>
-            <div id="mobile-archive-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-              <!-- 2025 Section (Expandable) -->
-              <div>
-                <button id="mobile-archive-2025-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
-                  <span>2025</span>
-                  <svg id="mobile-archive-2025-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </button>
-                <div id="mobile-archive-2025-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-                  <a href="/conference/2025/at-a-glance/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">At-A-Glance</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
 		        <a href="/#recent-events" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
 		          <span class="inline-flex items-center gap-2">
 		            Events
@@ -206,6 +182,30 @@
             <div id="mobile-sponsor-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
               <a href="/sponsor/sponsors/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Sponsors</a>
               <a href="/sponsor/become-a-sponsor/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Become a Sponsor</a>
+            </div>
+          </div>
+
+          <!-- Archive Section (Expandable) -->
+          <div>
+            <button id="mobile-archive-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+              <span>Archive</span>
+              <svg id="mobile-archive-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div id="mobile-archive-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+              <!-- 2025 Section (Expandable) -->
+              <div>
+                <button id="mobile-archive-2025-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                  <span>2025</span>
+                  <svg id="mobile-archive-2025-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div id="mobile-archive-2025-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+                  <a href="/conference/2025/at-a-glance/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">At-A-Glance</a>
+                </div>
+              </div>
             </div>
           </div>
 

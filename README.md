@@ -32,6 +32,14 @@ This runs two steps: Tailwind CLI (compiles CSS to `src/`), then `build.mjs` (co
 
 Files are still named `about.html`, `index.html`, etc., but Cloudflare Pages (and similar hosts) serve them at clean URLs automatically.
 
+## Custom 404 Page (Cloudflare Pages)
+
+This project includes a dedicated `src/404.html` page. During build, it is copied to `dist/404.html`, which Cloudflare Pages serves automatically for unknown routes.
+
+- No catch-all SPA rewrite is required.
+- Keep this page at the root (`/404.html`) so invalid URLs return a proper `404` response.
+- The build preserves root-absolute asset paths on `404.html` so styles and images still load even when the requested URL is invalid.
+
 ## Build Script (`build.mjs`)
 
 The build script:

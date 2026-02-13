@@ -148,7 +148,8 @@ function injectPartials(html) {
 // ── Generate sitemap.xml ────────────────────────────────────────────
 
 function generateSitemap(files, config, targetDir) {
-  const urls = files.map(f => {
+  const sitemapFiles = files.filter(f => relative(targetDir, f) !== '404.html');
+  const urls = sitemapFiles.map(f => {
     const rel = relative(targetDir, f);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
@@ -162,7 +163,7 @@ function generateSitemap(files, config, targetDir) {
     `</urlset>\n`;
 
   writeFileSync(join(targetDir, 'sitemap.xml'), xml);
-  console.log(`  sitemap.xml  (${files.length} URLs)`);
+  console.log(`  sitemap.xml  (${sitemapFiles.length} URLs)`);
 }
 
 // ── Generate robots.txt ─────────────────────────────────────────────
@@ -209,13 +210,17 @@ function main() {
   for (const file of files) {
     let html = readFileSync(file, 'utf8');
     const meta = parseMeta(html);
+    const relFile = relative(DIST, file);
+    const isNotFoundPage = relFile === '404.html';
 
     html = injectPartials(html);
     html = injectHead(html, meta, config, file, DIST);  // Pass DIST as baseDir
-    html = makePathsRelative(html, file, DIST);  // Convert absolute paths to relative
+    if (!isNotFoundPage) {
+      html = makePathsRelative(html, file, DIST);  // Convert absolute paths to relative
+    }
 
     writeFileSync(file, html);
-    console.log(`  ✓ dist/${relative(DIST, file)}`);
+    console.log(`  ✓ dist/${relFile}`);
   }
 
   // Step 3: Generate sitemap/robots in dist/

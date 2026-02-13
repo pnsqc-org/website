@@ -514,7 +514,45 @@ og_image: /images/hero/hero-collaboration.png
         <p class="text-pnsqc-slate mb-8 max-w-lg mx-auto">
           Get updates on upcoming events, call for proposals, and community news. No spam&mdash;just quality content.
         </p>
-        <iframe src="https://pnsqcnewsletter.substack.com/embed" width="100%" height="150" style="display: inline" frameborder="0" scrolling="no"></iframe>
+        <form
+          action="https://pnsqcnewsletter.substack.com/api/v1/free?nojs=true"
+          method="post"
+          target="_blank"
+          class="max-w-xl mx-auto"
+          aria-label="Newsletter signup form"
+        >
+          <input type="hidden" name="embed" value="1">
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <div class="flex flex-col sm:flex-row gap-3 rounded-xl border border-white/10 bg-pnsqc-navy/55 p-3">
+            <input
+              id="newsletter-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              inputmode="email"
+              placeholder="you@example.com"
+              class="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-base text-white placeholder:text-pnsqc-slate focus:border-pnsqc-gold/70 focus:outline-none focus:ring-2 focus:ring-pnsqc-gold/45"
+            >
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-lg bg-pnsqc-gold px-6 py-3 text-base font-semibold text-pnsqc-navy transition-colors hover:bg-pnsqc-gold-light focus:outline-none focus:ring-2 focus:ring-pnsqc-gold-light/70 focus:ring-offset-2 focus:ring-offset-pnsqc-navy whitespace-nowrap"
+            >
+              Subscribe
+            </button>
+          </div>
+        </form>
+        <p class="mt-4 text-sm text-pnsqc-slate">
+          Prefer Substack directly?
+          <a
+            href="https://pnsqcnewsletter.substack.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-pnsqc-gold hover:text-pnsqc-gold-light underline underline-offset-2"
+          >
+            Visit the publication
+          </a>.
+        </p>
       </div>
     </div>
   </section>  

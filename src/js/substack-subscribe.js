@@ -2,7 +2,8 @@
   const FRAME_NAME = 'substack-frame';
 
   const initForm = (form) => {
-    const msgEl = form.parentElement.querySelector('[data-substack-msg]');
+    const wrapper = form.parentElement;
+    const msgEl = wrapper.querySelector('[data-substack-msg]');
     const emailInput = form.querySelector('input[name="email"]');
     const submitBtn = form.querySelector('button[type="submit"]');
 
@@ -14,9 +15,32 @@
     // Regular form submissions are not blocked by CORS (unlike fetch).
     const iframe = document.createElement('iframe');
     iframe.name = FRAME_NAME;
-    iframe.style.display = 'none';
+    iframe.style.cssText =
+      'display:none;width:100%;border:none;border-radius:0.75rem;' +
+      'color-scheme:light;background:white;min-height:120px;';
     iframe.setAttribute('aria-hidden', 'true');
-    form.parentElement.appendChild(iframe);
+
+    // "Try another email" link (hidden initially)
+    const retryLink = document.createElement('button');
+    retryLink.type = 'button';
+    retryLink.textContent = 'Subscribe another email';
+    retryLink.className =
+      'mt-3 text-sm text-pnsqc-gold hover:text-pnsqc-gold-light transition-colors underline underline-offset-2';
+    retryLink.style.display = 'none';
+
+    retryLink.addEventListener('click', () => {
+      form.style.display = '';
+      iframe.style.display = 'none';
+      iframe.removeAttribute('src');
+      retryLink.style.display = 'none';
+      msgEl.style.display = '';
+      emailInput.disabled = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = defaultBtnText;
+    });
+
+    // Insert iframe + retry link after the form
+    form.after(iframe, retryLink);
 
     // Redirect form into the hidden iframe instead of _blank
     form.target = FRAME_NAME;
@@ -27,15 +51,13 @@
       submitBtn.textContent = 'Subscribing\u2026';
       emailInput.disabled = true;
 
-      // When the iframe finishes loading the Substack response, show success
+      // When the iframe finishes loading the Substack response, reveal it
       iframe.addEventListener('load', () => {
-        msgEl.textContent = 'Check your email to confirm your subscription.';
-        msgEl.classList.remove('text-pnsqc-slate/60');
-        msgEl.classList.add('text-pnsqc-cyan');
-        emailInput.value = '';
-        emailInput.disabled = false;
-        submitBtn.disabled = false;
-        submitBtn.textContent = defaultBtnText;
+        form.style.display = 'none';
+        msgEl.style.display = 'none';
+        iframe.style.display = 'block';
+        iframe.removeAttribute('aria-hidden');
+        retryLink.style.display = '';
       }, { once: true });
     });
   };

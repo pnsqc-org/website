@@ -1,5 +1,5 @@
 (() => {
-  const ENDPOINT = 'https://pnsqcnewsletter.substack.com/api/v1/free';
+  const FRAME_NAME = 'substack-frame';
 
   const initForm = (form) => {
     const msgEl = form.parentElement.querySelector('[data-substack-msg]');
@@ -8,62 +8,36 @@
 
     if (!msgEl || !emailInput || !submitBtn) return;
 
-    const defaultMsg = msgEl.textContent;
     const defaultBtnText = submitBtn.textContent;
 
-    const setMsg = (text, isError) => {
-      msgEl.textContent = text;
-      msgEl.classList.toggle('text-red-400', isError);
-      msgEl.classList.toggle('text-pnsqc-slate/60', !isError && !text.includes('Check your'));
-      msgEl.classList.toggle('text-pnsqc-cyan', !isError && text.includes('Check your'));
-    };
+    // Create a hidden iframe to receive the form POST.
+    // Regular form submissions are not blocked by CORS (unlike fetch).
+    const iframe = document.createElement('iframe');
+    iframe.name = FRAME_NAME;
+    iframe.style.display = 'none';
+    iframe.setAttribute('aria-hidden', 'true');
+    form.parentElement.appendChild(iframe);
 
-    const setLoading = (loading) => {
-      submitBtn.disabled = loading;
-      submitBtn.textContent = loading ? 'Subscribing\u2026' : defaultBtnText;
-      emailInput.disabled = loading;
-    };
+    // Redirect form into the hidden iframe instead of _blank
+    form.target = FRAME_NAME;
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    form.addEventListener('submit', () => {
+      // Show loading state (don't preventDefault — let the form POST normally)
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Subscribing\u2026';
+      emailInput.disabled = true;
 
-      const email = emailInput.value.trim();
-      if (!email) return;
-
-      setLoading(true);
-      setMsg(defaultMsg, false);
-
-      try {
-        const res = await fetch(ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            first_url: window.location.href,
-            first_referrer: document.referrer || '',
-          }),
-        });
-
-        if (res.ok) {
-          setMsg('Check your email to confirm your subscription.', false);
-          emailInput.value = '';
-        } else {
-          const data = await res.json().catch(() => null);
-          const serverMsg = data?.errors?.[0]?.msg || data?.error;
-          setMsg(serverMsg || 'Something went wrong. Please try again.', true);
-        }
-      } catch {
-        // Network error — fall back to normal form submission
-        form.removeAttribute('data-substack-form');
-        form.submit();
-        return;
-      } finally {
-        setLoading(false);
-      }
+      // When the iframe finishes loading the Substack response, show success
+      iframe.addEventListener('load', () => {
+        msgEl.textContent = 'Check your email to confirm your subscription.';
+        msgEl.classList.remove('text-pnsqc-slate/60');
+        msgEl.classList.add('text-pnsqc-cyan');
+        emailInput.value = '';
+        emailInput.disabled = false;
+        submitBtn.disabled = false;
+        submitBtn.textContent = defaultBtnText;
+      }, { once: true });
     });
-
-    // JS is active — no need for the fallback target="_blank"
-    form.removeAttribute('target');
   };
 
   const main = () => {

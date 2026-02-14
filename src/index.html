@@ -519,6 +519,7 @@ og_image: /images/hero/hero-collaboration.png
           method="post"
           target="_blank"
           class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+          data-substack-form
         >
           <input
             type="email"
@@ -534,8 +535,8 @@ og_image: /images/hero/hero-collaboration.png
             Subscribe
           </button>
         </form>
-        <p class="mt-3 text-xs text-pnsqc-slate/60">
-          Powered by Substack. You'll be redirected to confirm your subscription.
+        <p class="mt-3 text-xs text-pnsqc-slate/60" data-substack-msg>
+          Powered by Substack
         </p>
       </div>
     </div>
@@ -548,6 +549,7 @@ og_image: /images/hero/hero-collaboration.png
 
 	  <script src="/js/countdown.js" defer></script>
 	  <script src="/js/recent-events-carousel.js" defer></script>
+	  <script src="/js/substack-subscribe.js" defer></script>
 	  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
 	</body>
 	</html>

@@ -1,65 +1,70 @@
 (() => {
-  const FRAME_NAME = 'substack-frame';
+  const ENDPOINT = 'https://pnsqcnewsletter.substack.com/api/v1/free';
 
   const initForm = (form) => {
-    const wrapper = form.parentElement;
-    const msgEl = wrapper.querySelector('[data-substack-msg]');
+    const msgEl = form.parentElement.querySelector('[data-substack-msg]');
     const emailInput = form.querySelector('input[name="email"]');
     const submitBtn = form.querySelector('button[type="submit"]');
 
     if (!msgEl || !emailInput || !submitBtn) return;
 
     const defaultBtnText = submitBtn.textContent;
+    const defaultMsg = msgEl.textContent;
 
-    // Create a hidden iframe to receive the form POST.
-    // Regular form submissions are not blocked by CORS (unlike fetch).
-    const iframe = document.createElement('iframe');
-    iframe.name = FRAME_NAME;
-    iframe.style.cssText =
-      'display:none;width:100%;border:none;border-radius:0.75rem;' +
-      'color-scheme:light;background:white;min-height:120px;';
-    iframe.setAttribute('aria-hidden', 'true');
+    const showMsg = (text, type) => {
+      msgEl.textContent = text;
+      msgEl.className = 'mt-3 text-sm';
+      if (type === 'success') msgEl.classList.add('text-pnsqc-cyan');
+      else if (type === 'error') msgEl.classList.add('text-red-400');
+      else msgEl.classList.add('text-pnsqc-slate/60');
+    };
 
-    // "Try another email" link (hidden initially)
-    const retryLink = document.createElement('button');
-    retryLink.type = 'button';
-    retryLink.textContent = 'Subscribe another email';
-    retryLink.className =
-      'mt-3 text-sm text-pnsqc-gold hover:text-pnsqc-gold-light transition-colors underline underline-offset-2';
-    retryLink.style.display = 'none';
+    const setLoading = (loading) => {
+      submitBtn.disabled = loading;
+      submitBtn.textContent = loading ? 'Subscribing\u2026' : defaultBtnText;
+      emailInput.disabled = loading;
+    };
 
-    retryLink.addEventListener('click', () => {
-      form.style.display = '';
-      iframe.style.display = 'none';
-      iframe.removeAttribute('src');
-      retryLink.style.display = 'none';
-      msgEl.style.display = '';
-      emailInput.disabled = false;
-      submitBtn.disabled = false;
-      submitBtn.textContent = defaultBtnText;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      setLoading(true);
+      showMsg(defaultMsg, 'default');
+
+      try {
+        // mode: 'no-cors' sends the POST without CORS preflight.
+        // The request reaches Substack and is processed, but the
+        // response is opaque (status 0) so we can't read it.
+        await fetch(ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            email,
+            first_url: window.location.href,
+            first_referrer: document.referrer || '',
+          }),
+        });
+
+        // Request was sent — show success message
+        showMsg(
+          'Thanks! If you\u2019re a new subscriber, check your email to confirm.',
+          'success',
+        );
+        emailInput.value = '';
+      } catch {
+        // Network failure — let the user know
+        showMsg('Network error \u2014 please try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
     });
 
-    // Insert iframe + retry link after the form
-    form.after(iframe, retryLink);
-
-    // Redirect form into the hidden iframe instead of _blank
-    form.target = FRAME_NAME;
-
-    form.addEventListener('submit', () => {
-      // Show loading state (don't preventDefault — let the form POST normally)
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Subscribing\u2026';
-      emailInput.disabled = true;
-
-      // When the iframe finishes loading the Substack response, reveal it
-      iframe.addEventListener('load', () => {
-        form.style.display = 'none';
-        msgEl.style.display = 'none';
-        iframe.style.display = 'block';
-        iframe.removeAttribute('aria-hidden');
-        retryLink.style.display = '';
-      }, { once: true });
-    });
+    // JS is active — prevent the fallback target="_blank" navigation
+    form.removeAttribute('target');
   };
 
   const main = () => {

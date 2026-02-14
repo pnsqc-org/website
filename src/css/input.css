@@ -27,6 +27,8 @@ html {
   --nav-item-hover-text: #ffffff;
   --nav-item-active-text: #ffffff;
   --nav-item-active-underline: #F5C17F;
+  --nav-dropdown-text: #f0e5d8;
+  --nav-dropdown-text-hover: #ffffff;
 }
 
 .has-fixed-header {
@@ -145,6 +147,16 @@ html {
   color: var(--nav-item-active-underline);
 }
 
+[data-dropdown-menu] .text-pnsqc-slate,
+[data-submenu-menu] .text-pnsqc-slate {
+  color: var(--nav-dropdown-text);
+}
+
+[data-dropdown-menu] .text-pnsqc-slate:hover,
+[data-submenu-menu] .text-pnsqc-slate:hover {
+  color: var(--nav-dropdown-text-hover);
+}
+
 /* Horizontal rule with gradient */
 .hr-gradient {
   border: none;
@@ -168,6 +180,8 @@ html {
   --nav-item-hover-text: #2C2419;
   --nav-item-active-text: #2C2419;
   --nav-item-active-underline: #A67228;
+  --nav-dropdown-text: #2C2419;
+  --nav-dropdown-text-hover: #1B1610;
 }
 
 [data-theme="light"] .hero-gradient {

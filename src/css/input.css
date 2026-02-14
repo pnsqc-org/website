@@ -22,6 +22,11 @@ html {
 /* Fixed-header offset (set dynamically in JS) */
 :root {
   --header-offset: 120px;
+  --nav-item-hover-bg: rgba(229, 168, 80, 0.16);
+  --nav-item-hover-border: rgba(229, 168, 80, 0.36);
+  --nav-item-active-bg: rgba(229, 168, 80, 0.22);
+  --nav-item-active-border: rgba(229, 168, 80, 0.42);
+  --nav-item-active-text: #ffffff;
 }
 
 .has-fixed-header {
@@ -95,6 +100,42 @@ html {
   -webkit-backdrop-filter: blur(12px);
 }
 
+.header-nav-item-desktop,
+.header-nav-item-mobile {
+  border: 1px solid transparent;
+  letter-spacing: 0.01em;
+  background-color: rgba(255, 255, 255, 0.04);
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.header-nav-item-desktop {
+  font-size: 1.04rem;
+  line-height: 1.35;
+}
+
+.header-nav-item-mobile {
+  font-size: 1.08rem;
+  line-height: 1.4;
+}
+
+.header-nav-item-desktop:hover,
+.header-nav-item-mobile:hover {
+  background-color: var(--nav-item-hover-bg);
+  border-color: var(--nav-item-hover-border);
+}
+
+.header-nav-item-desktop.is-active,
+.header-nav-item-mobile.is-active {
+  color: var(--nav-item-active-text);
+  background-color: var(--nav-item-active-bg);
+  border-color: var(--nav-item-active-border);
+}
+
+.header-nav-item-desktop.is-active svg,
+.header-nav-item-mobile.is-active svg {
+  color: var(--color-pnsqc-gold-light);
+}
+
 /* Horizontal rule with gradient */
 .hr-gradient {
   border: none;
@@ -113,6 +154,11 @@ html {
   --color-pnsqc-gold-light: #E5A850;
   --color-pnsqc-gold-dark: #A67228;
   --color-pnsqc-cyan: #4A9F8E;
+  --nav-item-hover-bg: rgba(200, 139, 58, 0.14);
+  --nav-item-hover-border: rgba(200, 139, 58, 0.28);
+  --nav-item-active-bg: rgba(200, 139, 58, 0.2);
+  --nav-item-active-border: rgba(200, 139, 58, 0.36);
+  --nav-item-active-text: #2C2419;
 }
 
 [data-theme="light"] .hero-gradient {

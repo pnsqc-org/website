@@ -1,91 +1,60 @@
 # PNSQC Website
 
-Official website of the Pacific Northwest Software Quality Conference.
+Official website for the Pacific Northwest Software Quality Conference (PNSQC).
 
-## Tech Stack
+This repo is a static site built from plain HTML + Tailwind CSS, with a small Node build step that prepares deployable output.
 
-| Layer | Choice | Why |
-|-------|--------|-----|
-| Markup | Plain HTML | AI generates pages directly from markdown; no templating language needed |
-| Styling | Tailwind CSS (CLI) | Utility classes, responsive design; CLI generates a small, purged CSS file |
-| Shared layout | `_partials/` (header/footer snippets) | Keeps nav and footer consistent across all pages |
-| Build | `build.mjs` (zero dependencies) | Injects partials, SEO meta tags, generates sitemap and robots.txt |
-| Hosting | GitHub Pages / Netlify / Cloudflare Pages | Free, fast CDN, deploy on `git push` |
-| Content source | Markdown files in `content/` | Authors edit markdown, AI regenerates HTML |
+## Stack
 
-No framework, no CMS. The build step is a single command:
+- HTML pages in `src/`
+- Tailwind CSS v4 (`@tailwindcss/cli`)
+- Shared partials in `_partials/` (`header.html`, `footer.html`)
+- Custom build script in `build.mjs`
+- Output in `dist/` (deploy this folder)
+
+## Quick Start
 
 ```bash
+npm install
 npm run build
 ```
 
-This runs two steps: `build.mjs` (copies to `dist/` and injects partials + SEO), then Tailwind CLI (compiles `src/css/input.css` to `dist/css/site.css`).
+`npm run build` runs:
 
-## URL Conventions
+1. `npm run build:dist` -> `node build.mjs`
+2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
-**Use clean URLs** — link to pages without `.html` extensions:
+## How the Build Works
 
-```html
-<a href="/about">About</a>
-<a href="/conference/2025">2025 Conference</a>
-```
+`build.mjs` does the following:
 
-Files are still named `about.html`, `index.html`, etc., but Cloudflare Pages (and similar hosts) serve them at clean URLs automatically.
+1. Recreates `dist/` from `src/`
+2. Injects shared header/footer partials into each HTML page in `dist/`
+3. Reads each page's `<!-- meta ... -->` block and writes SEO tags into `<head>`
+4. Generates `dist/sitemap.xml` and `dist/robots.txt`
 
-## Custom 404 Page (Cloudflare Pages)
+Source files in `src/` are not modified by the build.
 
-This project includes a dedicated `src/404.html` page. During build, it is copied to `dist/404.html`, which Cloudflare Pages serves automatically for unknown routes.
+## Authoring Rules
 
-- No catch-all SPA rewrite is required.
-- Keep this page at the root (`/404.html`) so invalid URLs return a proper `404` response.
-- The build preserves root-absolute asset paths on `404.html` so styles and images still load even when the requested URL is invalid.
+### 1) Include a per-page metadata block
 
-## Build Script (`build.mjs`)
-
-The build script:
-
-1. **Copies** `src/` → `dist/` (excluding Tailwind source file `input.css`)
-2. **Processes HTML in `dist/`** only:
-   - Injects header/footer from `_partials/` into empty `<header></header>` and `<footer></footer>` tags
-   - Reads `<!-- meta ... -->` blocks and injects SEO tags (`<title>`, meta description, Open Graph, etc.) into `<head>`
-3. **Generates** `dist/sitemap.xml` and `dist/robots.txt`
-
-**Important:** Source files in `src/` remain untouched. Only `dist/` files are modified.
-The `npm run build` script then generates the compiled CSS file at `dist/css/site.css`.
-
-### Site configuration
-
-Edit `site.config.json` to set site-wide defaults:
-
-```json
-{
-  "baseUrl": "https://example.com",
-  "siteName": "PNSQC — Pacific NW Software Quality Conference",
-  "defaultDescription": "...",
-  "defaultOgImage": "/images/hero/hero-collaboration.png",
-  "locale": "en_US"
-}
-```
-
-### Per-page metadata
-
-Add a `<!-- meta ... -->` comment block at the top of each HTML file (before `<!DOCTYPE html>`):
+Place a `meta` comment before `<!DOCTYPE html>`:
 
 ```html
 <!-- meta
-title: PNSQC 2025 Call for Papers
-description: Submit your proposal for PNSQC 2025...
-og_image: /images/cfp-2025.png
+title: Page title
+description: Page description
+og_image: /images/hero/hero-collaboration.png
 -->
 <!DOCTYPE html>
-...
 ```
 
-All fields are optional — the build script falls back to `site.config.json` defaults.
+Defaults come from `site.config.json`.
 
-### Partial markers
+### 2) Keep partial placeholders empty
 
-HTML files in `src/` **MUST use empty tags** as placeholders:
+In files under `src/`, use the header/footer markers with empty tags:
 
 ```html
 <!-- ============================================================
@@ -99,47 +68,65 @@ HTML files in `src/` **MUST use empty tags** as placeholders:
 <footer></footer>
 ```
 
-**⚠️ CRITICAL:** Tags must be empty in `src/` files. The build script injects full content into `dist/` files only.
+The build injects full partial content into `dist/`.
 
-### Source directory (`src/`) and publish directory (`dist/`)
+### 3) Use clean URLs
 
-- **`src/`** — source content (HTML with empty header/footer tags, Tailwind input CSS, images)
-- **`dist/`** — build output with injected partials, SEO, sitemap, robots.txt (git-ignored)
+Prefer links like `/conference/2026/venue/` rather than `.html` file paths.
 
-The build copies `src/` → `dist/`, then processes `dist/` files. Point your static host at `dist/`.
+## Configuration
 
-## Content Workflow
+Edit `site.config.json` for site-wide defaults:
 
-1. Edit/create markdown in `content/`
-2. Generate HTML from markdown (with AI)
-3. Add `<!-- meta ... -->` block and empty header/footer tags
-4. Place in `src/`
-5. Run `npm run build`
-6. Commit and push
-
-## Project Structure
-
+```json
+{
+  "baseUrl": "https://example.com",
+  "siteName": "PNSQC — Pacific NW Software Quality Conference",
+  "defaultDescription": "...",
+  "defaultOgImage": "/images/hero/hero-collaboration.png",
+  "locale": "en_US"
+}
 ```
+
+Important: update `baseUrl` to the production domain before release so canonical, Open Graph, Twitter tags, and sitemap URLs are correct.
+
+## Directory Layout
+
+```text
 website/
-├── build.mjs                        # build script
-├── site.config.json                 # site-wide config
+├── build.mjs
 ├── package.json
-│
-├── _partials/                       # header/footer snippets
-├── content/                         # markdown sources
-├── skills/                          # Claude Code skills
-├── design/                          # design references
-│
-├── src/                             # source files (HTML, CSS, images)
-│   ├── index.html
-│   ├── css/
-│   │   ├── input.css                # Tailwind source
-│   └── ...
-│
-└── dist/                            # build output (git-ignored)
-    ├── index.html                   # with injected header/footer/SEO
-    ├── css/site.css                 # compiled CSS
-    ├── sitemap.xml                  # generated
-    ├── robots.txt                   # generated
-    └── ...
+├── site.config.json
+├── .agents/                  # local agent skills + scripts
+├── _partials/                # shared header/footer snippets
+├── content/                  # markdown source material
+├── design/                   # design references
+├── src/                      # editable site source
+└── dist/                     # generated deploy output (gitignored)
 ```
+
+## Agent Skills (`.agents/skills`)
+
+This repo includes three local automation skills used by coding agents.
+
+Install or update the skills bundle with:
+
+```bash
+npx skills add https://github.com/helincao/skilled/
+```
+
+- `build`: regenerates `dist/` from current `src/`, `_partials/`, and `site.config.json`.
+  - Use after changing site source files or config.
+  - Command: `node ".agents/skills/build/scripts/build.mjs" --project-root "$PWD"`
+- `github-issues`: reads, comments on, and closes GitHub issues through a local CLI.
+  - Requires `.env` values: `GITHUB_API_KEY`, `GITHUB_REPOSITORY`.
+  - Example: `node ".agents/skills/github-issues/scripts/github-issues.mjs" read -n 123 --comments`
+- `image-gen`: generates image assets (PNG/JPG/WEBP/GIF) from prompts.
+  - Requires `.env` value: `GEMINI_API_KEY`.
+  - Example: `node ".agents/skills/image-gen/scripts/image-gen/generate.mjs" "conference crowd, warm palette" -a 4:3 -o src/images/hero/example.png`
+
+## Deployment Notes
+
+- Deploy the `dist/` folder.
+- `src/404.html` is included as `dist/404.html` for proper not-found responses.
+- Do not edit files directly in `dist/`; rebuild from `src/` instead.

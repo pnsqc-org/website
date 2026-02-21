@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "build": {
+      "source": "helincao/skilled",
+      "sourceType": "github",
+      "computedHash": "276a2b0470ac053750e23527e70146a92b42147d8cb7b29f5b6cf14ebeed96e8"
+    },
+    "github-issues": {
+      "source": "helincao/skilled",
+      "sourceType": "github",
+      "computedHash": "da8e29377765b26e7e298650ec6b7545ce5db4a2068f1f705daa5c1b3449a521"
+    },
+    "image-gen": {
+      "source": "helincao/skilled",
+      "sourceType": "github",
+      "computedHash": "5b72ffd035f89cae7259572953b0017dc8c314abfc51a149f4a5902052e93077"
+    }
+  }
+}

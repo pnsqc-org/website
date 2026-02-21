@@ -15,6 +15,7 @@ import { resolve, dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const CLI_PATH = fileURLToPath(import.meta.url);
 const GITHUB_API_BASE = "https://api.github.com";
 const GITHUB_API_VERSION = "2022-11-28";
 
@@ -60,7 +61,7 @@ function printUsage() {
 GitHub Issues CLI
 
 Usage:
-  node skills/public/address-github-issue/scripts/github-issues.mjs <command> [options]
+  node github-issues.mjs <command> [options]
 
 Commands:
   create   Create an issue
@@ -97,12 +98,12 @@ worklist options:
   -l, --limit <1-100>           Optional max issues to print (default: all)
 
 Examples:
-  node skills/public/address-github-issue/scripts/github-issues.mjs create -t "Broken link" -b "Details..."
-  node skills/public/address-github-issue/scripts/github-issues.mjs read -s open -l 10
-  node skills/public/address-github-issue/scripts/github-issues.mjs read -n 123 --comments
-  node skills/public/address-github-issue/scripts/github-issues.mjs comment -n 123 -b "I can reproduce this."
-  node skills/public/address-github-issue/scripts/github-issues.mjs close -n 123 -b "Fixed in #456."
-  node skills/public/address-github-issue/scripts/github-issues.mjs worklist
+  node github-issues.mjs create -t "Broken link" -b "Details..."
+  node github-issues.mjs read -s open -l 10
+  node github-issues.mjs read -n 123 --comments
+  node github-issues.mjs comment -n 123 -b "I can reproduce this."
+  node github-issues.mjs close -n 123 -b "Fixed in #456."
+  node github-issues.mjs worklist
 
 Environment:
   Requires GITHUB_API_KEY and GITHUB_REPOSITORY in a .env file
@@ -332,10 +333,11 @@ async function fetchOpenIssuesAll({ token, owner, repo }) {
 }
 
 function issueActionCommands(issueNumber) {
+  const base = `node "${CLI_PATH}"`;
   return {
-    read: `npm run issues -- read -n ${issueNumber} --comments`,
-    comment: `npm run issues -- comment -n ${issueNumber} -b "<status update>"`,
-    close: `npm run issues -- close -n ${issueNumber} -b "<resolution note>"`,
+    read: `${base} read -n ${issueNumber} --comments`,
+    comment: `${base} comment -n ${issueNumber} -b "<status update>"`,
+    close: `${base} close -n ${issueNumber} -b "<resolution note>"`,
   };
 }
 

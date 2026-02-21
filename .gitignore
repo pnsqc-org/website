@@ -144,3 +144,4 @@ vite.config.ts.timestamp-*
 # Generated files (build output)
 src/sitemap.xml
 src/robots.txt
+src/css/site.css

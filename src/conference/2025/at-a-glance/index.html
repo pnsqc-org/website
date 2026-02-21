@@ -1,0 +1,964 @@
+<!-- meta
+title: 2025 Conference At-A-Glance — PNSQC
+description: Schedule and session details for the PNSQC 2025 conference, held October 13–15 in Portland, Oregon.
+og_image: /images/hero/hero-collaboration.png
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    /* Timeline connector */
+    .timeline-block { position: relative; padding-left: 2.5rem; }
+    .timeline-block::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 1.75rem;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, rgba(229,168,80,0.4), rgba(93,186,168,0.2));
+    }
+    .timeline-block:last-child::before { display: none; }
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      border-radius: 999px;
+      border: 2px solid var(--color-pnsqc-gold);
+      background: var(--color-pnsqc-navy);
+      z-index: 1;
+    }
+    .timeline-dot--keynote {
+      background: var(--color-pnsqc-gold);
+      box-shadow: 0 0 12px rgba(229,168,80,0.5);
+    }
+    .timeline-dot--social {
+      border-color: var(--color-pnsqc-cyan);
+      background: var(--color-pnsqc-cyan);
+      box-shadow: 0 0 10px rgba(93,186,168,0.4);
+    }
+    .timeline-dot--break {
+      border-color: var(--color-pnsqc-slate);
+      width: 0.75rem;
+      height: 0.75rem;
+      top: 0.65rem;
+      left: 0.1875rem;
+    }
+
+    /* Day nav active state */
+    .day-nav-link { transition: all 0.2s ease; }
+    .day-nav-link:hover { background: rgba(229,168,80,0.15); border-color: rgba(229,168,80,0.5); }
+
+    /* Session card hover */
+    .session-card { transition: border-color 0.2s ease, background-color 0.2s ease; }
+    .session-card:hover { border-color: rgba(229,168,80,0.4); background: rgba(59,107,116,0.12); }
+
+    /* Track badge colors */
+    .track-1 { background: rgba(229,168,80,0.15); color: #F5C17F; border: 1px solid rgba(229,168,80,0.3); }
+    .track-2 { background: rgba(93,186,168,0.15); color: #5DBAA8; border: 1px solid rgba(93,186,168,0.3); }
+    .track-3 { background: rgba(192,126,255,0.15); color: #D4A5FF; border: 1px solid rgba(192,126,255,0.3); }
+    .track-4 { background: rgba(0,210,148,0.15); color: #00D294; border: 1px solid rgba(0,210,148,0.3); }
+    .track-5 { background: rgba(130,170,255,0.15); color: #82AAFF; border: 1px solid rgba(130,170,255,0.3); }
+  </style>
+</head>
+<body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
+
+  <!-- ============================================================
+       HEADER (from _partials/header.html)
+       ============================================================ -->
+  <header></header>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="relative py-16 overflow-hidden">
+    <div class="absolute inset-0 hero-gradient grid-overlay opacity-60"></div>
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <p class="text-xs uppercase tracking-widest text-pnsqc-cyan mb-3">October 13&ndash;15, 2025 &bull; Portland, Oregon</p>
+        <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent mb-4">
+          Conference At-A-Glance
+        </h1>
+        <p class="text-pnsqc-slate text-lg leading-relaxed max-w-2xl mx-auto">
+          Three days of workshops, keynotes, and sessions covering quality engineering, AI, leadership, and more. All times are Pacific.
+        </p>
+        <p class="mt-3 text-pnsqc-slate/60 text-sm">
+          Presentations, times, and locations are subject to change.
+        </p>
+      </div>
+
+      <!-- ======== Day Navigation ======== -->
+      <nav class="flex flex-wrap justify-center gap-3 mb-6" aria-label="Jump to day">
+        <a href="#monday" class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Mon &middot; Workshops
+        </a>
+        <a href="#tuesday" class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Tue &middot; Day 1
+        </a>
+        <a href="#wednesday" class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Wed &middot; Day 2
+        </a>
+      </nav>
+
+      <!-- ======== Track Legend ======== -->
+      <div class="flex flex-wrap justify-center gap-2 mb-2">
+        <span class="track-1 text-xs px-2.5 py-1 rounded-full font-medium">Track 1 &middot; Invited Speakers</span>
+        <span class="track-2 text-xs px-2.5 py-1 rounded-full font-medium">Track 2 &middot; Quality Engineering</span>
+        <span class="track-3 text-xs px-2.5 py-1 rounded-full font-medium">Track 3 &middot; AI &amp; Emerging Tech</span>
+        <span class="track-4 text-xs px-2.5 py-1 rounded-full font-medium">Track 4 &middot; Leadership &amp; People</span>
+        <span class="track-5 text-xs px-2.5 py-1 rounded-full font-medium">Track 5 &middot; Virtual</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCHEDULE
+       ============================================================ -->
+  <section class="relative py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
+      <!-- ==================== MONDAY ==================== -->
+      <div id="monday">
+        <div class="flex items-center gap-4 mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">Monday, October 13</h2>
+          <div class="hr-gradient flex-1 mt-1"></div>
+          <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-semibold whitespace-nowrap">Workshop Day</span>
+        </div>
+
+        <div class="space-y-0">
+
+          <!-- Registration -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="flex items-center gap-3 bg-pnsqc-cyan/10 border border-pnsqc-cyan/20 rounded-lg px-4 py-3">
+              <svg class="w-5 h-5 text-pnsqc-cyan shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M12 14a4 4 0 100-8 4 4 0 000 8z"/></svg>
+              <div>
+                <span class="text-white font-semibold tabular-nums">7:30 &ndash; 10:00</span>
+                <span class="text-pnsqc-slate ml-2">Registration and Wake Up with Coffee &amp; Tea</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AM Workshops -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-gold mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                8:15 &ndash; 12:15 &mdash; Morning Workshops
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Change Agent Basics</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">April K Mills</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">How Can I Automate Stuff?</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Alan Ark</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">An Introduction to BDD</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Leslie Brooks</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Agile Team Chartering</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Diana Larsen</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Embracing the Fuzzy: Testing in the Age of Generative AI</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Ben Simo</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">The 10&times; ROI Challenge</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Allan Rennebo Jepsen</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="flex items-center gap-3 px-4 py-2 text-pnsqc-slate">
+              <svg class="w-4 h-4 text-pnsqc-slate/70 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+              <span><strong class="text-white tabular-nums">12:15 &ndash; 13:15</strong> &mdash; Lunch in the Ballroom</span>
+            </div>
+          </div>
+
+          <!-- PM Workshops -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-gold mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                13:15 &ndash; 17:15 &mdash; Afternoon Workshops
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Essentials of Quality Engineering</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Bhushan Gupta</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Test Automation for Absolute Beginners with Cypress</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Kristin Jackvony</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Test Bash: Rapid Testing Right Now</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Jon Bach</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Getting Dirty with Data, Bots, Agents and Code</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Kevin Pyles</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Embracing the Fuzzy: Testing in the Age of Generative AI</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Ben Simo</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Quality as a Living System</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Gwen Iarussi</p>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3">
+                  <p class="text-white font-medium">Public Speaking for Enginerds</p>
+                  <p class="text-pnsqc-slate text-sm mt-0.5">Philip Lew</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opening Night Reception -->
+          <div class="timeline-block pb-2">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="bg-gradient-to-r from-pnsqc-blue-dark/50 to-pnsqc-blue/50 border border-pnsqc-cyan/20 rounded-lg px-5 py-4">
+              <h3 class="text-lg font-bold text-pnsqc-cyan flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2 4 4.5.5-3.5 3 1 4.5L13 13l-4 2 1-4.5-3.5-3L11 7l2-4z"/></svg>
+                Opening Night Reception
+              </h3>
+              <p class="text-pnsqc-slate mt-1">
+                Join us at the <strong class="text-white">University Place Hotel</strong> from <strong class="text-white tabular-nums">6:00 &ndash; 9:00 pm</strong>
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== TUESDAY ==================== -->
+      <div id="tuesday">
+        <div class="flex items-center gap-4 mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">Tuesday, October 14</h2>
+          <div class="hr-gradient flex-1 mt-1"></div>
+          <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-semibold whitespace-nowrap">Conference Day 1</span>
+        </div>
+
+        <div class="space-y-0">
+
+          <!-- Registration & Breakfast -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="flex items-center gap-3 bg-pnsqc-cyan/10 border border-pnsqc-cyan/20 rounded-lg px-4 py-3">
+              <svg class="w-5 h-5 text-pnsqc-cyan shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M12 14a4 4 0 100-8 4 4 0 000 8z"/></svg>
+              <div>
+                <span class="text-white font-semibold tabular-nums">7:30 &ndash; 10:00</span>
+                <span class="text-pnsqc-slate ml-2">Registration &amp; Breakfast &mdash; Ballroom</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Welcome -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2 text-pnsqc-slate">
+              <strong class="text-white tabular-nums">8:00 &ndash; 8:30</strong> &mdash; Welcome and Highlights for the Day
+            </div>
+          </div>
+
+          <!-- Keynote: April K Mills -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--keynote"></div>
+            <div class="relative rounded-xl p-5 bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30 glow-gold">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-bold">Keynote</span>
+                <span class="text-pnsqc-slate text-xs">&bull;</span>
+                <span class="text-pnsqc-slate text-sm tabular-nums">8:30 &ndash; 9:30</span>
+              </div>
+              <h3 class="text-xl font-bold text-white leading-snug">Everyone is a Change Agent</h3>
+              <p class="text-pnsqc-gold-light text-sm mt-1 font-medium">April K Mills</p>
+            </div>
+          </div>
+
+          <!-- Track rooms info -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2">
+              <p class="text-pnsqc-slate text-sm">
+                <strong class="text-white">Track rooms:</strong>
+                Ballroom &bull; Crater Lake &bull; Coos Bay &bull; Astoria &bull; Pyramid Lake
+              </p>
+            </div>
+          </div>
+
+          <!-- 10:00 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">10:00 &ndash; 10:50</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Navigating the Career Labyrinth</p>
+                    <p class="text-pnsqc-slate text-sm">Jeff Sing</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Web for All: Enhancing Quality Intelligence with Automated Accessibility Testing</p>
+                    <p class="text-pnsqc-slate text-sm">Rodrigo Silva Ferreira</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Showcasing the Future of AI/Human Interaction</p>
+                    <p class="text-pnsqc-slate text-sm">Jason Arbon</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Team Dynamics as a Predictor of Software Quality</p>
+                    <p class="text-pnsqc-slate text-sm">Fazeel Gareeboo</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">The Test Automation Toolbox: Exploring Frameworks Built On WebDriver</p>
+                    <p class="text-pnsqc-slate text-sm">Pallavi Sharma</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11:00 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">11:00 &ndash; 11:50</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">From Chaos to Clarity</p>
+                    <p class="text-pnsqc-slate text-sm">Premi Vinayagam</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Cypress to Playwright Migration Guide</p>
+                    <p class="text-pnsqc-slate text-sm">Ryan Song</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Testing the AI Agentic Way</p>
+                    <p class="text-pnsqc-slate text-sm">Praveen Bagare</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">A Framework for Enterprise-Level Accessibility Management</p>
+                    <p class="text-pnsqc-slate text-sm">Gage Pacifera</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">AI-Powered QA: Real Results, Smarter Tools, Practical Plans</p>
+                    <p class="text-pnsqc-slate text-sm">Long Trinh</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2">
+              <p class="text-pnsqc-slate">
+                <svg class="w-4 h-4 inline-block mr-1 -mt-0.5 text-pnsqc-slate/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+                <strong class="text-white tabular-nums">12:00 &ndash; 13:00</strong> &mdash; Lunch in Willamette Ballroom
+              </p>
+              <p class="text-pnsqc-slate/60 text-sm ml-5 mt-1">Featuring &ldquo;Birds of a Feather&rdquo; discussions</p>
+            </div>
+          </div>
+
+          <!-- 13:00 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">13:00 &ndash; 13:50</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">The Awkward Truths of AI-Tester Collaboration</p>
+                    <p class="text-pnsqc-slate text-sm">Jason Arbon</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Enhancing Robotic Software Through Quality Intelligence</p>
+                    <p class="text-pnsqc-slate text-sm">Havish Sripada, Sophia Lee, Jayden Mei, Thilan Wijeratn</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Knowledge Automation Security: The Next Step in Network Detection and Response</p>
+                    <p class="text-pnsqc-slate text-sm">Borja de la Maza</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Graph Neural Network-Based DDoS Protection for Data Center Infrastructure</p>
+                    <p class="text-pnsqc-slate text-sm">Kartikeya Sharma, Craig Jacobik</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">How Modern Quality Approaches Were Founded in the 1850s</p>
+                    <p class="text-pnsqc-slate text-sm">Mesut Durukal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 14:00 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">14:00 &ndash; 14:50</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">QA for Data Science</p>
+                    <p class="text-pnsqc-slate text-sm">Leslie Brooks</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Model-Based Testing &mdash; is Now (Finally) a Good Time?</p>
+                    <p class="text-pnsqc-slate text-sm">Michael Bar-Sinai</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Is Your AI Quietly Breaking Quality? The Hidden Risks Lurking in LLM-Driven Apps</p>
+                    <p class="text-pnsqc-slate text-sm">Reet Kaur</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Cloud Chemistry: Making SaaS Solutions Play Nice with Your Application</p>
+                    <p class="text-pnsqc-slate text-sm">Nikita Deepak Davda, Ying Ki Kwong</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Testing the Untestable with Gen AI</p>
+                    <p class="text-pnsqc-slate text-sm">Artem Golubev</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 15:00 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">15:00 &ndash; 15:50</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Shifting Out: A Crucial Dimension to Left and Right</p>
+                    <p class="text-pnsqc-slate text-sm">Jon Bach</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Agent-Based Digital Identity: Proof-of-Concept Prototype Description and Demonstration</p>
+                    <p class="text-pnsqc-slate text-sm">Kalman Toth</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white/50 font-medium italic">TBA</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Transforming Teams and CTOs Through a Quality Engineering Mindset</p>
+                    <p class="text-pnsqc-slate text-sm">Millan Kaul</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">From Layoff to Innovation: Building a Game Tool with GenAI</p>
+                    <p class="text-pnsqc-slate text-sm">Krishnamohan Malladi</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Break -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2 text-pnsqc-slate">
+              <strong class="text-white tabular-nums">15:50 &ndash; 16:10</strong> &mdash; Break
+            </div>
+          </div>
+
+          <!-- 16:10 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">16:10 &ndash; 17:00</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Dance Bot Showcase: Where Robots Move to the Beat of Quality</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Data Science Workflows for Hardware Security</p>
+                    <p class="text-pnsqc-slate text-sm">Calvin Deutschbein</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Don&rsquo;t Anthropomorphize the Lawnmower &mdash; Metaphors for Testing AI</p>
+                    <p class="text-pnsqc-slate text-sm">Nate Custer</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Taming the Dragon: Governance of Large Language Models (LLMs)</p>
+                    <p class="text-pnsqc-slate text-sm">Rahul Ravel</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-5 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T5</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">The Power of the Pause Button: Feature Flags and the Future of Software Delivery</p>
+                    <p class="text-pnsqc-slate text-sm">Vaishnavi Tirumani Venkata Subramaniam</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Keynote: Joshua Kerievsky -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--keynote"></div>
+            <div class="relative rounded-xl p-5 bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30 glow-gold">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-bold">Keynote</span>
+                <span class="text-pnsqc-slate text-xs">&bull;</span>
+                <span class="text-pnsqc-slate text-sm tabular-nums">17:10 &ndash; 18:10</span>
+              </div>
+              <h3 class="text-xl font-bold text-white leading-snug">Collective Risk Management</h3>
+              <p class="text-pnsqc-gold-light text-sm mt-1 font-medium">Joshua Kerievsky</p>
+            </div>
+          </div>
+
+          <!-- Evening -->
+          <div class="timeline-block pb-2">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="bg-gradient-to-r from-pnsqc-blue-dark/50 to-pnsqc-blue/50 border border-pnsqc-cyan/20 rounded-lg px-5 py-4 space-y-2">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-pnsqc-cyan shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2 4 4.5.5-3.5 3 1 4.5L13 13l-4 2 1-4.5-3.5-3L11 7l2-4z"/></svg>
+                <span class="text-white font-semibold">Evening Events</span>
+              </div>
+              <p class="text-pnsqc-slate"><strong class="text-white tabular-nums">18:15 &ndash; 19:15</strong> &mdash; Happy Hour &amp; Poster Presentations</p>
+              <p class="text-pnsqc-slate"><strong class="text-white tabular-nums">19:15 &ndash; 21:00</strong> &mdash; Dine Around Portland</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== WEDNESDAY ==================== -->
+      <div id="wednesday">
+        <div class="flex items-center gap-4 mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white whitespace-nowrap">Wednesday, October 15</h2>
+          <div class="hr-gradient flex-1 mt-1"></div>
+          <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-semibold whitespace-nowrap">Conference Day 2</span>
+        </div>
+
+        <div class="space-y-0">
+
+          <!-- Registration & Breakfast -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="flex items-center gap-3 bg-pnsqc-cyan/10 border border-pnsqc-cyan/20 rounded-lg px-4 py-3">
+              <svg class="w-5 h-5 text-pnsqc-cyan shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015.356-1.857M12 14a4 4 0 100-8 4 4 0 000 8z"/></svg>
+              <div>
+                <span class="text-white font-semibold tabular-nums">7:30 &ndash; 10:00</span>
+                <span class="text-pnsqc-slate ml-2">Registration &amp; Breakfast &mdash; Ballroom</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Welcome -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2 text-pnsqc-slate">
+              <strong class="text-white tabular-nums">8:00 &ndash; 8:15</strong> &mdash; Welcome and Highlights for the Day
+            </div>
+          </div>
+
+          <!-- Keynote: Ben Simo -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--keynote"></div>
+            <div class="relative rounded-xl p-5 bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30 glow-gold">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-bold">Keynote</span>
+                <span class="text-pnsqc-slate text-xs">&bull;</span>
+                <span class="text-pnsqc-slate text-sm tabular-nums">8:15 &ndash; 9:15</span>
+              </div>
+              <h3 class="text-xl font-bold text-white leading-snug">Monsters &amp; Magicians: Testing the Illusions of Generative AI</h3>
+              <p class="text-pnsqc-gold-light text-sm mt-1 font-medium">Ben Simo</p>
+            </div>
+          </div>
+
+          <!-- Track rooms info -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2">
+              <p class="text-pnsqc-slate text-sm">
+                <strong class="text-white">Track rooms:</strong>
+                Ballroom &bull; Crater Lake &bull; Coos Bay &bull; Astoria &bull; <em>Author Meet &amp; Greet &mdash; Willamette Falls</em>
+              </p>
+            </div>
+          </div>
+
+          <!-- 9:40 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">9:40 &ndash; 10:30</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">AI/ML SDET: A Title Changes or a New Role?</p>
+                    <p class="text-pnsqc-slate text-sm">Kevin Pyles</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">A Deep Dive into Exploratory Testing</p>
+                    <p class="text-pnsqc-slate text-sm">Anna Sharpe</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Data-Driven API Test Case Generation Using AI and Model Context Protocol</p>
+                    <p class="text-pnsqc-slate text-sm">Harold Wilson, Joseph Petsche</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Quality With Hearts Aligned &mdash; Bolstering Your Quality with Emotional Intelligence</p>
+                    <p class="text-pnsqc-slate text-sm">Sophia McKeever</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">M&amp;G</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Everyone Is a Change Agent: Change Tactics</p>
+                    <p class="text-pnsqc-slate text-sm">April Mills</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 10:40 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">10:40 &ndash; 11:30</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Managing a Complicated Testing Project</p>
+                    <p class="text-pnsqc-slate text-sm">Kristin Jackvony</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Identifying and Reducing Test Case Combinatorial Explosions with Python&rsquo;s AST</p>
+                    <p class="text-pnsqc-slate text-sm">Arun Vishwanathan</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Mastering Quality Engineering in AI Era</p>
+                    <p class="text-pnsqc-slate text-sm">Nishadhi Nikalandawatte</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Is the &ldquo;Iron Triangle&rdquo; Dead?</p>
+                    <p class="text-pnsqc-slate text-sm">Heather Wilcox</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">M&amp;G</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Rhinestone Quality</p>
+                    <p class="text-pnsqc-slate text-sm">Linda Wilkinson</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 11:40 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">11:40 &ndash; 12:30</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Beyond Checkboxes: The Multidimensional Nature of Diversity in Software Quality</p>
+                    <p class="text-pnsqc-slate text-sm italic">Panel</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Built to be Fair? Bias, Verification and Validation, and the Future of AI</p>
+                    <p class="text-pnsqc-slate text-sm">Nancy (Wei) McCormack</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Invisible Intelligence: Embedding AI/ML for Smarter, Faster Release Testing</p>
+                    <p class="text-pnsqc-slate text-sm">Vidhya Ranganathan</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Quality Intelligence: Embedding Customer Voice to Drive Agile Excellence</p>
+                    <p class="text-pnsqc-slate text-sm">Kristine O&rsquo;Connor</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">M&amp;G</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">The Professional Software Tester / The Complete Software Tester</p>
+                    <p class="text-pnsqc-slate text-sm">Kristin Jackvony</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lunch -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2">
+              <p class="text-pnsqc-slate">
+                <svg class="w-4 h-4 inline-block mr-1 -mt-0.5 text-pnsqc-slate/70" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+                <strong class="text-white tabular-nums">12:30 &ndash; 13:30</strong> &mdash; Lunch in Willamette Ballroom
+              </p>
+            </div>
+          </div>
+
+          <!-- 13:30 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">13:30 &ndash; 14:20</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">The Ethics of Quality</p>
+                    <p class="text-pnsqc-slate text-sm">Gwen Iarussi</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Digital Blind Spots: A Field Study of Common Website Insecurities in Small Businesses</p>
+                    <p class="text-pnsqc-slate text-sm">Lucas Zhang</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Ensuring Quality and Security in Generative AI Integrations for Enterprise SaaS Platforms</p>
+                    <p class="text-pnsqc-slate text-sm">Sneha Mirajkar</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">From Technical Roles to Enterprise Impact: Professional Directions in Enterprise IT Quality</p>
+                    <p class="text-pnsqc-slate text-sm">Ying Ki Kwong</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">M&amp;G</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Lead Without Blame &hellip;and others!</p>
+                    <p class="text-pnsqc-slate text-sm">Diana Larsen</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 14:30 Block -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot"></div>
+            <div>
+              <h3 class="text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums">14:30 &ndash; 15:20</h3>
+              <div class="grid grid-cols-1 gap-2">
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T1</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">RAG to the Rescue: Reimagining Enterprise Unit Test Management with AI</p>
+                    <p class="text-pnsqc-slate text-sm">Gaurav Rathor, et al.</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-2 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T2</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Collaborative Quality at the Core: AI-Powered Unit Test Synergy to Reduce E2E Dependency</p>
+                    <p class="text-pnsqc-slate text-sm">Simone Colosimo</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-3 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T3</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Metrics for AI in Software Testing</p>
+                    <p class="text-pnsqc-slate text-sm">Philip Lew</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-4 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">T4</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">YOU AREN&rsquo;T AGILE</p>
+                    <p class="text-pnsqc-slate text-sm">Linda Wilkinson</p>
+                  </div>
+                </div>
+                <div class="session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1">
+                  <span class="track-1 text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5">M&amp;G</span>
+                  <div class="flex-1">
+                    <p class="text-white font-medium">Joy of Agility</p>
+                    <p class="text-pnsqc-slate text-sm">Joshua Kerievsky</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Break -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--break"></div>
+            <div class="px-4 py-2 text-pnsqc-slate">
+              <strong class="text-white tabular-nums">15:30 &ndash; 15:45</strong> &mdash; Break &amp; Networking
+            </div>
+          </div>
+
+          <!-- Keynote: Allan Rennebo Jepsen -->
+          <div class="timeline-block pb-6">
+            <div class="timeline-dot timeline-dot--keynote"></div>
+            <div class="relative rounded-xl p-5 bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30 glow-gold">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="text-xs uppercase tracking-widest text-pnsqc-gold font-bold">Keynote</span>
+                <span class="text-pnsqc-slate text-xs">&bull;</span>
+                <span class="text-pnsqc-slate text-sm tabular-nums">15:45 &ndash; 16:45</span>
+              </div>
+              <h3 class="text-xl font-bold text-white leading-snug">Breaking the Cycle: Leading Organizations That Thrive Amid Constant Change</h3>
+              <p class="text-pnsqc-gold-light text-sm mt-1 font-medium">Allan Rennebo Jepsen</p>
+            </div>
+          </div>
+
+          <!-- Closing -->
+          <div class="timeline-block pb-2">
+            <div class="timeline-dot timeline-dot--social"></div>
+            <div class="bg-gradient-to-r from-pnsqc-blue-dark/50 to-pnsqc-blue/50 border border-pnsqc-cyan/20 rounded-lg px-5 py-4">
+              <div class="flex items-center gap-2 mb-1">
+                <svg class="w-5 h-5 text-pnsqc-cyan shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2 4 4.5.5-3.5 3 1 4.5L13 13l-4 2 1-4.5-3.5-3L11 7l2-4z"/></svg>
+                <span class="text-white font-semibold tabular-nums">17:00 &ndash; 18:00</span>
+              </div>
+              <p class="text-pnsqc-slate ml-7">Award Ceremony &amp; Closing Remarks</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER (from _partials/footer.html)
+       ============================================================ -->
+  <footer></footer>
+
+</body>
+</html>

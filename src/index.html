@@ -8,7 +8,7 @@ og_image: /images/hero/hero-collaboration.png
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="/css/site.css">
   <link rel="canonical" href="https://example.com/">
   <meta property="og:title" content="PNSQC — Pacific NW Software Quality Conference">
   <meta property="og:description" content="PNSQC is a nonprofit software quality conference built by the community, for the community. Join practitioners in the Pacific Northwest for talks, workshops, and networking.">
@@ -511,22 +511,36 @@ og_image: /images/hero/hero-collaboration.png
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="rounded-2xl bg-gradient-to-br from-pnsqc-blue/50 to-pnsqc-navy border border-white/5 p-12 glow-blue">
         <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">Stay in the Loop</h2>
-        <p class="text-pnsqc-slate mb-8 max-w-lg mx-auto">
+        <p class="text-pnsqc-slate mb-4 max-w-lg mx-auto">
           Get updates on upcoming events, call for proposals, and community news. No spam&mdash;just quality content.
         </p>
-        <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <p class="text-sm text-pnsqc-slate/80 mb-8">
+          We send our newsletter via Substack. <a href="https://pnsqcnewsletter.substack.com" target="_blank" rel="noopener noreferrer" class="text-pnsqc-gold hover:text-pnsqc-gold-light transition-colors underline underline-offset-2">Read previous letters</a>
+        </p>
+        <form
+          action="https://pnsqcnewsletter.substack.com/api/v1/free?nojs=true"
+          method="post"
+          target="_blank"
+          class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
+          data-substack-form
+        >
           <input
             type="email"
+            name="email"
             placeholder="you@example.com"
-            class="flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-pnsqc-slate text-sm focus:outline-none focus:border-pnsqc-gold/50 focus:ring-1 focus:ring-pnsqc-gold/50 transition-colors"
-            aria-label="Email address"
+            required
+            class="flex-1 px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-pnsqc-slate focus:outline-none focus:border-pnsqc-gold/50 focus:ring-2 focus:ring-pnsqc-gold/20 transition-colors"
           >
           <button
             type="submit"
-            class="px-6 py-3 bg-pnsqc-gold text-pnsqc-navy font-semibold text-sm rounded-lg hover:bg-pnsqc-gold-light transition-colors whitespace-nowrap">
+            class="px-6 py-3 bg-pnsqc-gold text-pnsqc-navy font-semibold rounded-lg hover:bg-pnsqc-gold-light transition-colors shadow-lg whitespace-nowrap"
+          >
             Subscribe
           </button>
         </form>
+        <p class="mt-3 text-xs text-pnsqc-slate/60" data-substack-msg>
+          Powered by Substack
+        </p>
       </div>
     </div>
   </section>  
@@ -538,6 +552,7 @@ og_image: /images/hero/hero-collaboration.png
 
 	  <script src="/js/countdown.js" defer></script>
 	  <script src="/js/recent-events-carousel.js" defer></script>
+	  <script src="/js/substack-subscribe.js" defer></script>
 	  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->
 	</body>
 	</html>

@@ -1,19 +1,13 @@
-# Gemini Image Generator CLI (repo tool)
+# Gemini Image Generator CLI
 
 ## Command
 
-Run from the repo root:
+Run from the user project root:
 
 ```bash
-node skills/public/image-gen/scripts/image-gen/generate.mjs "<prompt>" [-a <ratio>] [-o <path>]
+node "$SKILL_DIR/scripts/image-gen/generate.mjs" "<prompt>" [-a <ratio>] [-o <path>]
 ```
-
-Or run from inside the skill folder:
-
-```bash
-cd skills/public/image-gen
-node scripts/image-gen/generate.mjs "<prompt>" [-a <ratio>] [-o <path>]
-```
+`SKILL_DIR` is the directory containing `SKILL.md` for this installed skill.
 
 ## Options
 
@@ -32,4 +26,4 @@ node scripts/image-gen/generate.mjs "<prompt>" [-a <ratio>] [-o <path>]
 
 ## Prompting tips
 
-See `skills/public/image-gen/references/prompting.md`.
+See `references/prompting.md`.

@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "276a2b0470ac053750e23527e70146a92b42147d8cb7b29f5b6cf14ebeed96e8"
     },
+    "cloudflare": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "computedHash": "5fa3a4f1e035a6372a79eddedec5014878e256c93e64bcc3fbc5af3fdf5ee5d5"
+    },
     "github-issues": {
       "source": "helincao/skilled",
       "sourceType": "github",

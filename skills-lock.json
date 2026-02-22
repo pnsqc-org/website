@@ -20,6 +20,11 @@
       "source": "helincao/skilled",
       "sourceType": "github",
       "computedHash": "5b72ffd035f89cae7259572953b0017dc8c314abfc51a149f4a5902052e93077"
+    },
+    "use-gmail": {
+      "source": "helincao/skilled",
+      "sourceType": "github",
+      "computedHash": "d697227ac0c5f6ee16705c9dbdca0a6c1089a0f296e6d7ec984d358deb3d3444"
     }
   }
 }

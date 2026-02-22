@@ -107,7 +107,7 @@ website/
 
 ## Agent Skills (`.agents/skills`)
 
-This repo includes three local automation skills used by coding agents.
+This repo includes local automation skills used by coding agents.
 
 Install or update the skills bundle with:
 
@@ -115,12 +115,14 @@ Install or update the skills bundle with:
 npx skills add https://github.com/helincao/skilled/
 ```
 
-- `build`: regenerates `dist/` from current `src/`, `_partials/`, and `site.config.json`.
-  - Use after changing site source files or config.
-  - Command: `node ".agents/skills/build/scripts/build.mjs" --project-root "$PWD"`
+- `cloudflare`: Cloudflare platform workflows (Workers, Pages, storage, networking, security, IaC).
+  - Use for Cloudflare deployment/infrastructure tasks.
 - `github-issues`: reads, comments on, and closes GitHub issues through a local CLI.
   - Requires `.env` values: `GITHUB_API_KEY`, `GITHUB_REPOSITORY`.
   - Example: `node ".agents/skills/github-issues/scripts/github-issues.mjs" read -n 123 --comments`
+- `use-gmail`: reads/searches Gmail, drafts/sends email, and looks up Google contacts.
+  - Requires `.env` values: `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`
+  - Stores OAuth tokens/account metadata in `.env`: `GMAIL_SKILL_TOKENS_B64`, `GMAIL_SKILL_ACCOUNTS_META_B64`
 - `image-gen`: generates image assets (PNG/JPG/WEBP/GIF) from prompts.
   - Requires `.env` value: `GEMINI_API_KEY`.
   - Example: `node ".agents/skills/image-gen/scripts/image-gen/generate.mjs" "conference crowd, warm palette" -a 4:3 -o src/images/hero/example.png`

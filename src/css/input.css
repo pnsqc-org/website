@@ -277,6 +277,7 @@ html {
 .recent-event-card.is-past {
   opacity: 0.55;
   filter: grayscale(0.5);
+  box-shadow: none;
 }
 
 .recent-event-card.is-past:hover {

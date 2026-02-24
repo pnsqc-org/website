@@ -35,3 +35,8 @@ pnsqc2017.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pn
 pnsqc2018.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2018.pdf
 pnsqc2019.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2019.pdf
 pnsqc2020.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2020.pdf
+pnsqc2021.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2021.pdf
+pnsqc2022.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2022.pdf
+pnsqc2023.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2023.pdf
+pnsqc2024.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2024.pdf
+pnsqc2025.pdf -> https://pub-5e725122191f422092d6fb4c68bc26b3.r2.dev/archives/pnsqc2025.pdf

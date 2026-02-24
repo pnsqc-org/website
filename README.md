@@ -11,6 +11,7 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 - Shared partials in `_partials/` (`header.html`, `footer.html`)
 - Custom build script in `build.mjs`
 - Output in `dist/` (deploy this folder)
+    - `src/404.html` is included as `dist/404.html` for proper not-found responses.
 
 ## Quick Start
 
@@ -36,7 +37,10 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
       4. Generates `dist/sitemap.xml` and `dist/robots.txt`
   2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
-Source files in `src/` are not modified by the build.
+- These files in the `dist/` folder are what will be deployed to our production website.
+- Source files in `src/` are not modified when the build is run.
+- You should not edit files directly in `dist/`; rebuild each time from `src/` instead.
+
 
 ## Authoring Rules
 

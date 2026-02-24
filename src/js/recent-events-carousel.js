@@ -10,6 +10,41 @@
 
   const getSlideWidth = (track) => track?.clientWidth ?? 0;
 
+  const parseEventTime = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  const syncEventState = (slide, nowMs) => {
+    if (!slide) return;
+
+    const start = parseEventTime(slide.dataset.eventStart);
+    const end = parseEventTime(slide.dataset.eventEnd) ?? start;
+    if (!end) return;
+
+    const isPast = end.getTime() < nowMs;
+    slide.classList.toggle('is-past', isPast);
+    slide.dataset.eventState = isPast ? 'past' : 'upcoming';
+
+    const statusDot = slide.querySelector('[data-event-status-dot]');
+    if (statusDot) {
+      statusDot.classList.toggle('event-status--active', !isPast);
+      statusDot.classList.toggle('event-status--inactive', isPast);
+    }
+
+    const srLabel = slide.querySelector('[data-event-status-sr]');
+    if (srLabel) {
+      srLabel.textContent = isPast ? 'Past event' : 'Upcoming event';
+    }
+  };
+
+  const syncEventStates = (root) => {
+    const nowMs = Date.now();
+    const slides = root.querySelectorAll('[data-carousel-slide]');
+    for (const slide of slides) syncEventState(slide, nowMs);
+  };
+
   const getActiveIndex = (track, slides) => {
     const slideWidth = getSlideWidth(track);
     if (!slideWidth || slides.length === 0) return 0;
@@ -24,6 +59,8 @@
   };
 
   const initCarousel = (root) => {
+    syncEventStates(root);
+
     const track = root.querySelector('[data-carousel-track]');
     const prevButton = root.querySelector('[data-carousel-prev]');
     const nextButton = root.querySelector('[data-carousel-next]');

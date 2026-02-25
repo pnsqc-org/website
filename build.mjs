@@ -52,8 +52,13 @@ function injectHead(html, meta, config, filePath, baseDir) {
   const urlPath = '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
   const canonical = config.baseUrl + urlPath;
 
-  // Replace <title>
-  html = html.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`);
+  // Replace <title>, or insert one if the source page omitted it.
+  const titleTag = `<title>${escAttr(title)}</title>`;
+  if (/<title\b[^>]*>[\s\S]*?<\/title>/i.test(html)) {
+    html = html.replace(/<title\b[^>]*>[\s\S]*?<\/title>/i, titleTag);
+  } else {
+    html = html.replace('</head>', `  ${titleTag}\n</head>`);
+  }
 
   // Replace or insert <meta name="description">
   if (html.includes('<meta name="description"')) {

@@ -16,12 +16,25 @@
     return Number.isNaN(parsed.getTime()) ? null : parsed;
   };
 
+  const syncEventsMenuStatus = (hasUpcomingEvents) => {
+    const menuDots = document.querySelectorAll('[data-events-menu-status-dot]');
+    for (const dot of menuDots) {
+      dot.classList.toggle('event-status--active', hasUpcomingEvents);
+      dot.classList.toggle('event-status--inactive', !hasUpcomingEvents);
+    }
+
+    const menuSrLabels = document.querySelectorAll('[data-events-menu-status-sr]');
+    for (const label of menuSrLabels) {
+      label.textContent = hasUpcomingEvents ? 'Active events' : 'No active events';
+    }
+  };
+
   const syncEventState = (slide, nowMs) => {
     if (!slide) return;
 
     const start = parseEventTime(slide.dataset.eventStart);
     const end = parseEventTime(slide.dataset.eventEnd) ?? start;
-    if (!end) return;
+    if (!end) return null;
 
     const isPast = end.getTime() < nowMs;
     slide.classList.toggle('is-past', isPast);
@@ -37,12 +50,19 @@
     if (srLabel) {
       srLabel.textContent = isPast ? 'Past event' : 'Upcoming event';
     }
+
+    return !isPast;
   };
 
   const syncEventStates = (root) => {
     const nowMs = Date.now();
     const slides = root.querySelectorAll('[data-carousel-slide]');
-    for (const slide of slides) syncEventState(slide, nowMs);
+    let hasUpcomingEvents = false;
+    for (const slide of slides) {
+      const isUpcoming = syncEventState(slide, nowMs);
+      hasUpcomingEvents = hasUpcomingEvents || isUpcoming === true;
+    }
+    syncEventsMenuStatus(hasUpcomingEvents);
   };
 
   const getActiveIndex = (track, slides) => {

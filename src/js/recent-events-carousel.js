@@ -51,6 +51,11 @@
       srLabel.textContent = isPast ? 'Past event' : 'Upcoming event';
     }
 
+    const pastBadge = slide.querySelector('[data-event-past-badge]');
+    if (pastBadge) {
+      pastBadge.hidden = !isPast;
+    }
+
     return !isPast;
   };
 

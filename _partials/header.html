@@ -28,6 +28,10 @@
 	          </div>
 	        </div>
 
+	        <a href="/stem-fair/" class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-cyan hover:text-white transition-colors rounded-lg font-medium">
+	          STEM Fair
+	        </a>
+
 	        <a href="/#recent-events" class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
 	          <span class="inline-flex items-center gap-2">
 	            Events
@@ -36,22 +40,32 @@
 	          </span>
 	        </a>
 
-	        <a href="/volunteer/" class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
-	          Volunteer
-	        </a>
-
-        <!-- Sponsor Dropdown -->
+        <!-- Be Involved Dropdown -->
         <div class="relative group" data-dropdown-root>
           <button class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg flex items-center gap-1">
-            Sponsor
+            Be Involved
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
           </button>
           <div class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
             <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
-              <a href="/sponsor/sponsors/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Sponsors</a>
-              <a href="/sponsor/become-a-sponsor/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Become a Sponsor</a>
+              <a href="/volunteer/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Volunteer</a>
+              <!-- Sponsor with nested submenu -->
+              <div class="relative group/sponsor" data-submenu-root>
+                <button class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">
+                  Sponsor
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </button>
+                <div class="absolute left-full top-0 ml-1 w-48 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/sponsor:opacity-100 group-hover/sponsor:visible transition-all duration-200" data-submenu-menu>
+                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+                    <a href="/sponsor/sponsors/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Sponsors</a>
+                    <a href="/sponsor/become-a-sponsor/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Become a Sponsor</a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -164,6 +178,10 @@
 		          </div>
 		        </div>
 
+		        <a href="/stem-fair/" class="header-nav-item-mobile px-3 py-2 text-pnsqc-cyan hover:text-white transition-colors rounded-lg font-medium">
+		          STEM Fair
+		        </a>
+
 		        <a href="/#recent-events" class="header-nav-item-mobile px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
 		          <span class="inline-flex items-center gap-2">
 		            Events
@@ -172,21 +190,29 @@
 		          </span>
 		        </a>
 
-		        <a href="/volunteer/" class="header-nav-item-mobile px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
-		          Volunteer
-		        </a>
-
-          <!-- Sponsor Section (Expandable) -->
+          <!-- Be Involved Section (Expandable) -->
           <div>
-            <button id="mobile-sponsor-toggle" class="header-nav-item-mobile w-full flex items-center justify-between px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
-              <span>Sponsor</span>
-              <svg id="mobile-sponsor-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button id="mobile-involved-toggle" class="header-nav-item-mobile w-full flex items-center justify-between px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
+              <span>Be Involved</span>
+              <svg id="mobile-involved-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </button>
-            <div id="mobile-sponsor-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-              <a href="/sponsor/sponsors/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Sponsors</a>
-              <a href="/sponsor/become-a-sponsor/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Become a Sponsor</a>
+            <div id="mobile-involved-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+              <a href="/volunteer/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Volunteer</a>
+              <!-- Sponsor Section (Expandable) -->
+              <div>
+                <button id="mobile-sponsor-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                  <span>Sponsor</span>
+                  <svg id="mobile-sponsor-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div id="mobile-sponsor-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+                  <a href="/sponsor/sponsors/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Sponsors</a>
+                  <a href="/sponsor/become-a-sponsor/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Become a Sponsor</a>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -432,7 +458,19 @@
         });
       }
 
-      // Mobile Sponsor menu toggle
+      // Mobile Be Involved menu toggle
+      const mobileInvolvedToggle = document.getElementById('mobile-involved-toggle');
+      const mobileInvolvedSubmenu = document.getElementById('mobile-involved-submenu');
+      const mobileInvolvedChevron = document.getElementById('mobile-involved-chevron');
+
+      if (mobileInvolvedToggle && mobileInvolvedSubmenu && mobileInvolvedChevron) {
+        mobileInvolvedToggle.addEventListener('click', () => {
+          mobileInvolvedSubmenu.classList.toggle('hidden');
+          mobileInvolvedChevron.classList.toggle('rotate-180');
+        });
+      }
+
+      // Mobile Sponsor menu toggle (nested under Be Involved)
       const mobileSponsorToggle = document.getElementById('mobile-sponsor-toggle');
       const mobileSponsorSubmenu = document.getElementById('mobile-sponsor-submenu');
       const mobileSponsorChevron = document.getElementById('mobile-sponsor-chevron');

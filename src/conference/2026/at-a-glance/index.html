@@ -1,0 +1,741 @@
+<!-- meta
+title: 2026 Conference At-A-Glance — PNSQC
+description: Live schedule and session details for the PNSQC 2026 conference in Portland, Oregon.
+og_image: /images/hero/hero-collaboration.png
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/site.css">
+  <style>
+    /* Timeline connector */
+    .timeline-block { position: relative; padding-left: 2.5rem; }
+    .timeline-block::before {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 1.75rem;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, rgba(229,168,80,0.4), rgba(93,186,168,0.2));
+    }
+    .timeline-block:last-child::before { display: none; }
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 0.45rem;
+      width: 1.125rem;
+      height: 1.125rem;
+      border-radius: 999px;
+      border: 2px solid var(--color-pnsqc-gold);
+      background: var(--color-pnsqc-navy);
+      z-index: 1;
+    }
+    .timeline-dot--keynote {
+      background: var(--color-pnsqc-gold);
+      box-shadow: 0 0 12px rgba(229,168,80,0.5);
+    }
+    .timeline-dot--social {
+      border-color: var(--color-pnsqc-cyan);
+      background: var(--color-pnsqc-cyan);
+      box-shadow: 0 0 10px rgba(93,186,168,0.4);
+    }
+    .timeline-dot--break {
+      border-color: var(--color-pnsqc-slate);
+      width: 0.75rem;
+      height: 0.75rem;
+      top: 0.65rem;
+      left: 0.1875rem;
+    }
+
+    /* Day nav active state */
+    .day-nav-link { transition: all 0.2s ease; }
+    .day-nav-link:hover { background: rgba(229,168,80,0.15); border-color: rgba(229,168,80,0.5); }
+
+    /* Session card hover */
+    .session-card { transition: border-color 0.2s ease, background-color 0.2s ease; }
+    .session-card:hover { border-color: rgba(229,168,80,0.4); background: rgba(59,107,116,0.12); }
+
+    /* Track badge colors */
+    .track-1 { background: rgba(229,168,80,0.15); color: #F5C17F; border: 1px solid rgba(229,168,80,0.3); }
+    .track-2 { background: rgba(93,186,168,0.15); color: #5DBAA8; border: 1px solid rgba(93,186,168,0.3); }
+    .track-3 { background: rgba(192,126,255,0.15); color: #D4A5FF; border: 1px solid rgba(192,126,255,0.3); }
+    .track-4 { background: rgba(0,210,148,0.15); color: #00D294; border: 1px solid rgba(0,210,148,0.3); }
+    .track-5 { background: rgba(130,170,255,0.15); color: #82AAFF; border: 1px solid rgba(130,170,255,0.3); }
+  </style>
+</head>
+<body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
+
+  <!-- ============================================================
+       HEADER (from _partials/header.html)
+       ============================================================ -->
+  <header></header>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section class="relative py-16 overflow-hidden">
+    <div class="absolute inset-0 hero-gradient grid-overlay opacity-60"></div>
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <p id="event-meta" class="text-xs uppercase tracking-widest text-pnsqc-cyan mb-3">October 12-14, 2026 | Portland, Oregon</p>
+        <h1 class="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent mb-4">
+          Conference At-A-Glance
+        </h1>
+        <p id="event-intro" class="text-pnsqc-slate text-lg leading-relaxed max-w-2xl mx-auto">
+          Live schedule for PNSQC 2026 workshops, keynotes, and sessions. Times are shown in the event timezone.
+        </p>
+        <p class="mt-3 text-pnsqc-slate/60 text-sm">
+          Presentations, times, and locations are subject to change.
+        </p>
+      </div>
+
+      <!-- ======== Day Navigation ======== -->
+      <nav id="day-nav" class="flex flex-wrap justify-center gap-3 mb-6" aria-label="Jump to day">
+        <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-pnsqc-slate text-sm font-semibold">
+          Loading day navigation...
+        </span>
+      </nav>
+
+      <!-- ======== Track Legend ======== -->
+      <div id="track-legend" class="flex flex-wrap justify-center gap-2 mb-2">
+        <span class="text-xs px-2.5 py-1 rounded-full font-medium border border-white/15 text-pnsqc-slate">Loading track assignments...</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCHEDULE
+       ============================================================ -->
+  <section class="relative py-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="schedule-root" class="space-y-12">
+        <div class="p-6 bg-pnsqc-blue/10 border border-pnsqc-gold/20 rounded-lg">
+          <p class="text-pnsqc-slate text-lg">Loading schedule...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER (from _partials/footer.html)
+       ============================================================ -->
+  <footer></footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var API_URL = 'https://api.meetinghand.com/api/events/test-zga9o';
+      var PLACEHOLDER_TITLE = 'Unassigned Meeting';
+      var PLACEHOLDER_SPEAKER = 'TBA';
+      var TRACK_CLASSES = ['track-1', 'track-2', 'track-3', 'track-4', 'track-5'];
+
+      function element(tagName, className, text) {
+        var node = document.createElement(tagName);
+        if (className) {
+          node.className = className;
+        }
+        if (typeof text === 'string') {
+          node.textContent = text;
+        }
+        return node;
+      }
+
+      function fullName(person) {
+        if (!person || typeof person !== 'object') {
+          return '';
+        }
+
+        var first = typeof person.firstname === 'string' ? person.firstname.trim() : '';
+        var last = typeof person.lastname === 'string' ? person.lastname.trim() : '';
+        return (first + ' ' + last).trim();
+      }
+
+      function normalizeTopic(value) {
+        return String(value || '').trim().toLowerCase();
+      }
+
+      function presentationFromItem(item) {
+        if (!item || typeof item !== 'object' || !item.presentation) {
+          return null;
+        }
+        return item.presentation;
+      }
+
+      function speakerFromItem(item) {
+        var presentation = presentationFromItem(item);
+        if (!presentation) {
+          return '';
+        }
+
+        if (Array.isArray(presentation.authors)) {
+          var authorNames = presentation.authors
+            .map(fullName)
+            .filter(Boolean);
+
+          if (authorNames.length > 0) {
+            return authorNames.join(', ');
+          }
+        }
+
+        var presenterAuthor = fullName(presentation.presenterAuthor);
+        if (presenterAuthor) {
+          return presenterAuthor;
+        }
+
+        return fullName(presentation.participant);
+      }
+
+      function formatTime(rawTime, timeFormat) {
+        if (typeof rawTime !== 'string' || !rawTime.includes(':')) {
+          return '';
+        }
+
+        var pieces = rawTime.split(':');
+        var hour = Number(pieces[0]);
+        var minute = Number(pieces[1]);
+
+        if (Number.isNaN(hour) || Number.isNaN(minute)) {
+          return rawTime;
+        }
+
+        if (timeFormat === 'h24') {
+          return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0');
+        }
+
+        var period = hour >= 12 ? 'pm' : 'am';
+        var hour12 = ((hour + 11) % 12) + 1;
+        return hour12 + ':' + String(minute).padStart(2, '0') + ' ' + period;
+      }
+
+      function formatTimeRange(session, timeFormat) {
+        var start = formatTime(session.start, timeFormat);
+        var end = formatTime(session.end, timeFormat);
+
+        if (start && end) {
+          return start + ' - ' + end;
+        }
+        return start || end || 'Time TBA';
+      }
+
+      function parseDateOnly(dateIso) {
+        if (typeof dateIso !== 'string') {
+          return null;
+        }
+
+        var match = dateIso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (!match) {
+          var parsed = new Date(dateIso);
+          return Number.isNaN(parsed.getTime()) ? null : parsed;
+        }
+
+        var year = Number(match[1]);
+        var month = Number(match[2]);
+        var day = Number(match[3]);
+
+        if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
+          return null;
+        }
+
+        // Build from calendar date at noon UTC to avoid timezone day shifts.
+        return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+      }
+
+      function formatEventDateRange(startDateIso, endDateIso) {
+        if (!startDateIso || !endDateIso) {
+          return '';
+        }
+
+        var startDate = parseDateOnly(startDateIso);
+        var endDate = parseDateOnly(endDateIso);
+        if (!startDate || !endDate) {
+          return '';
+        }
+
+        var withYear = new Intl.DateTimeFormat('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          timeZone: 'UTC'
+        });
+
+        return withYear.format(startDate) + ' - ' + withYear.format(endDate);
+      }
+
+      function formatDayHeading(dateIso) {
+        var dateOnly = parseDateOnly(dateIso);
+        if (!dateOnly) {
+          return 'Date TBA';
+        }
+
+        return new Intl.DateTimeFormat('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          timeZone: 'UTC'
+        }).format(dateOnly);
+      }
+
+      function formatDayNavLabel(dateIso, index) {
+        var dateOnly = parseDateOnly(dateIso);
+        if (!dateOnly) {
+          return 'Day ' + (index + 1);
+        }
+
+        var shortWeekday = new Intl.DateTimeFormat('en-US', {
+          weekday: 'short',
+          timeZone: 'UTC'
+        }).format(dateOnly);
+
+        return shortWeekday + ' - Day ' + (index + 1);
+      }
+
+      function sortSessionsByTime(sessions) {
+        return sessions.slice().sort(function (a, b) {
+          var aStart = String(a && a.start ? a.start : '99:99');
+          var bStart = String(b && b.start ? b.start : '99:99');
+          if (aStart !== bStart) {
+            return aStart.localeCompare(bStart);
+          }
+
+          var aEnd = String(a && a.end ? a.end : '99:99');
+          var bEnd = String(b && b.end ? b.end : '99:99');
+          return aEnd.localeCompare(bEnd);
+        });
+      }
+
+      function isKeynoteSession(session) {
+        if (!session || typeof session !== 'object') {
+          return false;
+        }
+
+        if (typeof session.title === 'string' && /keynote/i.test(session.title)) {
+          return true;
+        }
+
+        if (!Array.isArray(session.items)) {
+          return false;
+        }
+
+        return session.items.some(function (item) {
+          var presentation = presentationFromItem(item);
+          if (!presentation) {
+            return false;
+          }
+
+          return /keynote/i.test(String(presentation.presentation_type || '')) ||
+            /keynote/i.test(String(presentation.topic || ''));
+        });
+      }
+
+      function buildTrackBadge(trackName, trackIndex, compactLabel) {
+        var className = TRACK_CLASSES[trackIndex % TRACK_CLASSES.length] +
+          ' text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 mt-0.5';
+        var badge = element('span', className);
+
+        if (compactLabel) {
+          badge.textContent = compactLabel;
+        } else {
+          badge.textContent = 'T' + (trackIndex + 1);
+          badge.title = trackName;
+        }
+
+        return badge;
+      }
+
+      function buildSessionCard(trackName, trackIndex, item, fallbackTitle, compactBadgeLabel) {
+        var card = element(
+          'div',
+          'session-card border border-white/10 rounded-lg px-4 py-3 flex flex-wrap items-start gap-x-3 gap-y-1'
+        );
+
+        if (trackName) {
+          card.appendChild(buildTrackBadge(trackName, trackIndex, compactBadgeLabel));
+        }
+
+        var body = element('div', 'flex-1');
+        var presentation = item ? presentationFromItem(item) : null;
+
+        var title = presentation && presentation.title
+          ? presentation.title
+          : (fallbackTitle || PLACEHOLDER_TITLE);
+
+        var speaker = item ? speakerFromItem(item) : '';
+        if (!speaker) {
+          speaker = PLACEHOLDER_SPEAKER;
+        }
+
+        var titleClass = item ? 'text-white font-medium' : 'text-white/70 font-medium italic';
+        var speakerClass = 'text-pnsqc-slate text-sm' + (item ? '' : ' italic');
+
+        body.appendChild(element('p', titleClass, title));
+        body.appendChild(element('p', speakerClass, speaker));
+
+        card.appendChild(body);
+        return card;
+      }
+
+      function buildBreakBlock(session, timeFormat) {
+        var block = element('div', 'timeline-block pb-6');
+        block.appendChild(element('div', 'timeline-dot timeline-dot--break'));
+
+        var body = element('div', 'px-4 py-2 text-pnsqc-slate');
+        var time = element('strong', 'text-white tabular-nums', formatTimeRange(session, timeFormat));
+        body.appendChild(time);
+        body.appendChild(document.createTextNode(' - ' + (session.title || 'Break')));
+
+        if (session.location) {
+          body.appendChild(element('p', 'text-pnsqc-slate/60 text-sm mt-1', String(session.location)));
+        }
+
+        block.appendChild(body);
+        return block;
+      }
+
+      function buildKeynoteBlock(session, timeFormat) {
+        var block = element('div', 'timeline-block pb-6');
+        block.appendChild(element('div', 'timeline-dot timeline-dot--keynote'));
+
+        var keynote = element(
+          'div',
+          'relative rounded-xl p-5 bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30 glow-gold'
+        );
+
+        var info = element('div', 'flex flex-wrap items-center gap-2 mb-2');
+        info.appendChild(element('span', 'text-xs uppercase tracking-widest text-pnsqc-gold font-bold', 'Keynote'));
+        info.appendChild(element('span', 'text-pnsqc-slate text-xs', '|'));
+        info.appendChild(element('span', 'text-pnsqc-slate text-sm tabular-nums', formatTimeRange(session, timeFormat)));
+
+        var firstItem = Array.isArray(session.items) && session.items.length > 0 ? session.items[0] : null;
+        var presentation = presentationFromItem(firstItem);
+        var title = presentation && presentation.title ? presentation.title : (session.title || 'Keynote');
+        var speaker = firstItem ? speakerFromItem(firstItem) : '';
+
+        keynote.appendChild(info);
+        keynote.appendChild(element('h3', 'text-xl font-bold text-white leading-snug', title));
+        keynote.appendChild(element('p', 'text-pnsqc-gold-light text-sm mt-1 font-medium', speaker || PLACEHOLDER_SPEAKER));
+
+        block.appendChild(keynote);
+        return block;
+      }
+
+      function buildSessionBlock(session, tracks, timeFormat) {
+        var block = element('div', 'timeline-block pb-6');
+        block.appendChild(element('div', 'timeline-dot'));
+
+        var body = element('div');
+        var headingText = formatTimeRange(session, timeFormat);
+        if (session.title) {
+          headingText += ' - ' + session.title;
+        }
+        body.appendChild(element('h3', 'text-lg font-bold text-pnsqc-cyan mb-3 tabular-nums', headingText));
+
+        var cardGrid = element('div', 'grid grid-cols-1 gap-2');
+        var items = Array.isArray(session.items) ? session.items.filter(Boolean) : [];
+
+        if (tracks.length > 0) {
+          var usedItemIndexes = new Set();
+
+          tracks.forEach(function (trackName, trackIndex) {
+            var trackTopic = normalizeTopic(trackName);
+            var matchingIndex = -1;
+
+            for (var i = 0; i < items.length; i += 1) {
+              if (usedItemIndexes.has(i)) {
+                continue;
+              }
+
+              var itemTopic = normalizeTopic(items[i] && items[i].presentation ? items[i].presentation.topic : '');
+              if (itemTopic === trackTopic) {
+                matchingIndex = i;
+                break;
+              }
+            }
+
+            if (matchingIndex >= 0) {
+              usedItemIndexes.add(matchingIndex);
+              cardGrid.appendChild(buildSessionCard(trackName, trackIndex, items[matchingIndex], session.title, null));
+            } else {
+              cardGrid.appendChild(buildSessionCard(trackName, trackIndex, null, PLACEHOLDER_TITLE, null));
+            }
+          });
+
+          var extraCardIndex = 0;
+          items.forEach(function (item, itemIndex) {
+            if (usedItemIndexes.has(itemIndex)) {
+              return;
+            }
+
+            var topic = item && item.presentation && item.presentation.topic
+              ? String(item.presentation.topic)
+              : 'Track';
+
+            cardGrid.appendChild(
+              buildSessionCard(topic, tracks.length + extraCardIndex, item, session.title, topic)
+            );
+            extraCardIndex += 1;
+          });
+        } else if (items.length > 0) {
+          items.forEach(function (item, index) {
+            var topic = item && item.presentation && item.presentation.topic
+              ? String(item.presentation.topic)
+              : 'Track';
+
+            cardGrid.appendChild(buildSessionCard(topic, index, item, session.title, topic));
+          });
+        } else {
+          cardGrid.appendChild(buildSessionCard('Track', 0, null, PLACEHOLDER_TITLE, 'TBA'));
+        }
+
+        body.appendChild(cardGrid);
+        block.appendChild(body);
+        return block;
+      }
+
+      function renderTrackLegend(trackNames) {
+        var legend = document.getElementById('track-legend');
+        if (!legend) {
+          return;
+        }
+
+        legend.innerHTML = '';
+
+        if (!trackNames.length) {
+          legend.appendChild(
+            element(
+              'span',
+              'text-xs px-2.5 py-1 rounded-full font-medium border border-white/15 text-pnsqc-slate',
+              'Track assignments are still being finalized.'
+            )
+          );
+          return;
+        }
+
+        trackNames.forEach(function (trackName, index) {
+          var badgeClass = TRACK_CLASSES[index % TRACK_CLASSES.length] + ' text-xs px-2.5 py-1 rounded-full font-medium';
+          legend.appendChild(element('span', badgeClass, 'Track ' + (index + 1) + ' - ' + trackName));
+        });
+      }
+
+      function renderDayNavigation(days, timezone) {
+        var nav = document.getElementById('day-nav');
+        if (!nav) {
+          return;
+        }
+
+        nav.innerHTML = '';
+
+        if (!days.length) {
+          nav.appendChild(
+            element(
+              'span',
+              'inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-pnsqc-slate text-sm font-semibold',
+              'No schedule days published yet'
+            )
+          );
+          return;
+        }
+
+        days.forEach(function (day, index) {
+          var link = element(
+            'a',
+            'day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold',
+            formatDayNavLabel(day.date, index)
+          );
+
+          link.href = '#day-' + (index + 1);
+          nav.appendChild(link);
+        });
+      }
+
+      function renderEventHeader(data, timezone) {
+        var meta = document.getElementById('event-meta');
+        var intro = document.getElementById('event-intro');
+
+        if (meta) {
+          var pieces = [];
+          var dateRange = formatEventDateRange(data.start_date, data.end_date);
+          if (dateRange) {
+            pieces.push(dateRange);
+          }
+
+          var locationParts = [];
+          if (data && data.event_location) {
+            if (data.event_location.city) {
+              locationParts.push(data.event_location.city);
+            }
+            if (data.event_location.state) {
+              locationParts.push(data.event_location.state);
+            }
+          }
+
+          if (locationParts.length > 0) {
+            pieces.push(locationParts.join(', '));
+          }
+
+          if (pieces.length > 0) {
+            meta.textContent = pieces.join(' | ');
+          }
+        }
+
+        if (intro && data && data.long_name) {
+          intro.textContent = 'Live schedule for ' + data.long_name + '. Times are shown in the event timezone.';
+        }
+      }
+
+      function renderSchedule(data) {
+        var root = document.getElementById('schedule-root');
+        if (!root) {
+          return;
+        }
+
+        var days = Array.isArray(data && data.schedule) ? data.schedule : [];
+        var timezone = data && data.timezone && data.timezone.key ? data.timezone.key : 'America/Los_Angeles';
+        var timeFormat = data && data.time_format === 'h24' ? 'h24' : 'h12';
+
+        var trackNames = [];
+        if (data && data.submission && data.submission.topics && Array.isArray(data.submission.topics.items)) {
+          trackNames = data.submission.topics.items
+            .map(function (topic) {
+              return topic && topic.name ? String(topic.name).trim() : '';
+            })
+            .filter(Boolean);
+        }
+
+        renderEventHeader(data, timezone);
+        renderDayNavigation(days, timezone);
+        renderTrackLegend(trackNames);
+
+        root.innerHTML = '';
+
+        if (days.length === 0) {
+          var emptyCard = element('div', 'p-6 bg-pnsqc-blue/10 border border-pnsqc-gold/20 rounded-lg');
+          emptyCard.appendChild(element('p', 'text-pnsqc-slate text-lg', 'Schedule details are coming soon.'));
+          root.appendChild(emptyCard);
+          return;
+        }
+
+        days.forEach(function (day, dayIndex) {
+          var daySection = element('div');
+          daySection.id = 'day-' + (dayIndex + 1);
+
+          var dayHeader = element('div', 'flex items-center gap-4 mb-6');
+          dayHeader.appendChild(
+            element(
+              'h2',
+              'text-2xl sm:text-3xl font-bold text-white whitespace-nowrap',
+              formatDayHeading(day.date)
+            )
+          );
+          dayHeader.appendChild(element('div', 'hr-gradient flex-1 mt-1'));
+          dayHeader.appendChild(
+            element(
+              'span',
+              'text-xs uppercase tracking-widest text-pnsqc-gold font-semibold whitespace-nowrap',
+              'Day ' + (dayIndex + 1)
+            )
+          );
+          daySection.appendChild(dayHeader);
+
+          var timeline = element('div', 'space-y-0');
+          var sessions = sortSessionsByTime(Array.isArray(day.sessions) ? day.sessions : []);
+
+          if (sessions.length === 0) {
+            var noSessions = element('div', 'timeline-block pb-6');
+            noSessions.appendChild(element('div', 'timeline-dot timeline-dot--break'));
+            noSessions.appendChild(element('div', 'px-4 py-2 text-pnsqc-slate', 'Sessions for this day are still being assigned.'));
+            timeline.appendChild(noSessions);
+          } else {
+            sessions.forEach(function (session) {
+              if (session.is_break) {
+                timeline.appendChild(buildBreakBlock(session, timeFormat));
+              } else if (isKeynoteSession(session)) {
+                timeline.appendChild(buildKeynoteBlock(session, timeFormat));
+              } else {
+                timeline.appendChild(buildSessionBlock(session, trackNames, timeFormat));
+              }
+            });
+          }
+
+          daySection.appendChild(timeline);
+          root.appendChild(daySection);
+        });
+      }
+
+      function renderError() {
+        var nav = document.getElementById('day-nav');
+        var legend = document.getElementById('track-legend');
+        var root = document.getElementById('schedule-root');
+
+        if (nav) {
+          nav.innerHTML = '';
+          nav.appendChild(
+            element(
+              'span',
+              'inline-flex items-center gap-2 px-5 py-2 rounded-full border border-red-300/30 text-red-200 text-sm font-semibold',
+              'Unable to load day navigation'
+            )
+          );
+        }
+
+        if (legend) {
+          legend.innerHTML = '';
+          legend.appendChild(
+            element(
+              'span',
+              'text-xs px-2.5 py-1 rounded-full font-medium border border-red-300/30 text-red-200',
+              'Unable to load tracks'
+            )
+          );
+        }
+
+        if (root) {
+          root.innerHTML = '';
+          var card = element('div', 'p-6 bg-red-500/10 border border-red-300/30 rounded-lg');
+          card.appendChild(
+            element(
+              'p',
+              'text-red-100 text-lg',
+              'The live schedule is temporarily unavailable. Please check back shortly.'
+            )
+          );
+          root.appendChild(card);
+        }
+      }
+
+      async function loadSchedule() {
+        try {
+          var response = await fetch(API_URL, {
+            headers: {
+              Accept: 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to fetch schedule: ' + response.status);
+          }
+
+          var payload = await response.json();
+          if (!payload || !payload.data) {
+            throw new Error('Schedule payload is missing data.');
+          }
+
+          renderSchedule(payload.data);
+        } catch (error) {
+          console.error(error);
+          renderError();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', loadSchedule, { once: true });
+      } else {
+        loadSchedule();
+      }
+    })();
+  </script>
+</body>
+</html>

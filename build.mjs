@@ -142,7 +142,7 @@ function generateSitemap(files, config, targetDir) {
   const sitemapFiles = files.filter(f => relative(targetDir, f) !== '404.html');
   const urls = sitemapFiles.map(f => {
     const rel = relative(targetDir, f);
-    const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
+    const urlPath = '/' + rel.replaceAll('\\', '\/');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
     return `  <url>\n    <loc>${config.baseUrl}${urlPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
   });

@@ -1,6 +1,6 @@
 {
-  "baseUrl": "https://pnsqc.com",
-  "siteName": "PNSQC — Pacific NW Software Quality Conference",
+  "baseUrl": "https://pnsqc.org",
+  "siteName": "PNSQC \u2014 Pacific NW Software Quality Conference",
   "defaultDescription": "PNSQC is a nonprofit software quality conference built by the community, for the community. Join practitioners in the Pacific Northwest for talks, workshops, and networking.",
   "defaultOgImage": "/images/hero/hero-collaboration.png",
   "locale": "en_US"

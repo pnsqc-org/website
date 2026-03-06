@@ -48,6 +48,11 @@ html {
   text-shadow: 0 0 20px rgba(229, 168, 80, 0.4);
 }
 
+/* Prevent descender clipping on gradient-clipped display text */
+.bg-clip-text.text-transparent {
+  padding-bottom: 0.1em;
+}
+
 /* Animated gradient background for hero */
 .hero-gradient {
   background: linear-gradient(135deg, #1C1814 0%, #3B6B74 40%, #2B5359 70%, #1C1814 100%);

@@ -140,6 +140,9 @@
 
     const topContent = createEl("div", "space-y-2", null);
     topContent.appendChild(createEl("h4", "text-lg font-semibold text-white", speakerName));
+    if (speaker.profession) {
+      topContent.appendChild(createEl("p", "text-sm text-pnsqc-slate", speaker.profession));
+    }
     topContent.appendChild(createEl("p", "text-sm text-pnsqc-gold", presentationTitle));
 
     const iconRow = createEl("div", "flex flex-wrap items-center gap-2", null);
@@ -225,6 +228,9 @@
     if (iconRow.childElementCount > 0) header.appendChild(iconRow);
 
     content.appendChild(header);
+    if (speaker.profession) {
+      content.appendChild(createEl("p", "mt-1 text-sm text-pnsqc-slate", speaker.profession));
+    }
     content.appendChild(createEl("p", "mt-2 text-sm text-pnsqc-gold", presentationTitle));
 
     const buttonWrap = createEl("div", "mt-4", null);

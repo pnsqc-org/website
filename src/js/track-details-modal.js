@@ -8,9 +8,8 @@
   const labelEl = modal.querySelector("[data-track-modal-label]");
   const closeButton = modal.querySelector("[data-track-modal-close]");
   const backdrop = modal.querySelector("[data-track-modal-backdrop]");
-  const triggers = document.querySelectorAll("[data-track-modal-open]");
 
-  if (!panel || !body || !titleEl || !labelEl || !closeButton || !backdrop || triggers.length === 0) {
+  if (!panel || !body || !titleEl || !labelEl || !closeButton || !backdrop) {
     return;
   }
 
@@ -44,8 +43,12 @@
     closeButton.focus();
   };
 
-  triggers.forEach((trigger) => {
-    trigger.addEventListener("click", () => openModal(trigger));
+  document.addEventListener("click", (event) => {
+    const trigger = event.target instanceof Element
+      ? event.target.closest("[data-track-modal-open]")
+      : null;
+    if (!trigger) return;
+    openModal(trigger);
   });
 
   closeButton.addEventListener("click", closeModal);

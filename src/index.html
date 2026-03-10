@@ -179,57 +179,40 @@ og_image: /images/hero/hero-collaboration.png
   </section>
 
   <!-- ============================================================
-       PNSQC 2026 ANNOUNCEMENT
+       PNSQC 2026 SPEAKERS
        ============================================================ -->
   <section class="relative py-24">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="text-center mb-16">
-        <span class="text-pnsqc-gold text-sm font-medium uppercase tracking-widest">What's New</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">PNSQC 2026 Announcement</h2>
+        <span class="text-pnsqc-gold text-sm font-medium uppercase tracking-widest">PNSQC 2026</span>
+        <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Announced Speakers</h2>
         <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
       </div>
 
-      <!-- Invited Speakers Subsection -->
-      <div>
-        <h3 class="text-xs font-semibold uppercase tracking-widest text-pnsqc-cyan mb-8 text-center">Invited Speakers</h3>
+      <!-- Speakers Subsection -->
+      <div
+        data-speaker-module
+        data-speaker-endpoint="https://api.meetinghand.com/api/events/pnsqc-2026"
+        data-speaker-fallback-avatar="/images/brand/pnsqc-logo.jpg"
+      >
+        <p class="text-center text-sm text-pnsqc-slate" data-speaker-status>Loading speakers...</p>
 
-        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          <!-- Kristine O'Connor -->
-          <div class="rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-pnsqc-gold/20 p-8">
-            <div class="flex flex-col sm:flex-row items-start gap-6">
-              <div class="flex-shrink-0">
-                <img
-                  src="/images/people/Kristine_OConnor.jpg"
-                  alt="Kristine O'Connor"
-                  loading="lazy"
-                  class="w-32 h-32 rounded-lg object-cover ring-2 ring-pnsqc-gold/30"
-                >
-              </div>
-              <div>
-                <h4 class="text-xl font-semibold text-white">Kristine O'Connor</h4>
-                <span class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-pnsqc-gold/30 bg-pnsqc-gold/10 px-3 py-1 text-xs font-semibold text-pnsqc-gold">
-                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                  2025 Best Paper Award Winner
-                </span>
-                <div class="mt-4">
-                  <a href="/conference/2026/keynotes-invited-speakers/"
-                     class="inline-flex items-center gap-1.5 text-xs font-semibold text-pnsqc-gold px-2.5 py-1.5 rounded bg-pnsqc-gold/10 hover:bg-pnsqc-gold/15 hover:text-pnsqc-gold-light transition-colors">
-                    Read More
-                    <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="mt-10 space-y-16">
+          <section data-speaker-category-id="111">
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-pnsqc-gold mb-8 text-center" data-speaker-category-title>Keynote Speakers</h3>
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto" data-speaker-grid></div>
+            <p class="text-pnsqc-slate text-sm italic text-center mt-6" data-speaker-empty hidden>More speakers to be announced</p>
+          </section>
 
-          <!-- More to come -->
-          <div class="rounded-2xl border border-dashed border-white/15 p-8 flex items-center justify-center">
-            <p class="text-pnsqc-slate text-sm italic">More speakers to be announced</p>
-          </div>
+          <section data-speaker-category-id="104">
+            <h3 class="text-xs font-semibold uppercase tracking-widest text-pnsqc-cyan mb-8 text-center" data-speaker-category-title>Invited Speakers / Special Guests</h3>
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto" data-speaker-grid></div>
+            <p class="text-pnsqc-slate text-sm italic text-center mt-6" data-speaker-empty hidden>More speakers to be announced</p>
+          </section>
         </div>
+
+        <div class="hidden" aria-hidden="true" data-speaker-templates></div>
       </div>
     </div>
   </section>
@@ -241,7 +224,7 @@ og_image: /images/hero/hero-collaboration.png
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="text-center mb-16">
-        <span class="text-pnsqc-cyan text-sm font-medium uppercase tracking-widest">Submit Your Proposal</span>
+        <span class="text-pnsqc-cyan text-sm font-medium uppercase tracking-widest">Conference Topics</span>
         <h2 class="mt-3 text-3xl sm:text-4xl font-bold text-white">Four Tracks for 2026</h2>
         <div class="mt-4 mx-auto w-24 h-1 bg-gradient-to-r from-pnsqc-gold to-pnsqc-cyan rounded-full"></div>
         <p class="mt-6 text-pnsqc-slate max-w-3xl mx-auto">
@@ -872,6 +855,7 @@ og_image: /images/hero/hero-collaboration.png
 
 	  <script src="/js/countdown.js" defer></script>
 	  <script src="/js/recent-events-carousel.js" defer></script>
+	  <script src="/js/speakers-module.js" defer></script>
 	  <script src="/js/track-details-modal.js" defer></script>
 	  <script src="/js/substack-subscribe.js" defer></script>
 	  <!-- Mobile menu + theme toggle are handled in _partials/header.html -->

@@ -45,15 +45,15 @@
 
   const getPresentationTitle = (details) => {
     const presentations = Array.isArray(details.presentations) ? details.presentations : [];
-    return presentations[0]?.title || "Presentation TBD";
+    return presentations[0]?.title || "Presentation TBA";
   };
 
   const getAbstractText = (details, presentationTitle) => {
     const html = details?.presentations?.[0]?.session?.session?.description;
-    if (!html || typeof html !== "string") return "TBD";
+    if (!html || typeof html !== "string") return "TBA";
 
     const normalizedTitle = normalizeCompareText(presentationTitle);
-    if (!normalizedTitle) return "TBD";
+    if (!normalizedTitle) return "TBA";
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
@@ -81,7 +81,7 @@
       }
     }
 
-    if (!blockquote) return "TBD";
+    if (!blockquote) return "TBA";
 
     const paragraphs = Array.from(blockquote.querySelectorAll("p"))
       .map((p) => normalizeSpace(p.textContent || ""))
@@ -92,7 +92,7 @@
     }
 
     const fallback = normalizeSpace(blockquote.textContent || "");
-    return fallback || "TBD";
+    return fallback || "TBA";
   };
 
   const createIconLink = ({ href, label, svgPath }) => {

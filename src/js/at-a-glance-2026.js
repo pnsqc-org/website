@@ -651,17 +651,31 @@
       const isBreak = !!session?.is_break;
       const isKeynote = this.isKeynoteSession(session);
       const cardClass = isBreak
-        ? 'rounded-lg px-4 py-4 h-full flex flex-col bg-pnsqc-gold/10 border border-pnsqc-gold/30'
+        ? 'rounded-lg px-4 py-4 h-full flex flex-col bg-pnsqc-cyan/10 border border-pnsqc-cyan/20'
         : (isKeynote
-          ? 'session-card relative rounded-xl px-4 py-4 h-full flex flex-col bg-gradient-to-r from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/40 border border-pnsqc-gold/30'
+          ? 'session-card glow-gold relative rounded-xl px-4 py-4 h-full flex flex-col bg-gradient-to-br from-pnsqc-gold/10 via-pnsqc-cyan/10 to-pnsqc-blue/50 border border-pnsqc-gold/30'
           : 'session-card border border-white/10 rounded-lg px-4 py-4 h-full flex flex-col');
 
       const card = Dom.el('div', cardClass);
       const timeText = TimeUtils.formatSessionTimeRange(session, dayIso, timeFormat, displayTimeZone, eventTimeZone);
       const timeClass = isKeynote
         ? 'text-sm sm:text-base uppercase tracking-widest text-pnsqc-gold font-semibold tabular-nums mb-2'
-        : 'text-sm sm:text-base uppercase tracking-wide text-pnsqc-gold font-semibold tabular-nums mb-2';
-      card.appendChild(Dom.el('p', timeClass, timeText));
+        : (isBreak
+          ? 'text-sm sm:text-base uppercase tracking-wide text-white font-semibold tabular-nums mb-2'
+          : 'text-sm sm:text-base uppercase tracking-wide text-pnsqc-gold font-semibold tabular-nums mb-2');
+      const wrapperClasses = 'flex items-center gap-2 ' + timeClass;
+      const timeWrapper = Dom.el('div', wrapperClasses);
+      const clockSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      clockSvg.setAttribute('class', 'w-4 h-4');
+      clockSvg.setAttribute('fill', 'none');
+      clockSvg.setAttribute('stroke', 'currentColor');
+      clockSvg.setAttribute('stroke-width', '2');
+      clockSvg.setAttribute('viewBox', '0 0 24 24');
+      clockSvg.setAttribute('aria-hidden', 'true');
+      clockSvg.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>';
+      timeWrapper.appendChild(clockSvg);
+      timeWrapper.appendChild(Dom.el('span', '', timeText));
+      card.appendChild(timeWrapper);
 
       const titleRow = Dom.el('div', 'flex items-center gap-2');
       if (isBreak) {
@@ -670,12 +684,23 @@
         titleRow.appendChild(icon);
       }
       const titleText = session?.title ? String(session.title) : PLACEHOLDER_TITLE;
-      const titleClass = isKeynote ? 'text-white font-bold text-lg sm:text-xl leading-snug' : 'text-white font-semibold text-lg';
+      const titleClass = isKeynote ? 'text-white font-bold text-lg sm:text-xl leading-snug' : (isBreak ? 'text-pnsqc-cyan font-semibold text-lg' : 'text-white font-semibold text-lg');
       titleRow.appendChild(Dom.el('p', titleClass, titleText));
       card.appendChild(titleRow);
 
       if (session?.location) {
-        card.appendChild(Dom.el('p', 'text-pnsqc-slate text-sm mb-2', String(session.location)));
+        const locationWrapper = Dom.el('div', 'flex items-center gap-2 text-pnsqc-slate text-sm mt-1 mb-2');
+        const locationIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        locationIcon.setAttribute('class', 'w-4 h-4 shrink-0');
+        locationIcon.setAttribute('fill', 'none');
+        locationIcon.setAttribute('stroke', 'currentColor');
+        locationIcon.setAttribute('stroke-width', '2');
+        locationIcon.setAttribute('viewBox', '0 0 24 24');
+        locationIcon.setAttribute('aria-hidden', 'true');
+        locationIcon.innerHTML = '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>';
+        locationWrapper.appendChild(locationIcon);
+        locationWrapper.appendChild(Dom.el('span', '', String(session.location)));
+        card.appendChild(locationWrapper);
       }
 
       const items = Array.isArray(session.items) ? session.items.filter(Boolean) : [];
@@ -868,7 +893,7 @@
             const hasNonBreak = group.some((session) => session && !session.is_break);
             const dotClass = hasKeynote
               ? 'timeline-dot timeline-dot--keynote'
-              : (hasNonBreak ? 'timeline-dot' : 'timeline-dot timeline-dot--break');
+              : (hasNonBreak ? 'timeline-dot' : 'timeline-dot timeline-dot--social');
 
             if (group.length > 1) {
               const rowWrapper = Dom.el('div', 'timeline-block pb-6');

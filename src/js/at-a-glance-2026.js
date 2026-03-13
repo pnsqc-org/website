@@ -235,6 +235,41 @@
       const doc = parser.parseFromString(html, 'text/html');
       const children = Array.from(doc.body.children);
 
+      const getTextWithLineBreaks = (node) => {
+        if (!node) return '';
+        
+        if (node.nodeType === Node.TEXT_NODE) {
+          // Remove any \n characters from text content
+          return (node.textContent || '').replace(/\n/g, '');
+        }
+        
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const tag = node.tagName.toLowerCase();
+          
+          if (tag === 'br') {
+            return '\n';
+          }
+          
+          const childrenText = Array.from(node.childNodes)
+            .map(child => getTextWithLineBreaks(child))
+            .join('');
+          
+          // Block elements add double newline (paragraph break)
+          if (['p', 'div', 'blockquote'].includes(tag) && childrenText.trim()) {
+            return '\n\n' + childrenText.trim() + '\n\n';
+          }
+          
+          // For list items, don't add extra spacing (ul/ol handle that)
+          if (tag === 'li') {
+            return childrenText;
+          }
+          
+          return childrenText;
+        }
+        
+        return '';
+      };
+
       for (let i = 0; i < children.length; i += 1) {
         const node = children[i];
         const titleText = TextUtils.normalizeCompareText(node.textContent || '');
@@ -252,13 +287,29 @@
 
         if (!blockquote) continue;
 
-        const paragraphs = Array.from(blockquote.querySelectorAll('p'))
-          .map((p) => TextUtils.normalizeSpace(p.textContent || ''))
-          .filter(Boolean);
-
-        const abstractText = paragraphs.length > 0
-          ? paragraphs.join('\n\n')
-          : TextUtils.normalizeSpace(blockquote.textContent || '');
+        const rawText = getTextWithLineBreaks(blockquote);
+        
+        // Clean up: normalize whitespace but preserve single newlines
+        const lines = rawText.split('\n');
+        const cleanedLines = [];
+        for (let i = 0; i < lines.length; i++) {
+          const line = TextUtils.normalizeSpace(lines[i]);
+          if (line) {
+            cleanedLines.push(line);
+          } else if (cleanedLines.length > 0 && i < lines.length - 1) {
+            // Preserve empty line as paragraph separator
+            cleanedLines.push('');
+          }
+        }
+        
+        // Join with single newline, then collapse multiple consecutive newlines to double for paragraphs
+        let abstractText = cleanedLines.join('\n');
+        
+        // Remove leading/trailing newlines
+        abstractText = abstractText.replace(/^\n+|\n+$/g, '');
+        
+        // Collapse 3+ consecutive newlines to exactly 2 (paragraph break)
+        abstractText = abstractText.replace(/\n{3,}/g, '\n\n');
 
         if (abstractText) map.set(titleText, abstractText);
       }
@@ -479,6 +530,10 @@
 
     isKeynoteSession(session) {
       return !!(session?.title && /keynote/i.test(session.title));
+    }
+
+    isInvitedSpeakersSession(session) {
+      return !!(session?.title && /invited\s+speakers?/i.test(session.title));
     }
 
     speakerFromItem(item) {
@@ -804,6 +859,11 @@
           });
 
           grouped.forEach((group) => {
+            group.sort((a, b) => {
+              const aIsInvited = this.isInvitedSpeakersSession(a) ? 1 : 0;
+              const bIsInvited = this.isInvitedSpeakersSession(b) ? 1 : 0;
+              return bIsInvited - aIsInvited;
+            });
             const hasKeynote = group.some((session) => this.isKeynoteSession(session));
             const hasNonBreak = group.some((session) => session && !session.is_break);
             const dotClass = hasKeynote
@@ -813,8 +873,8 @@
             if (group.length > 1) {
               const rowWrapper = Dom.el('div', 'timeline-block pb-6');
               rowWrapper.appendChild(Dom.el('div', dotClass));
-              const row = Dom.el('div', 'grid gap-6');
-              row.style.gridTemplateColumns = 'repeat(auto-fit, minmax(280px, 1fr))';
+              const row = Dom.el('div', 'grid gap-6 schedule-sessions-grid');
+              row.style.setProperty('--grid-columns', group.length);
               group.forEach((session) => {
                 row.appendChild(this.buildSessionCard({
                   session,

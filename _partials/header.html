@@ -28,18 +28,26 @@
               <a href="/conference/2026/venue/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Venue</a>
               <a href="/conference/2026/author-resources/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Author Resources</a>
               <!-- <a href="/conference/2026/poster/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Poster Papers</a> -->
-              <a href="/conference/2026/stem-fair/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">STEM Fair</a>
             </div>
 	          </div>
 	        </div>
 
-	        <a href="/#recent-events" class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
-	          <span class="inline-flex items-center gap-2">
-	            Events
-	            <span class="event-status event-status--active" aria-hidden="true" data-events-menu-status-dot></span>
-	            <span class="sr-only" data-events-menu-status-sr>Active events</span>
-	          </span>
-	        </a>
+          <!-- Events Dropdown -->
+          <div class="relative group" data-dropdown-root>
+            <button class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg flex items-center gap-1">
+              Events
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" data-dropdown-menu>
+              <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+                <a href="/#recent-events" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Monthly Meetups</a>
+                <a href="/stem-fair/" class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors">Inaugural STEM Fair</a>
+              </div>
+            </div>
+          </div>
 
         <!-- Be Involved Dropdown -->
         <div class="relative group" data-dropdown-root>
@@ -179,18 +187,23 @@
 		            <a href="/conference/2026/workshops/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Workshops</a>
 		            <a href="/conference/2026/venue/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Venue</a>
                 <a href="/conference/2026/author-resources/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Author Resources</a>
-                <!-- <a href="/conference/2026/poster/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Poster Papers</a> -->
-                <a href="/conference/2026/stem-fair/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">STEM Fair</a>
-		          </div>
+		            <!-- <a href="/conference/2026/poster/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Poster Papers</a> -->
+              </div>
 		        </div>
 
-		        <a href="/#recent-events" class="header-nav-item-mobile px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
-		          <span class="inline-flex items-center gap-2">
-		            Events
-		            <span class="event-status event-status--active" aria-hidden="true" data-events-menu-status-dot></span>
-		            <span class="sr-only" data-events-menu-status-sr>Active events</span>
-		          </span>
-		        </a>
+          <!-- Events Section (Expandable) -->
+          <div>
+            <button id="mobile-events-toggle" class="header-nav-item-mobile w-full flex items-center justify-between px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg">
+              Events
+              <svg id="mobile-events-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div id="mobile-events-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+              <a href="/#recent-events" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Monthly Meetups</a>
+              <a href="/stem-fair/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Inaugural STEM Fair</a>
+            </div>
+          </div>
 
           <!-- Be Involved Section (Expandable) -->
           <div>
@@ -433,6 +446,18 @@
 	        mobileConference2026Toggle.addEventListener('click', () => {
 	          mobileConference2026Submenu.classList.toggle('hidden');
 	          mobileConference2026Chevron.classList.toggle('rotate-180');
+	        });
+	      }
+
+	      // Mobile Events menu toggle
+	      const mobileEventsToggle = document.getElementById('mobile-events-toggle');
+	      const mobileEventsSubmenu = document.getElementById('mobile-events-submenu');
+	      const mobileEventsChevron = document.getElementById('mobile-events-chevron');
+
+	      if (mobileEventsToggle && mobileEventsSubmenu && mobileEventsChevron) {
+	        mobileEventsToggle.addEventListener('click', () => {
+	          mobileEventsSubmenu.classList.toggle('hidden');
+	          mobileEventsChevron.classList.toggle('rotate-180');
 	        });
 	      }
 

@@ -52,7 +52,7 @@ Place a `meta` comment before `<!DOCTYPE html>`:
 <!-- meta
 title: Page title
 description: Page description
-og_image: /images/hero/hero-collaboration.png
+og_image: /images/events/conference/2025/group_photo.jpg
 -->
 <!DOCTYPE html>
 ```
@@ -90,7 +90,7 @@ Edit `site.config.json` for site-wide defaults:
   "baseUrl": "https://example.com",
   "siteName": "PNSQC — Pacific NW Software Quality Conference",
   "defaultDescription": "...",
-  "defaultOgImage": "/images/hero/hero-collaboration.png",
+  "defaultOgImage": "/images/events/conference/2025/group_photo.jpg",
   "locale": "en_US"
 }
 ```

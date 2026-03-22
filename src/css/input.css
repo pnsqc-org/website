@@ -96,6 +96,25 @@ html {
   pointer-events: none;
 }
 
+/* Theme-aware images */
+.theme-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.theme-image-light {
+  display: none;
+}
+
+[data-theme="light"] .theme-image-dark {
+  display: none;
+}
+
+[data-theme="light"] .theme-image-light {
+  display: block;
+}
+
 /* Navigation backdrop blur */
 .nav-blur {
   backdrop-filter: blur(12px);

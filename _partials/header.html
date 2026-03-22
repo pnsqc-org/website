@@ -209,12 +209,34 @@
 	            </svg>
 	          </button>
 		        <div id="mobile-conference-2026-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-		            <a href="/conference/2026/keynotes-invited-speakers/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Keynotes &amp; Invited Speakers</a>
-		            <a href="/conference/2026/workshops/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Workshops</a>
-		            <a href="/conference/2026/venue/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Venue</a>
-                <a href="/conference/2026/author-resources/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Author Resources</a>
-		            <!-- <a href="/conference/2026/poster/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Poster Papers</a> -->
+              <div>
+                <button id="mobile-conference-2026-attendees-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                  <span>Attendees</span>
+                  <svg id="mobile-conference-2026-attendees-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div id="mobile-conference-2026-attendees-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+                  <a href="/conference/2026/keynotes-invited-speakers/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Keynotes &amp; Invited Speakers</a>
+                  <a href="/conference/2026/workshops/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Workshops</a>
+                  <a href="/conference/2026/venue/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Venue</a>
+                  <!-- <a href="/conference/2026/poster/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Poster Papers</a> -->
+                </div>
               </div>
+              <div>
+                <button id="mobile-conference-2026-speakers-toggle" class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">
+                  <span>Speakers</span>
+                  <svg id="mobile-conference-2026-speakers-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div id="mobile-conference-2026-speakers-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+                  <a href="/cfp" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Write &amp; Present at PNSQC</a>
+                  <a href="/conference/2026/tracks/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Track Descriptions</a>
+                  <a href="/conference/2026/author-resources/" class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5">Author Resources</a>
+                </div>
+              </div>
+            </div>
 		        </div>
 
           <!-- Events Section (Expandable) -->
@@ -474,6 +496,30 @@
 	          mobileConference2026Chevron.classList.toggle('rotate-180');
 	        });
 	      }
+
+      // Mobile 2026 Conference Attendees menu toggle
+      const mobileConference2026AttendeesToggle = document.getElementById('mobile-conference-2026-attendees-toggle');
+      const mobileConference2026AttendeesSubmenu = document.getElementById('mobile-conference-2026-attendees-submenu');
+      const mobileConference2026AttendeesChevron = document.getElementById('mobile-conference-2026-attendees-chevron');
+
+      if (mobileConference2026AttendeesToggle && mobileConference2026AttendeesSubmenu && mobileConference2026AttendeesChevron) {
+        mobileConference2026AttendeesToggle.addEventListener('click', () => {
+          mobileConference2026AttendeesSubmenu.classList.toggle('hidden');
+          mobileConference2026AttendeesChevron.classList.toggle('rotate-180');
+        });
+      }
+
+      // Mobile 2026 Conference Speakers menu toggle
+      const mobileConference2026SpeakersToggle = document.getElementById('mobile-conference-2026-speakers-toggle');
+      const mobileConference2026SpeakersSubmenu = document.getElementById('mobile-conference-2026-speakers-submenu');
+      const mobileConference2026SpeakersChevron = document.getElementById('mobile-conference-2026-speakers-chevron');
+
+      if (mobileConference2026SpeakersToggle && mobileConference2026SpeakersSubmenu && mobileConference2026SpeakersChevron) {
+        mobileConference2026SpeakersToggle.addEventListener('click', () => {
+          mobileConference2026SpeakersSubmenu.classList.toggle('hidden');
+          mobileConference2026SpeakersChevron.classList.toggle('rotate-180');
+        });
+      }
 
 	      // Mobile Events menu toggle
 	      const mobileEventsToggle = document.getElementById('mobile-events-toggle');

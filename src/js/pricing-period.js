@@ -54,7 +54,7 @@
     tooltipContainer.style.marginLeft = '0.5rem';
     tooltipContainer.innerHTML = `
       <span class="tooltip-icon">i</span>
-      <span class="tooltip-text">Ends ${endDate}</span>
+      <span class="tooltip-text"><strong>Ends ${endDate}</strong></span>
     `;
     labelWrapper.appendChild(tooltipContainer);
   }

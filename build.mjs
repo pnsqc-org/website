@@ -64,10 +64,13 @@ function injectHead(html, meta, config, filePath, baseDir) {
   if (html.includes('<meta name="description"')) {
     html = html.replace(
       /<meta name="description"[^>]*>/,
-      `<meta name="description" content="${escAttr(description)}">`
+      `<meta name="description" content="${escAttr(description)}">`,
     );
   } else {
-    html = html.replace('</title>', `</title>\n  <meta name="description" content="${escAttr(description)}">`);
+    html = html.replace(
+      '</title>',
+      `</title>\n  <meta name="description" content="${escAttr(description)}">`,
+    );
   }
 
   // Build OG / canonical block
@@ -84,7 +87,9 @@ function injectHead(html, meta, config, filePath, baseDir) {
     `<meta name="twitter:title" content="${escAttr(title)}">`,
     `<meta name="twitter:description" content="${escAttr(description)}">`,
     `<meta name="twitter:image" content="${config.baseUrl}${ogImage}">`,
-  ].map(l => '  ' + l).join('\n');
+  ]
+    .map((l) => '  ' + l)
+    .join('\n');
 
   // Remove existing OG / canonical / twitter tags
   html = html.replace(/\s*<link rel="canonical"[^>]*>/g, '');
@@ -121,14 +126,17 @@ function injectPartials(html) {
     // Match from the marker comment through the closing tag
     const markerRe = new RegExp(
       `([ \\t]*)<!-- =+\\s*${label} \\(from ${file.replace('/', '\\/')}\\)[\\s\\S]*?=+ -->` +
-      `[\\s\\S]*?</${tag}>`,
+        `[\\s\\S]*?</${tag}>`,
     );
 
     const marker = (indent) =>
       `${indent}<!-- ============================================================\n` +
       `${indent}     ${label} (from ${file})\n` +
       `${indent}     ============================================================ -->\n` +
-      partialContent.split('\n').map(l => indent + l).join('\n');
+      partialContent
+        .split('\n')
+        .map((l) => indent + l)
+        .join('\n');
 
     html = html.replace(markerRe, (_, indent) => marker(indent));
   }
@@ -139,8 +147,8 @@ function injectPartials(html) {
 // ── Generate sitemap.xml ────────────────────────────────────────────
 
 function generateSitemap(files, config, targetDir) {
-  const sitemapFiles = files.filter(f => relative(targetDir, f) !== '404.html');
-  const urls = sitemapFiles.map(f => {
+  const sitemapFiles = files.filter((f) => relative(targetDir, f) !== '404.html');
+  const urls = sitemapFiles.map((f) => {
     const rel = relative(targetDir, f);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
@@ -150,7 +158,8 @@ function generateSitemap(files, config, targetDir) {
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    urls.join('\n') + '\n' +
+    urls.join('\n') +
+    '\n' +
     `</urlset>\n`;
 
   writeFileSync(join(targetDir, 'sitemap.xml'), xml);
@@ -160,10 +169,7 @@ function generateSitemap(files, config, targetDir) {
 // ── Generate robots.txt ─────────────────────────────────────────────
 
 function generateRobotsTxt(config, targetDir) {
-  const content =
-    `User-agent: *\n` +
-    `Allow: /\n\n` +
-    `Sitemap: ${config.baseUrl}/sitemap.xml\n`;
+  const content = `User-agent: *\n` + `Allow: /\n\n` + `Sitemap: ${config.baseUrl}/sitemap.xml\n`;
   writeFileSync(join(targetDir, 'robots.txt'), content);
   console.log('  robots.txt');
 }
@@ -194,7 +200,7 @@ function main() {
 
   // Step 2: Process HTML files in dist/ (NOT src/)
   const config = loadConfig();
-  const files = findHtmlFiles(DIST);  // Find HTML in dist/, not src/
+  const files = findHtmlFiles(DIST); // Find HTML in dist/, not src/
 
   console.log(`\nbuild.mjs — processing ${files.length} HTML file(s) in dist/\n`);
 
@@ -204,7 +210,7 @@ function main() {
     const relFile = relative(DIST, file);
 
     html = injectPartials(html);
-    html = injectHead(html, meta, config, file, DIST);  // Pass DIST as baseDir
+    html = injectHead(html, meta, config, file, DIST); // Pass DIST as baseDir
 
     writeFileSync(file, html);
     console.log(`  ✓ dist/${relFile}`);

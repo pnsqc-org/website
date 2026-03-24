@@ -1,0 +1,6 @@
+dist/
+node_modules/
+content/
+design/
+src/docs/
+src/images/

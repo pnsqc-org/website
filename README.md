@@ -11,7 +11,7 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 - Shared partials in `_partials/` (`header.html`, `footer.html`)
 - Custom build script in `build.mjs`
 - Output in `dist/` (deploy this folder)
-    - `src/404.html` is included as `dist/404.html` for proper not-found responses.
+  - `src/404.html` is included as `dist/404.html` for proper not-found responses.
 
 ## Quick Start
 
@@ -19,10 +19,10 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 2. Clone this repository (`git clone https://github.com/pnsqc-org/website.git`).
 3. Open a Terminal/Command Prompt, and navigate to the downloaded folder (`cd /path/to/website`).
 4. Run the following commands:
-    ```bash
-    npm install
-    npm run build
-    ```
+   ```bash
+   npm install
+   npm run build
+   ```
 5. Set up a local development server that can properly "host" the static HTML files. If you use VS Code, you can use the "Live Server" extension. In your dev server settings, ensure you set `/dist` as the "custom root" for file serving.
 6. Run the web server and navigate to the port its running on (ie. `localhost:5500`) to see your rendered local copy of the website.
 7. As you make changes, simply run `npm run build` again, and your web browser will automatically refresh with the latest changes.
@@ -30,17 +30,17 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 ## How the Build Works
 
 `npm run build` runs:
-  1. `npm run build:dist` -> `node build.mjs`
-      1. Recreates `dist/` from `src/`
-      2. Injects shared header/footer partials into each HTML page in `dist/`
-      3. Reads each page's `<!-- meta ... -->` block and writes SEO tags into `<head>`
-      4. Generates `dist/sitemap.xml` and `dist/robots.txt`
-  2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
+
+1. `npm run build:dist` -> `node build.mjs`
+   1. Recreates `dist/` from `src/`
+   2. Injects shared header/footer partials into each HTML page in `dist/`
+   3. Reads each page's `<!-- meta ... -->` block and writes SEO tags into `<head>`
+   4. Generates `dist/sitemap.xml` and `dist/robots.txt`
+2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
 - These files in the `dist/` folder are what will be deployed to our production website.
 - Source files in `src/` are not modified when the build is run.
 - You should not edit files directly in `dist/`; rebuild each time from `src/` instead.
-
 
 ## Authoring Rules
 
@@ -139,14 +139,15 @@ npx skills add https://github.com/helincao/skilled/
 When ready to upload your changes:
 
 1. Make a Git commit to a new branch, and push it to the GitHub remote:
-    ```bash
-    git checkout -b my-branch
-    git add *
-    git commit -m "Helpful commit message of my change"
-    git push
-    ```
+
+   ```bash
+   git checkout -b my-branch
+   git add *
+   git commit -m "Helpful commit message of my change"
+   git push
+   ```
 
 2. Open a Pull Request (PR) to `main` for your change on GitHub, and request someone to review/approve the change.
-    - While waiting, we use Cloudflare to host our website, and have integrated it with GitHub so that every commit will generate a "build" with a unique URL for you to visit to validate your changes work when deployed.
+   - While waiting, we use Cloudflare to host our website, and have integrated it with GitHub so that every commit will generate a "build" with a unique URL for you to visit to validate your changes work when deployed.
 
 3. When the reviewer has approved your PR, you should be the one to merge your work. Once merged, Cloudflare will redeploy our production website with the new change.

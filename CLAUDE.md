@@ -9,6 +9,7 @@ See [README.md](README.md) for full documentation.
 **Build:** `npm run build`
 
 **Tailwind brand colors** (in `src/css/input.css`):
+
 - `pnsqc-gold`, `pnsqc-blue`, `pnsqc-navy`, `pnsqc-cyan`, `pnsqc-slate` (each with `-light` and `-dark` variants)
 
 **Key principle:** Source files in `src/` have empty header/footer tags. Build script copies to `dist/` and injects content there.
@@ -25,26 +26,24 @@ og_image: /images/events/conference/2025/group_photo.jpg
 -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/site.css">
-</head>
-<body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
-
-  <!-- ============================================================
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
+    <!-- ============================================================
        HEADER (from _partials/header.html)
        ============================================================ -->
-  <header></header>
+    <header></header>
 
-  <!-- YOUR PAGE CONTENT HERE -->
+    <!-- YOUR PAGE CONTENT HERE -->
 
-  <!-- ============================================================
+    <!-- ============================================================
        FOOTER (from _partials/footer.html)
        ============================================================ -->
-  <footer></footer>
-
-</body>
+    <footer></footer>
+  </body>
 </html>
 ```
 
@@ -60,6 +59,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
 3. **Meta block required:** Always include page metadata before `<!DOCTYPE html>`
 
 **Build behavior:**
+
 - Copies `src/` → `dist/`
 - Injects partials and SEO **into `dist/` files only**
 - Leaves `src/` files untouched

@@ -50,10 +50,7 @@
         });
 
         // Request was sent — show success message
-        showMsg(
-          'Thanks! If you\u2019re a new subscriber, check your email to confirm.',
-          'success',
-        );
+        showMsg('Thanks! If you\u2019re a new subscriber, check your email to confirm.', 'success');
         emailInput.value = '';
       } catch {
         // Network failure — let the user know

@@ -1,4 +1,4 @@
-(function() {
+(function () {
   // Pricing period cutoffs (inclusive ranges)
   // Super Early Bird: January 1 - June 30
   // Early Bird: July 1 - September 15
@@ -41,7 +41,7 @@
   const labelWrapper = document.createElement('div');
   labelWrapper.style.textAlign = 'center';
   labelWrapper.style.marginTop = '0.75rem';
-  
+
   const activeLabel = document.createElement('span');
   activeLabel.className = 'text-md text-pnsqc-gold font-semibold';
   activeLabel.textContent = `Current Pricing: ${activeLabels[activeColumnIndex - 1]}`;

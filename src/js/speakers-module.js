@@ -143,7 +143,7 @@
     avatar.loading = 'lazy';
 
     const topContent = createEl('div', 'space-y-2', null);
-    topContent.appendChild(createEl('h4', 'text-lg font-semibold text-white', speakerName));
+    topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', speakerName));
     if (speaker.profession) {
       topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', speaker.profession));
     }
@@ -233,7 +233,7 @@
 
     const content = createEl('div', null, null);
     const header = createEl('div', 'flex flex-wrap items-start justify-between gap-3', null);
-    header.appendChild(createEl('h4', 'text-xl font-semibold text-white', speakerName));
+    header.appendChild(createEl('h3', 'text-xl font-semibold text-white', speakerName));
 
     const iconRow = createEl('div', 'flex items-center gap-2', null);
     const linkedinLink = createIconLink({

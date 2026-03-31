@@ -151,3 +151,38 @@ When ready to upload your changes:
    - While waiting, we use Cloudflare to host our website, and have integrated it with GitHub so that every commit will generate a "build" with a unique URL for you to visit to validate your changes work when deployed.
 
 3. When the reviewer has approved your PR, you should be the one to merge your work. Once merged, Cloudflare will redeploy our production website with the new change.
+
+## Accessibility Audit
+
+Run the axe audit with:
+
+```bash
+npm run audit:a11y
+```
+
+What this does:
+
+- Builds the site into `dist/`
+- Ensures a Playwright-managed Chromium browser is installed inside this repo at `.playwright-browsers/`
+- Audits each built HTML route in light and dark mode
+- Writes results to `reports/axe-report.json`
+
+You do not need Chrome, Edge, or any other browser installed globally for the audit to run.
+
+Useful options:
+
+```bash
+# Install the project-local browser ahead of time
+npm run audit:a11y:install
+
+# Audit only one route and one theme
+npm run audit:a11y -- --route /about/contact/ --theme light
+
+# Skip the build step if dist/ is already up to date
+npm run audit:a11y -- --skip-build
+
+# Write the report to a different path
+npm run audit:a11y -- --report reports/axe-contact.json
+```
+
+The audit still supports `AXE_ROUTES`, `AXE_THEMES`, and `AXE_REPORT_PATH`, but the CLI flags above are the easiest cross-platform way to filter routes or themes on macOS, Linux, and Windows.

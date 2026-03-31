@@ -63,7 +63,7 @@ As a Principal at TEK, **John Cvetko** works with companies and government agenc
 Board Member  
   
 
-After leaving a potential career in Anthropology in1994, **Heather Wilcox** has spent over 25 years working and learning in the software industry, choosing to focus primarily on start-up and small companies. As a result, she has had a broad range of job descriptions which include, but are not limited to: Technical Support Engineer, IS Manager, Technical Writer, QA Engineer, Staff Quality Engineer, QA Manager, and Configuration Management Engineer.
+After leaving a potential career in Anthropology in 1994, **Heather Wilcox** has spent over 25 years working and learning in the software industry, choosing to focus primarily on start-up and small companies. As a result, she has had a broad range of job descriptions which include, but are not limited to: Technical Support Engineer, IS Manager, Technical Writer, QA Engineer, Staff Quality Engineer, QA Manager, and Configuration Management Engineer.
 
 More recently, Heather has moved into a more permanent relationship with NWEA - a mid-sized educational company where she's been for the last 11 years. This has given Heather a wide range of experiences to draw from in her current role as Engineering Manager, QA and Reliability. In her spare time, Heather enjoys fiber arts, equestrian sports, and training donkeys.
 

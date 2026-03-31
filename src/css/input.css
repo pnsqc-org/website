@@ -517,14 +517,15 @@ h1 {
   --inline-text-link-hover: var(--gold-readable-tinted-hover);
 }
 
-:is(.gold-readable-surface, .gold-readable-surface--tinted) :is(
-  a.text-pnsqc-gold,
-  h2.text-pnsqc-gold,
-  h3.text-pnsqc-gold,
-  p.text-pnsqc-gold,
-  th.text-pnsqc-gold,
-  .text-pnsqc-gold.font-semibold
-) {
+:is(.gold-readable-surface, .gold-readable-surface--tinted)
+  :is(
+    a.text-pnsqc-gold,
+    h2.text-pnsqc-gold,
+    h3.text-pnsqc-gold,
+    p.text-pnsqc-gold,
+    th.text-pnsqc-gold,
+    .text-pnsqc-gold.font-semibold
+  ) {
   color: var(--gold-surface-color);
 }
 

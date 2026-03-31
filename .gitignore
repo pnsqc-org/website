@@ -145,3 +145,9 @@ vite.config.ts.timestamp-*
 src/sitemap.xml
 src/robots.txt
 src/css/site.css
+
+# Reports
+reports
+
+# Project-local Playwright browser cache
+.playwright-browsers/

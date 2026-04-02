@@ -139,7 +139,7 @@
       null,
     );
     avatar.src = speaker.avatar || fallbackAvatar;
-    avatar.alt = speakerName;
+    avatar.alt = speakerName + ' avatar';
     avatar.loading = 'lazy';
 
     const topContent = createEl('div', 'space-y-2', null);
@@ -227,7 +227,7 @@
       null,
     );
     avatar.src = speaker.avatar || fallbackAvatar;
-    avatar.alt = speakerName;
+    avatar.alt = speakerName + ' avatar';
     avatar.loading = 'lazy';
     avatarWrap.appendChild(avatar);
 

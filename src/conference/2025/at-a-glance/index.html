@@ -58,11 +58,18 @@ og_image: /images/events/conference/2025/group_photo.jpg
 
       /* Day nav active state */
       .day-nav-link {
-        transition: all 0.2s ease;
+        color: var(--gold-ghost-button-text);
+        border-color: color-mix(in srgb, var(--gold-ghost-button-text) 35%, transparent);
+        transition:
+          color 0.2s ease,
+          background-color 0.2s ease,
+          border-color 0.2s ease;
       }
-      .day-nav-link:hover {
-        background: rgba(229, 168, 80, 0.15);
-        border-color: rgba(229, 168, 80, 0.5);
+      .day-nav-link:hover,
+      .day-nav-link:focus-visible {
+        color: var(--gold-ghost-button-text-hover);
+        background: color-mix(in srgb, var(--gold-ghost-button-text) 12%, transparent);
+        border-color: color-mix(in srgb, var(--gold-ghost-button-text) 55%, transparent);
       }
 
       /* Session card hover */
@@ -138,7 +145,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
         <nav class="flex flex-wrap justify-center gap-3 mb-6" aria-label="Jump to day">
           <a
             href="#monday"
-            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold"
+            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border text-sm font-semibold"
           >
             <svg
               class="w-4 h-4"
@@ -155,7 +162,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
           </a>
           <a
             href="#tuesday"
-            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold"
+            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border text-sm font-semibold"
           >
             <svg
               class="w-4 h-4"
@@ -172,7 +179,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
           </a>
           <a
             href="#wednesday"
-            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border border-pnsqc-gold/30 text-pnsqc-gold text-sm font-semibold"
+            class="day-nav-link inline-flex items-center gap-2 px-5 py-2 rounded-full border text-sm font-semibold"
           >
             <svg
               class="w-4 h-4"

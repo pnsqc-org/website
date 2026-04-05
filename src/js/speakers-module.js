@@ -9,6 +9,7 @@
     moduleRoot.getAttribute('data-speaker-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
   const statusEl = moduleRoot.querySelector('[data-speaker-status]');
   const templateRoot = moduleRoot.querySelector('[data-speaker-templates]') || moduleRoot;
+  const defaultSectionEl = moduleRoot.querySelector('[data-speaker-default-section]');
 
   const sections = new Map();
   moduleRoot.querySelectorAll('[data-speaker-category-id]').forEach((section) => {
@@ -20,6 +21,17 @@
       sections.set(idValue, { grid, emptyState, title });
     }
   });
+
+  const defaultSection =
+    defaultSectionEl && defaultSectionEl.querySelector('[data-speaker-grid]')
+      ? {
+          grid: defaultSectionEl.querySelector('[data-speaker-grid]'),
+          emptyState: defaultSectionEl.querySelector('[data-speaker-empty]'),
+          title: defaultSectionEl.querySelector('[data-speaker-category-title]'),
+        }
+      : null;
+  const usesDefaultSection = Boolean(defaultSection);
+  const defaultSectionKey = '__default__';
 
   const createEl = (tag, className, text) => {
     const el = document.createElement(tag);
@@ -33,7 +45,79 @@
     return value.replace(/\s+/g, ' ').trim();
   };
 
+  const loadingText =
+    normalizeSpace(moduleRoot.getAttribute('data-speaker-loading-text')) ||
+    normalizeSpace(statusEl?.textContent || '') ||
+    'Loading speakers...';
+  const errorText =
+    normalizeSpace(moduleRoot.getAttribute('data-speaker-error-text')) ||
+    'Speakers will be announced soon.';
+  const requestedPresentationDate = normalizeSpace(
+    moduleRoot.getAttribute('data-speaker-presentation-date'),
+  );
+  const excludedPresentationDate = normalizeSpace(
+    moduleRoot.getAttribute('data-speaker-exclude-presentation-date'),
+  );
+  const defaultCategoryLabel =
+    normalizeSpace(moduleRoot.getAttribute('data-speaker-default-label')) || 'Speaker';
+
   const normalizeCompareText = (value) => normalizeSpace(value).replace(/:\s*$/, '').toLowerCase();
+
+  const extractDateKey = (value) => {
+    if (typeof value !== 'string') return '';
+    const match = value.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (match) return match[1];
+
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return '';
+    return parsed.toISOString().slice(0, 10);
+  };
+
+  const presentationDateFilter = extractDateKey(requestedPresentationDate);
+  const excludedPresentationDateFilter = extractDateKey(excludedPresentationDate);
+
+  const sanitizeHtmlFragment = (value) => {
+    if (!value) return '';
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(String(value), 'text/html');
+
+    const sanitizeNode = (node) => {
+      if (!node) return null;
+      if (node.nodeType === Node.TEXT_NODE) {
+        const textValue = node.textContent || '';
+        if (!textValue.trim()) return null;
+        return document.createTextNode(textValue.replace(/\u00a0/g, ' '));
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+      const tag = node.tagName.toLowerCase();
+      const allowed = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'br'];
+      if (!allowed.includes(tag)) {
+        const fragment = document.createDocumentFragment();
+        Array.from(node.childNodes).forEach((child) => {
+          const cleaned = sanitizeNode(child);
+          if (cleaned) fragment.appendChild(cleaned);
+        });
+        return fragment.childNodes.length ? fragment : null;
+      }
+
+      const copy = document.createElement(tag);
+      Array.from(node.childNodes).forEach((child) => {
+        const cleanedChild = sanitizeNode(child);
+        if (cleanedChild) copy.appendChild(cleanedChild);
+      });
+      return copy;
+    };
+
+    const wrapper = document.createElement('div');
+    Array.from(doc.body.childNodes).forEach((child) => {
+      const cleaned = sanitizeNode(child);
+      if (cleaned) wrapper.appendChild(cleaned);
+    });
+
+    return wrapper.innerHTML.trim();
+  };
 
   const getDetails = (speaker) => {
     if (!speaker || typeof speaker !== 'object') return {};
@@ -43,56 +127,101 @@
     return {};
   };
 
-  const getPresentationTitle = (details) => {
-    const presentations = Array.isArray(details.presentations) ? details.presentations : [];
-    return presentations[0]?.title || 'Presentation TBA';
+  const getPresentations = (details) =>
+    (Array.isArray(details?.presentations) ? details.presentations : []).filter(Boolean);
+
+  const getSessionRecord = (presentation) => presentation?.session?.session || null;
+
+  const getPresentationDateKey = (presentation) =>
+    extractDateKey(getSessionRecord(presentation)?.day?.date);
+
+  const comparePresentations = (left, right) => {
+    const leftDate = getPresentationDateKey(left);
+    const rightDate = getPresentationDateKey(right);
+    if (leftDate && rightDate && leftDate !== rightDate) return leftDate.localeCompare(rightDate);
+    if (leftDate !== rightDate) return leftDate ? -1 : 1;
+
+    const leftStart = normalizeSpace(getSessionRecord(left)?.start || '');
+    const rightStart = normalizeSpace(getSessionRecord(right)?.start || '');
+    if (leftStart !== rightStart) return leftStart.localeCompare(rightStart);
+
+    const leftOrder = Number(left?.session?.order ?? left?.order ?? Number.MAX_SAFE_INTEGER);
+    const rightOrder = Number(right?.session?.order ?? right?.order ?? Number.MAX_SAFE_INTEGER);
+    if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+
+    return normalizeSpace(left?.title || '').localeCompare(normalizeSpace(right?.title || ''));
   };
 
-  const getAbstractText = (details, presentationTitle) => {
-    const html = details?.presentations?.[0]?.session?.session?.description;
-    if (!html || typeof html !== 'string') return 'TBA';
+  const getSortedPresentations = (details) =>
+    getPresentations(details).slice().sort(comparePresentations);
 
-    const normalizedTitle = normalizeCompareText(presentationTitle);
-    if (!normalizedTitle) return 'TBA';
+  const getEligiblePresentations = (details) => {
+    let presentations = getSortedPresentations(details);
+    if (excludedPresentationDateFilter) {
+      presentations = presentations.filter(
+        (presentation) => getPresentationDateKey(presentation) !== excludedPresentationDateFilter,
+      );
+    }
+    if (!presentationDateFilter) return presentations;
+    return presentations.filter(
+      (presentation) => getPresentationDateKey(presentation) === presentationDateFilter,
+    );
+  };
 
+  const shouldDisplaySpeaker = (details) => {
+    const presentations = getPresentations(details);
+    const eligiblePresentations = getEligiblePresentations(details);
+
+    if (presentationDateFilter) return eligiblePresentations.length > 0;
+    if (excludedPresentationDateFilter && presentations.length > 0) {
+      return eligiblePresentations.length > 0;
+    }
+    return true;
+  };
+
+  const getDisplayPresentation = (details) => getEligiblePresentations(details)[0] || null;
+
+  const getPresentationTitle = (presentation) => presentation?.title || 'Presentation TBA';
+
+  const extractAbstractMap = (session) => {
+    const html = session?.description;
+    const map = new Map();
+    if (!html || typeof html !== 'string') return map;
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const children = Array.from(doc.body.children);
 
-    let blockquote = null;
-
     for (let i = 0; i < children.length; i += 1) {
       const node = children[i];
-      const text = normalizeCompareText(node.textContent || '');
-      if (!text) continue;
+      const titleText = normalizeCompareText(node.textContent || '');
+      if (!titleText) continue;
 
-      if (text === normalizedTitle || text.startsWith(normalizedTitle)) {
-        for (let j = i + 1; j < children.length; j += 1) {
-          const next = children[j];
-          if (next.tagName?.toLowerCase() === 'blockquote') {
-            blockquote = next;
-            break;
-          }
-          if (normalizeCompareText(next.textContent || '') !== '') {
-            break;
-          }
+      let blockquote = null;
+      for (let j = i + 1; j < children.length; j += 1) {
+        const next = children[j];
+        if (next.tagName && next.tagName.toLowerCase() === 'blockquote') {
+          blockquote = next;
+          break;
         }
-        break;
+        if (normalizeCompareText(next.textContent || '') !== '') break;
       }
+
+      if (!blockquote) continue;
+
+      const abstractHtml = sanitizeHtmlFragment(blockquote.innerHTML);
+      if (abstractHtml) map.set(titleText, abstractHtml);
     }
 
-    if (!blockquote) return 'TBA';
+    return map;
+  };
 
-    const paragraphs = Array.from(blockquote.querySelectorAll('p'))
-      .map((p) => normalizeSpace(p.textContent || ''))
-      .filter(Boolean);
+  const getAbstractHtml = (presentation) => {
+    const normalizedTitle = normalizeCompareText(presentation?.title || '');
+    if (!normalizedTitle) return '';
 
-    if (paragraphs.length > 0) {
-      return paragraphs.join('\n\n');
-    }
-
-    const fallback = normalizeSpace(blockquote.textContent || '');
-    return fallback || 'TBA';
+    const session = getSessionRecord(presentation);
+    const abstractMap = extractAbstractMap(session);
+    return abstractMap.get(normalizedTitle) || '';
   };
 
   const createIconLink = ({ href, label, svgPath }) => {
@@ -122,10 +251,10 @@
     return link;
   };
 
-  const buildModalTemplate = (speaker, details, categoryName) => {
+  const buildModalTemplate = (speaker, details, categoryName, displayPresentation) => {
     const speakerName = `${speaker.firstname || ''} ${speaker.lastname || ''}`.trim() || 'Speaker';
-    const presentationTitle = getPresentationTitle(details);
-    const abstractText = getAbstractText(details, presentationTitle);
+    const presentationTitle = getPresentationTitle(displayPresentation);
+    const abstractHtml = getAbstractHtml(displayPresentation);
 
     const template = document.createElement('template');
     template.id = `speaker-modal-${speaker.id}`;
@@ -180,9 +309,23 @@
         'Abstract',
       ),
     );
-    abstractSection.appendChild(
-      createEl('p', 'text-sm leading-7 text-pnsqc-slate whitespace-pre-line', abstractText),
-    );
+    if (abstractHtml) {
+      const abstractBody = createEl(
+        'div',
+        'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
+        null,
+      );
+      abstractBody.innerHTML = abstractHtml;
+      abstractSection.appendChild(abstractBody);
+    } else {
+      abstractSection.appendChild(
+        createEl(
+          'p',
+          'text-sm leading-7 text-pnsqc-slate whitespace-pre-line',
+          'Abstract details are coming soon.',
+        ),
+      );
+    }
     wrapper.appendChild(abstractSection);
 
     const bioSection = createEl('div', 'space-y-2', null);
@@ -209,9 +352,9 @@
     };
   };
 
-  const buildCard = ({ speaker, details, templateId, categoryLabel }) => {
+  const buildCard = ({ speaker, details, displayPresentation, templateId, categoryLabel }) => {
     const speakerName = `${speaker.firstname || ''} ${speaker.lastname || ''}`.trim() || 'Speaker';
-    const presentationTitle = getPresentationTitle(details);
+    const presentationTitle = getPresentationTitle(displayPresentation);
 
     const card = createEl(
       'div',
@@ -297,7 +440,7 @@
     statusEl.hidden = !text;
   };
 
-  setStatus('Loading speakers...');
+  setStatus(loadingText);
 
   fetch(endpoint)
     .then((response) => {
@@ -313,12 +456,14 @@
         : [];
       const speakers = Array.isArray(eventData.speakers) ? eventData.speakers : [];
 
-      categories.forEach((category) => {
-        const section = sections.get(category.id);
-        if (section?.title) {
-          section.title.textContent = category.name;
-        }
-      });
+      if (!usesDefaultSection) {
+        categories.forEach((category) => {
+          const section = sections.get(category.id);
+          if (section?.title) {
+            section.title.textContent = category.name;
+          }
+        });
+      }
 
       const sortedSpeakers = speakers
         .filter((speaker) => speaker && speaker.publish)
@@ -329,37 +474,55 @@
 
       sortedSpeakers.forEach((speaker) => {
         const details = getDetails(speaker);
+        if (!shouldDisplaySpeaker(details)) return;
+
+        const displayPresentation = getDisplayPresentation(details);
         const categoryId = speaker.event_speaker_category_id;
-        const section = sections.get(categoryId);
+        const section = usesDefaultSection ? defaultSection : sections.get(categoryId);
         if (!section) return;
 
-        const categoryName = categories.find((cat) => cat.id === categoryId)?.name || 'Speaker';
-        const modalData = buildModalTemplate(speaker, details, categoryName);
+        const categoryName = usesDefaultSection
+          ? defaultCategoryLabel
+          : categories.find((cat) => cat.id === categoryId)?.name || 'Speaker';
+        const modalData = buildModalTemplate(speaker, details, categoryName, displayPresentation);
         templateRoot.appendChild(modalData.template);
 
         const card = buildCard({
           speaker,
           details,
+          displayPresentation,
           templateId: modalData.templateId,
           categoryLabel: categoryName,
         });
         section.grid.appendChild(card);
-        counts.set(categoryId, (counts.get(categoryId) || 0) + 1);
+        const countKey = usesDefaultSection ? defaultSectionKey : categoryId;
+        counts.set(countKey, (counts.get(countKey) || 0) + 1);
       });
 
-      sections.forEach((section, categoryId) => {
-        const count = counts.get(categoryId) || 0;
-        if (section.emptyState) {
-          section.emptyState.hidden = count > 0;
+      if (usesDefaultSection) {
+        const count = counts.get(defaultSectionKey) || 0;
+        if (defaultSection.emptyState) {
+          defaultSection.emptyState.hidden = count > 0;
         }
-      });
+      } else {
+        sections.forEach((section, categoryId) => {
+          const count = counts.get(categoryId) || 0;
+          if (section.emptyState) {
+            section.emptyState.hidden = count > 0;
+          }
+        });
+      }
 
       setStatus('');
     })
     .catch(() => {
-      setStatus('Speakers will be announced soon.');
-      sections.forEach((section) => {
-        if (section.emptyState) section.emptyState.hidden = false;
-      });
+      setStatus(errorText);
+      if (usesDefaultSection) {
+        if (defaultSection.emptyState) defaultSection.emptyState.hidden = false;
+      } else {
+        sections.forEach((section) => {
+          if (section.emptyState) section.emptyState.hidden = false;
+        });
+      }
     });
 })();

@@ -16,6 +16,9 @@ const DEFAULT_THEMES = ['dark', 'light'];
 const SUPPORTED_THEMES = new Set(DEFAULT_THEMES);
 const NAVIGATION_TIMEOUT_MS = 60000;
 const PAGE_READY_TIMEOUT_MS = 10000;
+const NETWORK_IDLE_TIMEOUT_MS = 30000;
+const FONT_READY_TIMEOUT_MS = 10000;
+const RENDER_SETTLE_DELAY_MS = 500;
 const TITLE_READY_TIMEOUT_MS = 10000;
 const DEFAULT_PLAYWRIGHT_BROWSERS_PATH = path.join(rootDir, '.playwright-browsers');
 
@@ -192,6 +195,24 @@ async function waitForPageReady(page) {
   } catch {
     // Keep going so Axe can report the real failure state.
   }
+
+  try {
+    await page.waitForLoadState('networkidle', { timeout: NETWORK_IDLE_TIMEOUT_MS });
+  } catch {
+    // Some pages may keep background requests alive. Continue with the best settled state we have.
+  }
+
+  try {
+    await page.waitForFunction(
+      () => !document.fonts || document.fonts.status === 'loaded',
+      undefined,
+      { timeout: FONT_READY_TIMEOUT_MS },
+    );
+  } catch {
+    // Font readiness is helpful for stable rendering, but it should not block the audit forever.
+  }
+
+  await page.waitForTimeout(RENDER_SETTLE_DELAY_MS);
 }
 
 async function waitForDocumentTitle(page) {

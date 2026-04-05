@@ -53,6 +53,13 @@
   closeButton.addEventListener('click', closeModal);
   backdrop.addEventListener('click', closeModal);
 
+  // Close when clicking outside the modal panel (on backdrop or wrapper)
+  modal.addEventListener('click', (event) => {
+    if (!panel.contains(event.target)) {
+      closeModal();
+    }
+  });
+
   modal.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       event.preventDefault();

@@ -21,6 +21,7 @@ function findHtmlFiles(dir = SRC) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === '_partials') continue;
       results.push(...findHtmlFiles(full));
     } else if (entry.name.endsWith('.html')) {
       results.push(full);
@@ -110,8 +111,8 @@ function escAttr(s) {
 
 function injectPartials(html) {
   const partials = [
-    { tag: 'header', label: 'HEADER', file: '_partials/header.html' },
-    { tag: 'footer', label: 'FOOTER', file: '_partials/footer.html' },
+    { tag: 'header', label: 'HEADER', file: 'src/_partials/header.html' },
+    { tag: 'footer', label: 'FOOTER', file: 'src/_partials/footer.html' },
   ];
 
   for (const { tag, label, file } of partials) {
@@ -125,7 +126,7 @@ function injectPartials(html) {
 
     // Match from the marker comment through the closing tag
     const markerRe = new RegExp(
-      `([ \\t]*)<!-- =+\\s*${label} \\(from ${file.replace('/', '\\/')}\\)[\\s\\S]*?=+ -->` +
+      `([ \\t]*)<!-- =+\\s*${label} \\(from ${file.replace(/\//g, '\\/')}\\)[\\s\\S]*?=+ -->` +
         `[\\s\\S]*?</${tag}>`,
     );
 
@@ -150,7 +151,7 @@ function wrapPrimaryContentInMain(html) {
   const headerEnd = html.indexOf('</header>');
   if (headerEnd === -1) return html;
 
-  const footerLabelIndex = html.indexOf('FOOTER (from _partials/footer.html)');
+  const footerLabelIndex = html.indexOf('FOOTER (from src/_partials/footer.html)');
   const footerStart =
     footerLabelIndex === -1
       ? html.lastIndexOf('<footer')
@@ -211,6 +212,10 @@ function assembleDist() {
 
   // Copy src/ to dist/
   cpSync(SRC, DIST, { recursive: true });
+
+  // Shared partials are source-only and should not be published in dist/.
+  const distPartials = join(DIST, '_partials');
+  if (existsSync(distPartials)) rmSync(distPartials, { recursive: true });
 
   // Remove Tailwind source file from publish output
   const inputCss = join(DIST, 'css', 'input.css');

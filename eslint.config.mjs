@@ -41,7 +41,7 @@ export default [
   },
   {
     ...htmlRecommended,
-    files: ['src/**/*.html', '_partials/**/*.html'],
+    files: ['src/**/*.html'],
     rules: {
       ...htmlRecommended.rules,
       '@html-eslint/attrs-newline': 'off',

@@ -8,7 +8,7 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 
 - HTML pages in `src/`
 - Tailwind CSS v4 (`@tailwindcss/cli`)
-- Shared partials in `_partials/` (`header.html`, `footer.html`)
+- Shared partials in `src/_partials/` (`header.html`, `footer.html`)
 - Custom build script in `build.mjs`
 - Output in `dist/` (deploy this folder)
   - `src/404.html` is included as `dist/404.html` for proper not-found responses.
@@ -33,7 +33,7 @@ This repo is a static site built from plain HTML + Tailwind CSS, with a small No
 
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
-   2. Injects shared header/footer partials into each HTML page in `dist/`
+   2. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
    3. Reads each page's `<!-- meta ... -->` block and writes SEO tags into `<head>`
    4. Generates `dist/sitemap.xml` and `dist/robots.txt`
 2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
@@ -65,12 +65,12 @@ In files under `src/`, use the header/footer markers with empty tags:
 
 ```html
 <!-- ============================================================
-     HEADER (from _partials/header.html)
+     HEADER (from src/_partials/header.html)
      ============================================================ -->
 <header></header>
 
 <!-- ============================================================
-     FOOTER (from _partials/footer.html)
+     FOOTER (from src/_partials/footer.html)
      ============================================================ -->
 <footer></footer>
 ```
@@ -105,10 +105,11 @@ website/
 ├── package.json
 ├── site.config.json
 ├── .agents/                  # local agent skills + scripts
-├── _partials/                # shared header/footer snippets
 ├── content/                  # markdown source material
 ├── design/                   # design references
 ├── src/                      # editable site source
+│   ├── _partials/            # shared header/footer snippets
+│   └── ...
 └── dist/                     # generated deploy output (gitignored)
 ```
 

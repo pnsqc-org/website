@@ -33,14 +33,14 @@ og_image: /images/events/conference/2025/group_photo.jpg
   </head>
   <body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
     <!-- ============================================================
-       HEADER (from _partials/header.html)
+       HEADER (from src/_partials/header.html)
        ============================================================ -->
     <header></header>
 
     <!-- YOUR PAGE CONTENT HERE -->
 
     <!-- ============================================================
-       FOOTER (from _partials/footer.html)
+       FOOTER (from src/_partials/footer.html)
        ============================================================ -->
     <footer></footer>
   </body>
@@ -63,7 +63,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
 - Copies `src/` → `dist/`
 - Injects partials and SEO **into `dist/` files only**
 - Leaves `src/` files untouched
-- Edit headers/footers in `_partials/`, not in HTML files
+- Edit headers/footers in `src/_partials/`, not in HTML files
 
 ## Common Mistakes
 

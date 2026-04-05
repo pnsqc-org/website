@@ -172,9 +172,6 @@ You do not need Chrome, Edge, or any other browser installed globally for the au
 Useful options:
 
 ```bash
-# Install the project-local browser ahead of time
-npm run audit:a11y:install
-
 # Audit only one route and one theme
 npm run audit:a11y -- --route /about/contact/ --theme light
 
@@ -184,5 +181,3 @@ npm run audit:a11y -- --skip-build
 # Write the report to a different path
 npm run audit:a11y -- --report reports/axe-contact.json
 ```
-
-The audit still supports `AXE_ROUTES`, `AXE_THEMES`, and `AXE_REPORT_PATH`, but the CLI flags above are the easiest cross-platform way to filter routes or themes on macOS, Linux, and Windows.

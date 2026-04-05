@@ -13,6 +13,7 @@
     "format": "prettier --check src/**/*.{html,js,css} _partials/**/*.{html,js,css}",
     "format:write": "prettier --write src/**/*.{html,js,css} _partials/**/*.{html,js,css}",
     "issues": "node skills/public/address-github-issue/scripts/github-issues.mjs",
+    "prepare": "husky",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -38,6 +39,7 @@
     "axe-core": "^4.11.1",
     "eslint": "^10.1.0",
     "globals": "^17.4.0",
+    "husky": "^9.1.7",
     "playwright": "^1.58.2",
     "prettier": "^3.8.1"
   }

@@ -1,0 +1,54 @@
+backup_stash=''
+stash_name="husky-pre-commit-$(date +%s)"
+
+restore_backup_stash() {
+  if [ -n "$backup_stash" ]; then
+    printf '\n> Restoring unstaged changes\n'
+
+    if ! git stash pop --quiet "$backup_stash"; then
+      echo
+      echo 'Husky could not restore your unstaged changes cleanly.'
+      echo 'Your backup is still available in git stash if you need to recover it manually.'
+      return 1
+    fi
+  fi
+}
+
+cleanup() {
+  status=$?
+  restore_backup_stash || status=1
+  exit "$status"
+}
+
+trap cleanup EXIT INT HUP TERM
+
+if ! git diff --quiet --ignore-submodules -- || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+  printf '\n> Stashing unstaged changes\n'
+  git stash push --quiet --keep-index --include-untracked --message "$stash_name"
+
+  backup_stash=$(
+    git stash list --format='%gd %gs' |
+      awk -v stash_name="$stash_name" '$0 ~ stash_name { print $1; exit }'
+  )
+
+  if [ -z "$backup_stash" ]; then
+    echo
+    echo 'Husky could not find the backup stash it just created.'
+    exit 1
+  fi
+fi
+
+printf '\n> Running lint:fix\n'
+npm run lint:fix
+
+printf '\n> Running format:write\n'
+npm run format:write
+
+printf '\n> Staging lint and format changes\n'
+git add -A
+
+printf '\n> Running build\n'
+npm run build
+
+printf '\n> Running audit:a11y\n'
+npm run audit:a11y -- --skip-build

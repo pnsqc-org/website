@@ -1,0 +1,15 @@
+subject_line=$(
+  awk '
+    /^[[:space:]]*#/ { next }
+    /^[[:space:]]*$/ { next }
+    { print; exit }
+  ' "$1"
+)
+
+word_count=$(printf '%s\n' "$subject_line" | awk '{ print NF }')
+
+if [ "$word_count" -lt 3 ]; then
+  echo 'Commit message must be at least 3 words long.'
+  echo 'Example: "fix homepage hero spacing"'
+  exit 1
+fi

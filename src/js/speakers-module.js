@@ -312,7 +312,7 @@
     if (abstractHtml) {
       const abstractBody = createEl(
         'div',
-        'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
+        'speakers-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
         null,
       );
       abstractBody.innerHTML = abstractHtml;
@@ -374,11 +374,13 @@
     avatar.loading = 'lazy';
     avatarWrap.appendChild(avatar);
 
-    const content = createEl('div', null, null);
-    const header = createEl('div', 'flex flex-wrap items-start justify-between gap-3', null);
-    header.appendChild(createEl('h3', 'text-xl font-semibold text-white', speakerName));
+    const content = createEl('div', 'w-full min-w-0 flex-1', null);
+    const header = createEl('div', 'flex w-full items-start gap-3', null);
+    header.appendChild(
+      createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', speakerName),
+    );
 
-    const iconRow = createEl('div', 'flex items-center gap-2', null);
+    const iconRow = createEl('div', 'ml-auto flex shrink-0 items-center gap-2', null);
     const linkedinLink = createIconLink({
       href: details.linkedin,
       label: 'LinkedIn profile',

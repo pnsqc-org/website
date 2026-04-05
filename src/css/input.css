@@ -637,6 +637,40 @@ a.gold-readable--tinted:focus-visible {
   font-weight: 700;
 }
 
+.speakers-modal-content p + p,
+.speakers-modal-content p + ul,
+.speakers-modal-content p + ol,
+.speakers-modal-content ul + p,
+.speakers-modal-content ol + p,
+.speakers-modal-content ul + ul,
+.speakers-modal-content ol + ol,
+.speakers-modal-content ul + ol,
+.speakers-modal-content ol + ul {
+  margin-top: 0.75rem;
+}
+
+.speakers-modal-content ul,
+.speakers-modal-content ol {
+  padding-left: 1.5rem;
+}
+
+.speakers-modal-content ul {
+  list-style: disc;
+}
+
+.speakers-modal-content ol {
+  list-style: decimal;
+}
+
+.speakers-modal-content li + li {
+  margin-top: 0.4rem;
+}
+
+.speakers-modal-content strong {
+  color: var(--color-white);
+  font-weight: 700;
+}
+
 @media (max-width: 640px) {
   .page-content {
     font-size: 1rem;

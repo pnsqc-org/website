@@ -1,0 +1,128 @@
+<!-- meta
+title: Archive - 2025 Speakers - PNSQC
+description: Browse the speakers represented in the PNSQC 2025 proceedings archive.
+og_image: /images/events/conference/2025/paper_presentation.jpg
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="icon" type="image/jpg" href="/images/brand/pnsqc-logo.jpg" />
+  </head>
+  <body class="has-fixed-header bg-pnsqc-navy text-white antialiased">
+    <!-- ============================================================
+       HEADER (from src/_partials/header.html)
+       ============================================================ -->
+    <header></header>
+
+    <!-- ============================================================
+       PAGE HEADER
+       ============================================================ -->
+    <section class="page-section">
+      <div class="page-shell">
+        <div class="mb-10">
+          <p
+            class="gold-readable--tinted inline-flex items-center rounded-full border border-pnsqc-gold/20 bg-pnsqc-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-pnsqc-gold"
+          >
+            Archive
+          </p>
+          <h1
+            class="mt-5 bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
+          >
+            2025 Speakers
+          </h1>
+        </div>
+
+        <div
+          data-presenter-directory
+          data-presenter-endpoint="/data/archive/2025/speakers.json"
+          data-presenter-fallback-avatar="/images/brand/pnsqc-logo.jpg"
+          data-presenter-default-label="Speaker"
+          data-presenter-loading-text="Loading 2025 speakers..."
+          data-presenter-error-text="2025 speakers are not available right now."
+        >
+          <p class="text-center text-sm text-pnsqc-slate" data-presenter-status>
+            Loading 2025 speakers...
+          </p>
+
+          <div class="gold-readable-surface mt-10">
+            <section data-presenter-default-section>
+              <div class="mx-auto grid max-w-5xl gap-8 md:grid-cols-2" data-presenter-grid></div>
+              <p class="mt-6 text-center text-sm italic text-pnsqc-slate" data-presenter-empty hidden>
+                2025 archive speakers will appear here once the proceedings-backed data is
+                available.
+              </p>
+            </section>
+          </div>
+
+          <div class="hidden" aria-hidden="true" data-presenter-templates></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="fixed inset-0 z-50 hidden" data-details-modal>
+      <div class="absolute inset-0 bg-pnsqc-navy/85 backdrop-blur-sm" data-details-modal-backdrop></div>
+      <div class="relative z-10 flex min-h-full items-center justify-center p-4">
+        <div
+          class="w-full max-w-3xl rounded-2xl border border-pnsqc-gold/25 bg-pnsqc-navy shadow-2xl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="details-modal-title"
+          data-details-modal-panel
+        >
+          <div
+            class="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-4 sm:px-6 sm:py-5"
+          >
+            <div>
+              <p
+                class="text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80"
+                data-details-modal-label
+              >
+                Speaker
+              </p>
+              <h3
+                id="details-modal-title"
+                class="mt-1 text-lg font-bold text-white sm:text-xl"
+                data-details-modal-title
+              >
+                Speaker Details
+              </h3>
+            </div>
+            <button
+              type="button"
+              class="rounded-lg border border-white/10 p-2 text-pnsqc-slate transition-colors hover:border-white/25 hover:text-white"
+              aria-label="Close speaker details"
+              data-details-modal-close
+            >
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="max-h-[75vh] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6" data-details-modal-body></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+       FOOTER (from src/_partials/footer.html)
+       ============================================================ -->
+    <footer></footer>
+
+    <script src="/js/presenter-directory.js" defer></script>
+    <script src="/js/details-modal.js" defer></script>
+  </body>
+</html>

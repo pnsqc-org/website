@@ -45,6 +45,24 @@
     return value.replace(/\s+/g, ' ').trim();
   };
 
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const textToHtml = (value) => {
+    const normalized = String(value || '')
+      .replace(/\r\n/g, '\n')
+      .trim();
+    if (!normalized) return '';
+    return normalized
+      .split(/\n{2,}/)
+      .map((block) => `<p>${escapeHtml(block.trim()).replace(/\n/g, '<br>')}</p>`)
+      .join('');
+  };
+
   const loadingText =
     normalizeSpace(directoryRoot.getAttribute('data-presenter-loading-text')) ||
     normalizeSpace(statusEl?.textContent || '') ||
@@ -85,15 +103,33 @@
 
     const sanitizeNode = (node) => {
       if (!node) return null;
+
       if (node.nodeType === Node.TEXT_NODE) {
         const textValue = node.textContent || '';
         if (!textValue.trim()) return null;
         return document.createTextNode(textValue.replace(/\u00a0/g, ' '));
       }
+
       if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
       const tag = node.tagName.toLowerCase();
-      const allowed = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'br'];
+      const allowed = [
+        'a',
+        'p',
+        'ul',
+        'ol',
+        'li',
+        'strong',
+        'em',
+        'b',
+        'i',
+        'u',
+        'br',
+        'blockquote',
+        'code',
+        'pre',
+        'hr',
+      ];
       if (!allowed.includes(tag)) {
         const fragment = document.createDocumentFragment();
         Array.from(node.childNodes).forEach((child) => {
@@ -104,10 +140,24 @@
       }
 
       const copy = document.createElement(tag);
+      if (tag === 'a') {
+        const href = node.getAttribute('href') || '';
+        if (/^(https?:|mailto:|\/)/i.test(href)) {
+          copy.setAttribute('href', href);
+          if (/^https?:/i.test(href)) {
+            copy.setAttribute('target', '_blank');
+            copy.setAttribute('rel', 'noopener noreferrer');
+          }
+        } else {
+          return null;
+        }
+      }
+
       Array.from(node.childNodes).forEach((child) => {
         const cleanedChild = sanitizeNode(child);
         if (cleanedChild) copy.appendChild(cleanedChild);
       });
+
       return copy;
     };
 
@@ -158,33 +208,6 @@
 
   const getSortedPresentations = (details) =>
     getPresentations(details).slice().sort(comparePresentations);
-
-  const getEligiblePresentations = (details) => {
-    let presentations = getSortedPresentations(details);
-    if (excludedPresentationDateFilter) {
-      presentations = presentations.filter(
-        (presentation) => getPresentationDateKey(presentation) !== excludedPresentationDateFilter,
-      );
-    }
-    if (!presentationDateFilter) return presentations;
-    return presentations.filter(
-      (presentation) => getPresentationDateKey(presentation) === presentationDateFilter,
-    );
-  };
-
-  const getPresenterDisplayState = (details) => {
-    const presentations = getPresentations(details);
-    const eligiblePresentations = getEligiblePresentations(details);
-    const displayPresentation = eligiblePresentations[0] || null;
-
-    if (presentationDateFilter) {
-      return { displayPresentation, shouldDisplay: eligiblePresentations.length > 0 };
-    }
-    if (excludedPresentationDateFilter && presentations.length > 0) {
-      return { displayPresentation, shouldDisplay: eligiblePresentations.length > 0 };
-    }
-    return { displayPresentation, shouldDisplay: true };
-  };
 
   const getPresentationTitle = (presentation) => presentation?.title || 'Presentation TBA';
 
@@ -238,6 +261,125 @@
     return abstractMap.get(normalizedTitle) || '';
   };
 
+  const normalizeCategory = (category) => {
+    if (!category || typeof category !== 'object') return null;
+
+    const id = Number(category.id);
+    return {
+      id: Number.isNaN(id) ? null : id,
+      name: normalizeSpace(category.name || ''),
+    };
+  };
+
+  const normalizeMeetingHandPresenter = (presenter, index) => {
+    const details = getPresenterDetails(presenter);
+    const presenterName = getPresenterName(presenter);
+    const presentations = getSortedPresentations(details).map((presentation) => ({
+      title: getPresentationTitle(presentation),
+      descriptionHtml: getAbstractHtml(presentation),
+      date: getPresentationDateKey(presentation),
+      label: '',
+    }));
+
+    const sortOrder = Number(presenter.order);
+    const categoryId = Number(presenter.event_speaker_category_id);
+
+    return {
+      id: String(presenter.id ?? index),
+      name: presenterName,
+      profession: normalizeSpace(presenter.profession || ''),
+      avatar: presenter.avatar || fallbackAvatar,
+      linkedin: normalizeSpace(details.linkedin || ''),
+      homepage: normalizeSpace(details.homepage || ''),
+      bioHtml: textToHtml(details.short_bio || ''),
+      categoryId: Number.isNaN(categoryId) ? null : categoryId,
+      sortOrder: Number.isFinite(sortOrder) ? sortOrder : null,
+      publish: Boolean(presenter.publish),
+      presentations,
+    };
+  };
+
+  const normalizeArchivePresenter = (presenter, index) => ({
+    id: String(presenter.id ?? index),
+    name: normalizeSpace(presenter.name || '') || 'Presenter',
+    profession: normalizeSpace(presenter.profession || ''),
+    avatar: normalizeSpace(presenter.avatar || '') || fallbackAvatar,
+    linkedin: normalizeSpace(presenter.linkedin || ''),
+    homepage: normalizeSpace(presenter.homepage || ''),
+    bioHtml: sanitizeHtmlFragment(presenter.bioHtml || ''),
+    categoryId: Number.isFinite(Number(presenter.categoryId)) ? Number(presenter.categoryId) : null,
+    sortOrder: Number.isFinite(Number(presenter.sortOrder)) ? Number(presenter.sortOrder) : null,
+    publish: true,
+    presentations: Array.isArray(presenter.presentations)
+      ? presenter.presentations.filter(Boolean).map((presentation) => ({
+          title: normalizeSpace(presentation.title || '') || 'Presentation TBA',
+          descriptionHtml: sanitizeHtmlFragment(
+            presentation.descriptionHtml || textToHtml(presentation.description || ''),
+          ),
+          date: extractDateKey(presentation.date || ''),
+          label: normalizeSpace(presentation.label || ''),
+        }))
+      : [],
+  });
+
+  const normalizePayload = (payload) => {
+    if (Array.isArray(payload?.speakers)) {
+      return {
+        categories: Array.isArray(payload.categories)
+          ? payload.categories.map(normalizeCategory).filter(Boolean)
+          : [],
+        presenters: payload.speakers.map(normalizeArchivePresenter),
+      };
+    }
+
+    const eventData = payload?.data || payload || {};
+    const categories = Array.isArray(eventData.speaker_categories)
+      ? eventData.speaker_categories.map(normalizeCategory).filter(Boolean)
+      : [];
+    const presenters = Array.isArray(eventData.speakers)
+      ? eventData.speakers
+          .map(normalizeMeetingHandPresenter)
+          .filter((presenter) => presenter.publish)
+      : [];
+
+    return { categories, presenters };
+  };
+
+  const comparePresenters = (left, right) => {
+    if (left.sortOrder !== null && right.sortOrder !== null && left.sortOrder !== right.sortOrder) {
+      return left.sortOrder - right.sortOrder;
+    }
+    return left.name.localeCompare(right.name);
+  };
+
+  const getEligiblePresentations = (presenter) => {
+    let presentations = Array.isArray(presenter.presentations) ? presenter.presentations.slice() : [];
+    if (excludedPresentationDateFilter) {
+      presentations = presentations.filter(
+        (presentation) => extractDateKey(presentation.date) !== excludedPresentationDateFilter,
+      );
+    }
+    if (!presentationDateFilter) return presentations;
+    return presentations.filter(
+      (presentation) => extractDateKey(presentation.date) === presentationDateFilter,
+    );
+  };
+
+  const getPresenterDisplayState = (presenter) => {
+    const presentations = Array.isArray(presenter.presentations) ? presenter.presentations : [];
+    const eligiblePresentations = getEligiblePresentations(presenter);
+    const displayPresentation = eligiblePresentations[0] || presentations[0] || null;
+
+    if (presentationDateFilter) {
+      return { displayPresentation, eligiblePresentations, shouldDisplay: eligiblePresentations.length > 0 };
+    }
+    if (excludedPresentationDateFilter && presentations.length > 0) {
+      return { displayPresentation, eligiblePresentations, shouldDisplay: eligiblePresentations.length > 0 };
+    }
+
+    return { displayPresentation, eligiblePresentations, shouldDisplay: true };
+  };
+
   const createSvgIcon = ({
     className,
     pathData,
@@ -268,15 +410,17 @@
     if (!href) return null;
     const link = createEl(
       'a',
-      'inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-colors',
+      'inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 transition-colors hover:bg-white/10',
       null,
     );
     link.href = href;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
+    if (/^https?:/i.test(href)) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
     link.setAttribute('aria-label', label);
     link.setAttribute('title', label);
-    link.appendChild(createSvgIcon({ className: 'w-4 h-4 text-white/80', pathData: svgPath }));
+    link.appendChild(createSvgIcon({ className: 'h-4 w-4 text-white/80', pathData: svgPath }));
 
     return link;
   };
@@ -295,30 +439,116 @@
     },
   ];
 
-  const createPresenterLinks = (details, className) => {
+  const createPresenterLinks = (presenter, className) => {
     const linkRow = createEl('div', className, null);
 
     presenterLinkConfigs.forEach(({ hrefKey, label, svgPath }) => {
-      const link = createIconLink({ href: details[hrefKey], label, svgPath });
-      if (link) {
-        linkRow.appendChild(link);
-      }
+      const link = createIconLink({ href: presenter[hrefKey], label, svgPath });
+      if (link) linkRow.appendChild(link);
     });
 
     return linkRow.childElementCount > 0 ? linkRow : null;
   };
 
-  const buildDetailsTemplate = (presenter, details, categoryName, displayPresentation) => {
-    const presenterName = getPresenterName(presenter);
-    const presentationTitle = getPresentationTitle(displayPresentation);
-    const abstractHtml = getAbstractHtml(displayPresentation);
+  const buildPresentationsSection = (presentations) => {
+    const section = createEl('div', 'space-y-3', null);
+    const headingText = presentations.length > 1 ? 'Presentations' : 'Abstract';
+    section.appendChild(
+      createEl(
+        'p',
+        'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80',
+        headingText,
+      ),
+    );
 
+    if (!presentations.length) {
+      section.appendChild(
+        createEl(
+          'p',
+          'whitespace-pre-line text-sm leading-7 text-pnsqc-slate',
+          'Presentation details are coming soon.',
+        ),
+      );
+      return section;
+    }
+
+    if (presentations.length === 1) {
+      const descriptionHtml = sanitizeHtmlFragment(presentations[0].descriptionHtml || '');
+      if (descriptionHtml) {
+        const abstractBody = createEl(
+          'div',
+          'details-modal-content space-y-3 text-sm leading-7 text-pnsqc-slate',
+          null,
+        );
+        abstractBody.innerHTML = descriptionHtml;
+        section.appendChild(abstractBody);
+      } else {
+        section.appendChild(
+          createEl(
+            'p',
+            'whitespace-pre-line text-sm leading-7 text-pnsqc-slate',
+            'Abstract details are coming soon.',
+          ),
+        );
+      }
+      return section;
+    }
+
+    const list = createEl('div', 'space-y-5', null);
+    presentations.forEach((presentation, index) => {
+      const item = createEl(
+        'article',
+        index === 0 ? 'space-y-2' : 'space-y-2 border-t border-white/10 pt-5',
+        null,
+      );
+      item.appendChild(createEl('h4', 'text-base font-semibold text-white', presentation.title));
+
+      const meta = [presentation.label, presentation.date].filter(Boolean).join(' | ');
+      if (meta) {
+        item.appendChild(
+          createEl('p', 'text-xs uppercase tracking-widest text-pnsqc-gold/70', meta),
+        );
+      }
+
+      const descriptionHtml = sanitizeHtmlFragment(presentation.descriptionHtml || '');
+      if (descriptionHtml) {
+        const description = createEl(
+          'div',
+          'details-modal-content space-y-3 text-sm leading-7 text-pnsqc-slate',
+          null,
+        );
+        description.innerHTML = descriptionHtml;
+        item.appendChild(description);
+      } else {
+        item.appendChild(
+          createEl(
+            'p',
+            'whitespace-pre-line text-sm leading-7 text-pnsqc-slate',
+            'Abstract details are coming soon.',
+          ),
+        );
+      }
+
+      list.appendChild(item);
+    });
+
+    section.appendChild(list);
+    return section;
+  };
+
+  const buildModalTemplate = (
+    presenter,
+    categoryName,
+    eligiblePresentations,
+    displayPresentation,
+  ) => {
+    const presenterName = presenter.name || 'Presenter';
     const template = document.createElement('template');
     template.id = `details-modal-template-presenter-${presenter.id}`;
 
     const wrapper = createEl('div', 'space-y-6', null);
 
-    const top = createEl('div', 'flex flex-col sm:flex-row items-start gap-5', null);
+    const top = createEl('div', 'flex flex-col items-start gap-5 sm:flex-row', null);
     const avatar = createEl(
       'img',
       'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
@@ -333,51 +563,46 @@
     if (presenter.profession) {
       topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', presenter.profession));
     }
-    topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', presentationTitle));
-
-    const iconRow = createPresenterLinks(details, 'flex flex-wrap items-center gap-2');
-    if (iconRow) {
-      topContent.appendChild(iconRow);
+    if (displayPresentation) {
+      topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', displayPresentation.title));
     }
+    if (eligiblePresentations.length > 1) {
+      topContent.appendChild(
+        createEl(
+          'p',
+          'text-xs uppercase tracking-widest text-pnsqc-cyan/80',
+          `${eligiblePresentations.length} presentations`,
+        ),
+      );
+    }
+
+    const iconRow = createPresenterLinks(presenter, 'flex flex-wrap items-center gap-2');
+    if (iconRow) topContent.appendChild(iconRow);
 
     top.appendChild(avatar);
     top.appendChild(topContent);
     wrapper.appendChild(top);
-
-    const abstractSection = createEl('div', 'space-y-2', null);
-    abstractSection.appendChild(
-      createEl(
-        'p',
-        'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80',
-        'Abstract',
-      ),
-    );
-    if (abstractHtml) {
-      const abstractBody = createEl('div', 'rich-content rich-content--compact space-y-3', null);
-      abstractBody.innerHTML = abstractHtml;
-      abstractSection.appendChild(abstractBody);
-    } else {
-      abstractSection.appendChild(
-        createEl(
-          'p',
-          'text-sm leading-7 text-pnsqc-slate whitespace-pre-line',
-          'Abstract details are coming soon.',
-        ),
-      );
-    }
-    wrapper.appendChild(abstractSection);
+    wrapper.appendChild(buildPresentationsSection(eligiblePresentations));
 
     const bioSection = createEl('div', 'space-y-2', null);
     bioSection.appendChild(
       createEl('p', 'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80', 'Bio'),
     );
-    bioSection.appendChild(
-      createEl(
-        'p',
-        'text-sm leading-7 text-pnsqc-slate whitespace-pre-line',
-        details.short_bio || 'Bio coming soon.',
-      ),
-    );
+
+    const bioHtml = sanitizeHtmlFragment(presenter.bioHtml || '');
+    if (bioHtml) {
+      const bioBody = createEl(
+        'div',
+        'details-modal-content space-y-3 text-sm leading-7 text-pnsqc-slate',
+        null,
+      );
+      bioBody.innerHTML = bioHtml;
+      bioSection.appendChild(bioBody);
+    } else {
+      bioSection.appendChild(
+        createEl('p', 'whitespace-pre-line text-sm leading-7 text-pnsqc-slate', 'Bio coming soon.'),
+      );
+    }
     wrapper.appendChild(bioSection);
 
     template.content.appendChild(wrapper);
@@ -386,32 +611,31 @@
       template,
       templateId: template.id,
       presenterName,
-      presentationTitle,
       categoryLabel: categoryName || 'Presenter',
     };
   };
 
   const buildPresenterCard = ({
     presenter,
-    details,
     displayPresentation,
+    presentationCount,
     templateId,
     categoryLabel,
   }) => {
-    const presenterName = getPresenterName(presenter);
-    const presentationTitle = getPresentationTitle(displayPresentation);
+    const presenterName = presenter.name || 'Presenter';
+    const presentationTitle = displayPresentation?.title || 'Presentation TBA';
 
     const card = createEl(
       'div',
-      'rounded-2xl bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy border border-pnsqc-gold/20 p-8',
+      'rounded-2xl border border-pnsqc-gold/20 bg-gradient-to-br from-pnsqc-blue-dark/50 to-pnsqc-navy p-8',
       null,
     );
 
-    const layout = createEl('div', 'flex flex-col sm:flex-row items-start gap-6', null);
-    const avatarWrap = createEl('div', 'flex-shrink-0', null);
+    const layout = createEl('div', 'flex flex-col items-start gap-6 sm:flex-row', null);
+    const avatarWrap = createEl('div', 'shrink-0', null);
     const avatar = createEl(
       'img',
-      'w-32 h-32 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
+      'h-32 w-32 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
       null,
     );
     avatar.src = presenter.avatar || fallbackAvatar;
@@ -425,7 +649,7 @@
       createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', presenterName),
     );
 
-    const iconRow = createPresenterLinks(details, 'ml-auto flex shrink-0 items-center gap-2');
+    const iconRow = createPresenterLinks(presenter, 'ml-auto flex shrink-0 items-center gap-2');
     if (iconRow) header.appendChild(iconRow);
 
     content.appendChild(header);
@@ -434,10 +658,20 @@
     }
     content.appendChild(createEl('p', 'mt-2 text-sm text-pnsqc-gold', presentationTitle));
 
+    if (presentationCount > 1) {
+      content.appendChild(
+        createEl(
+          'p',
+          'mt-2 text-xs uppercase tracking-widest text-pnsqc-cyan/80',
+          `${presentationCount} presentations`,
+        ),
+      );
+    }
+
     const buttonWrap = createEl('div', 'mt-4', null);
     const button = createEl(
       'button',
-      'inline-flex items-center gap-1.5 text-xs font-semibold text-pnsqc-gold px-2.5 py-1.5 rounded bg-pnsqc-gold/10 hover:bg-pnsqc-gold/15 hover:text-pnsqc-gold-light transition-colors',
+      'inline-flex items-center gap-1.5 rounded bg-pnsqc-gold/10 px-2.5 py-1.5 text-xs font-semibold text-pnsqc-gold transition-colors hover:bg-pnsqc-gold/15 hover:text-pnsqc-gold-light',
       'Read More',
     );
     button.type = 'button';
@@ -481,61 +715,56 @@
       return response.json();
     })
     .then((payload) => {
-      const eventData = payload?.data || payload || {};
-      const presenterCategories = Array.isArray(eventData.speaker_categories)
-        ? eventData.speaker_categories
-        : [];
+      const normalized = normalizePayload(payload);
+      const categories = Array.isArray(normalized.categories) ? normalized.categories : [];
       const categoryNames = new Map(
-        presenterCategories.map((category) => [category.id, category.name || 'Presenter']),
+        categories
+          .filter((category) => category && category.id !== null)
+          .map((category) => [category.id, category.name || defaultCategoryLabel]),
       );
-      const presenters = Array.isArray(eventData.speakers) ? eventData.speakers : [];
 
       if (!usesDefaultSection) {
-        presenterCategories.forEach((category) => {
+        categories.forEach((category) => {
+          if (!category || category.id === null) return;
           const section = sections.get(category.id);
-          if (section?.title) {
+          if (section?.title && category.name) {
             section.title.textContent = category.name;
           }
         });
       }
 
-      const sortedPresenters = presenters
-        .filter((presenter) => presenter && presenter.publish)
-        .slice()
-        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-
+      const sortedPresenters = normalized.presenters.slice().sort(comparePresenters);
       const counts = new Map();
 
       sortedPresenters.forEach((presenter) => {
-        const details = getPresenterDetails(presenter);
-        const { shouldDisplay, displayPresentation } = getPresenterDisplayState(details);
+        const { shouldDisplay, displayPresentation, eligiblePresentations } =
+          getPresenterDisplayState(presenter);
         if (!shouldDisplay) return;
 
-        const categoryId = presenter.event_speaker_category_id;
-        const section = usesDefaultSection ? defaultSection : sections.get(categoryId);
+        const sectionKey = usesDefaultSection ? defaultSectionKey : presenter.categoryId;
+        const section = usesDefaultSection ? defaultSection : sections.get(presenter.categoryId);
         if (!section) return;
 
         const categoryName = usesDefaultSection
           ? defaultCategoryLabel
-          : categoryNames.get(categoryId) || 'Presenter';
-        const detailsTemplate = buildDetailsTemplate(
+          : categoryNames.get(presenter.categoryId) || defaultCategoryLabel;
+        const modalData = buildModalTemplate(
           presenter,
-          details,
           categoryName,
+          eligiblePresentations,
           displayPresentation,
         );
-        templateRoot.appendChild(detailsTemplate.template);
+        templateRoot.appendChild(modalData.template);
 
         const card = buildPresenterCard({
           presenter,
-          details,
           displayPresentation,
-          templateId: detailsTemplate.templateId,
+          presentationCount: eligiblePresentations.length,
+          templateId: modalData.templateId,
           categoryLabel: categoryName,
         });
         section.grid.appendChild(card);
-        const countKey = usesDefaultSection ? defaultSectionKey : categoryId;
-        counts.set(countKey, (counts.get(countKey) || 0) + 1);
+        counts.set(sectionKey, (counts.get(sectionKey) || 0) + 1);
       });
 
       if (usesDefaultSection) {

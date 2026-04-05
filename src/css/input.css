@@ -893,26 +893,26 @@ a.gold-readable--tinted:focus-visible {
   font-size: 0.95rem;
 }
 
-:is(.rich-content, .recent-event-description) blockquote {
+:is(.rich-content, .details-modal-content, .recent-event-description) blockquote {
   border-left: 2px solid rgba(229, 168, 80, 0.4);
   color: rgba(181, 167, 153, 0.95);
   padding-left: 0.85rem;
   font-style: italic;
 }
 
-:is(.rich-content, .recent-event-description) :where(code, pre) {
+:is(.rich-content, .details-modal-content, .recent-event-description) :where(code, pre) {
   font-family: var(--font-mono);
   font-size: 0.92em;
 }
 
-:is(.rich-content, .recent-event-description) code {
+:is(.rich-content, .details-modal-content, .recent-event-description) code {
   color: var(--color-white);
   background: rgba(255, 255, 255, 0.06);
   border-radius: 0.25rem;
   padding: 0.1rem 0.28rem;
 }
 
-:is(.rich-content, .recent-event-description) pre {
+:is(.rich-content, .details-modal-content, .recent-event-description) pre {
   overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 0.5rem;
@@ -920,15 +920,25 @@ a.gold-readable--tinted:focus-visible {
   padding: 0.75rem;
 }
 
-:is(.rich-content, .recent-event-description) pre code {
+:is(.rich-content, .details-modal-content, .recent-event-description) pre code {
   background: transparent;
   padding: 0;
 }
 
-:is(.rich-content, .recent-event-description) hr {
+:is(.rich-content, .details-modal-content, .recent-event-description) hr {
   border-color: rgba(255, 255, 255, 0.12);
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.details-modal-content :where(em, i) {
+  font-style: italic;
+}
+
+.details-modal-content u {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
 }
 
 @media (max-width: 640px) {

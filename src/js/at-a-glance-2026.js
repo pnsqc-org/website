@@ -786,8 +786,11 @@
               : presentation?.id
                 ? String(presentation.id)
                 : '';
-            const hasLoadedSubmissionDetail =
-              !!(isSubmissionType && submissionId && this.submissionDetails.has(submissionId));
+            const hasLoadedSubmissionDetail = !!(
+              isSubmissionType &&
+              submissionId &&
+              this.submissionDetails.has(submissionId)
+            );
             const submissionDetail = hasLoadedSubmissionDetail
               ? this.submissionDetails.get(submissionId)
               : null;
@@ -1117,7 +1120,9 @@
 
     findSubmissionAbstractTrigger(submissionId) {
       if (!this.renderer.root) return null;
-      const buttons = this.renderer.root.querySelectorAll('[data-schedule-abstract-trigger="true"]');
+      const buttons = this.renderer.root.querySelectorAll(
+        '[data-schedule-abstract-trigger="true"]',
+      );
       return (
         Array.from(buttons).find(
           (button) => button.getAttribute('data-schedule-submission-id') === submissionId,

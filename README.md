@@ -19,13 +19,11 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 1. Install Git if you don't already have it: see [`https://git-scm.com/install`](https://git-scm.com/install) for instructions.
 2. Clone this repository (`git clone https://github.com/pnsqc-org/website.git`).
 3. Open a Terminal/Command Prompt, and navigate to the downloaded folder (`cd /path/to/website`).
-4. Run the following commands:
-   ```bash
-   npm install
-   npm run start:local
-   ```
-5. Navigate to the local URL shown by Wrangler's terminal output to see your rendered copy of the website.
-6. While the Wrangler server runs, changes under `src/` will automatically rerun the local build and live-reload the page.
+4. Install the dependencies: `npm install`
+5. Rename the file `wrangler-local.jsonc` -> `wrangler.jsonc`
+6. Start a local development server: `npm run start:local`
+7. Navigate to the local URL shown by Wrangler's terminal output to see your rendered copy of the website.
+8. While the Wrangler server runs, changes under `src/` will automatically rerun the local build and live-reload the page.
 
 ## Build / Deployment
 

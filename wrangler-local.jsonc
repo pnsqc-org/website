@@ -1,3 +1,5 @@
+// Rename this file to wrangler.jsonc when developing locally.
+
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "website",
@@ -8,16 +10,5 @@
   "build": {
     "command": "npm run build",
     "watch_dir": "src"
-  },
-  
-  "env": {
-    "production": {
-        "name": "website",
-        "compatibility_date": "2026-04-07",
-    },
-    "preview": {
-      "name": "website",
-      "compatibility_date": "2026-04-07",
-    }
   }
 }

@@ -80,9 +80,9 @@ og_image: /images/events/conference/2025/group_photo.jpg
               <button
                 type="button"
                 class="shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-pnsqc-gold px-2.5 py-1.5 rounded bg-pnsqc-gold/10 hover:bg-pnsqc-gold/15 hover:text-pnsqc-gold-light transition-colors"
-                data-track-modal-open="track-modal-template-1"
-                data-track-modal-title="Quality Engineering & Systems Reliability"
-                data-track-modal-label="Track 1"
+                data-details-modal-open="details-modal-template-track-1"
+                data-details-modal-title="Quality Engineering & Systems Reliability"
+                data-details-modal-label="Track 1"
               >
                 Read More
                 <svg
@@ -169,9 +169,9 @@ og_image: /images/events/conference/2025/group_photo.jpg
               <button
                 type="button"
                 class="shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-pnsqc-cyan px-2.5 py-1.5 rounded bg-pnsqc-cyan/10 hover:bg-pnsqc-cyan/15 hover:text-sky-300 transition-colors"
-                data-track-modal-open="track-modal-template-2"
-                data-track-modal-title="Organizational Quality & Leadership"
-                data-track-modal-label="Track 2"
+                data-details-modal-open="details-modal-template-track-2"
+                data-details-modal-title="Organizational Quality & Leadership"
+                data-details-modal-label="Track 2"
               >
                 Read More
                 <svg
@@ -255,9 +255,9 @@ og_image: /images/events/conference/2025/group_photo.jpg
               <button
                 type="button"
                 class="shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-purple-300 px-2.5 py-1.5 rounded bg-purple-400/10 hover:bg-purple-400/15 hover:text-purple-200 transition-colors"
-                data-track-modal-open="track-modal-template-3"
-                data-track-modal-title="Emerging Technologies & AI Systems"
-                data-track-modal-label="Track 3"
+                data-details-modal-open="details-modal-template-track-3"
+                data-details-modal-title="Emerging Technologies & AI Systems"
+                data-details-modal-label="Track 3"
               >
                 Read More
                 <svg
@@ -348,9 +348,9 @@ og_image: /images/events/conference/2025/group_photo.jpg
               <button
                 type="button"
                 class="shrink-0 inline-flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-emerald-300 px-2.5 py-1.5 rounded bg-emerald-400/10 hover:bg-emerald-400/15 hover:text-emerald-200 transition-colors"
-                data-track-modal-open="track-modal-template-4"
-                data-track-modal-title="Tools & Productivity"
-                data-track-modal-label="Track 4"
+                data-details-modal-open="details-modal-template-track-4"
+                data-details-modal-title="Tools & Productivity"
+                data-details-modal-label="Track 4"
               >
                 Read More
                 <svg
@@ -419,19 +419,19 @@ og_image: /images/events/conference/2025/group_photo.jpg
     </section>
 
     <!-- Track Details Modal -->
-    <div class="fixed inset-0 z-50 hidden" data-track-modal>
+    <div class="fixed inset-0 z-50 hidden" data-details-modal>
       <div
         class="absolute inset-0 bg-pnsqc-navy/85 backdrop-blur-sm"
-        data-track-modal-backdrop
+        data-details-modal-backdrop
       ></div>
       <div class="relative min-h-full p-4 sm:p-6 lg:p-8 flex items-center justify-center">
         <div
           class="w-full max-w-4xl rounded-2xl border border-white/10 bg-gradient-to-br from-pnsqc-blue-dark to-pnsqc-navy shadow-2xl overflow-hidden"
           role="dialog"
           aria-modal="true"
-          aria-labelledby="track-modal-title"
+          aria-labelledby="details-modal-title"
           tabindex="-1"
-          data-track-modal-panel
+          data-details-modal-panel
         >
           <div
             class="flex items-start justify-between gap-4 px-5 py-4 sm:px-6 border-b border-white/10"
@@ -439,14 +439,14 @@ og_image: /images/events/conference/2025/group_photo.jpg
             <div>
               <p
                 class="text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80"
-                data-track-modal-label
+                data-details-modal-label
               >
                 Track
               </p>
               <h3
-                id="track-modal-title"
+                id="details-modal-title"
                 class="mt-1 text-lg sm:text-xl font-bold text-white"
-                data-track-modal-title
+                data-details-modal-title
               >
                 Track Details
               </h3>
@@ -455,7 +455,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
               type="button"
               class="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-pnsqc-slate hover:text-white hover:bg-white/10 transition-colors"
               aria-label="Close track details"
-              data-track-modal-close
+              data-details-modal-close
             >
               <svg
                 class="h-5 w-5"
@@ -475,14 +475,14 @@ og_image: /images/events/conference/2025/group_photo.jpg
           </div>
           <div
             class="max-h-[75vh] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6"
-            data-track-modal-body
+            data-details-modal-body
           ></div>
         </div>
       </div>
     </div>
 
     <!-- Track Details Content Templates -->
-    <template id="track-modal-template-1">
+    <template id="details-modal-template-track-1">
       <div class="space-y-6">
         <p class="text-sm leading-7 text-pnsqc-slate">
           This track focuses on how teams design, test, and sustain quality in software systems of
@@ -572,7 +572,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
         </section>
       </div>
     </template>
-    <template id="track-modal-template-2">
+    <template id="details-modal-template-track-2">
       <div class="space-y-6">
         <p class="text-sm leading-7 text-pnsqc-slate">
           This track focuses on how people and organizations plan, govern, and sustain quality,
@@ -674,7 +674,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
       </div>
     </template>
 
-    <template id="track-modal-template-3">
+    <template id="details-modal-template-track-3">
       <div class="space-y-6">
         <p class="text-sm leading-7 text-pnsqc-slate">
           This track addresses quality challenges unique to AI-enabled and intelligent systems,
@@ -763,7 +763,7 @@ og_image: /images/events/conference/2025/group_photo.jpg
         </section>
       </div>
     </template>
-    <template id="track-modal-template-4">
+    <template id="details-modal-template-track-4">
       <div class="space-y-6">
         <p class="text-sm leading-7 text-pnsqc-slate">
           This track focuses on practical tools, frameworks, and techniques that improve the
@@ -870,6 +870,6 @@ og_image: /images/events/conference/2025/group_photo.jpg
        ============================================================ -->
     <footer></footer>
 
-    <script src="/js/track-details-modal.js" defer></script>
+    <script src="/js/details-modal.js" defer></script>
   </body>
 </html>

@@ -1,13 +1,13 @@
 (() => {
-  const modal = document.querySelector('[data-track-modal]');
-  if (!modal) return;
+  const detailsModal = document.querySelector('[data-details-modal]');
+  if (!detailsModal) return;
 
-  const panel = modal.querySelector('[data-track-modal-panel]');
-  const body = modal.querySelector('[data-track-modal-body]');
-  const titleEl = modal.querySelector('[data-track-modal-title]');
-  const labelEl = modal.querySelector('[data-track-modal-label]');
-  const closeButton = modal.querySelector('[data-track-modal-close]');
-  const backdrop = modal.querySelector('[data-track-modal-backdrop]');
+  const panel = detailsModal.querySelector('[data-details-modal-panel]');
+  const body = detailsModal.querySelector('[data-details-modal-body]');
+  const titleEl = detailsModal.querySelector('[data-details-modal-title]');
+  const labelEl = detailsModal.querySelector('[data-details-modal-label]');
+  const closeButton = detailsModal.querySelector('[data-details-modal-close]');
+  const backdrop = detailsModal.querySelector('[data-details-modal-backdrop]');
 
   if (!panel || !body || !titleEl || !labelEl || !closeButton || !backdrop) {
     return;
@@ -16,9 +16,9 @@
   let lastFocused = null;
 
   const closeModal = () => {
-    if (modal.classList.contains('hidden')) return;
+    if (detailsModal.classList.contains('hidden')) return;
 
-    modal.classList.add('hidden');
+    detailsModal.classList.add('hidden');
     document.body.classList.remove('overflow-hidden');
     body.replaceChildren();
 
@@ -29,23 +29,23 @@
   };
 
   const openModal = (trigger) => {
-    const templateId = trigger.getAttribute('data-track-modal-open');
+    const templateId = trigger.getAttribute('data-details-modal-open');
     const template = templateId ? document.getElementById(templateId) : null;
     if (!(template instanceof HTMLTemplateElement)) return;
 
     body.replaceChildren(template.content.cloneNode(true));
-    titleEl.textContent = trigger.getAttribute('data-track-modal-title') || 'Track Details';
-    labelEl.textContent = trigger.getAttribute('data-track-modal-label') || 'Track';
+    titleEl.textContent = trigger.getAttribute('data-details-modal-title') || 'Details';
+    labelEl.textContent = trigger.getAttribute('data-details-modal-label') || 'Overview';
 
     lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    modal.classList.remove('hidden');
+    detailsModal.classList.remove('hidden');
     document.body.classList.add('overflow-hidden');
     closeButton.focus();
   };
 
   document.addEventListener('click', (event) => {
     const trigger =
-      event.target instanceof Element ? event.target.closest('[data-track-modal-open]') : null;
+      event.target instanceof Element ? event.target.closest('[data-details-modal-open]') : null;
     if (!trigger) return;
     openModal(trigger);
   });
@@ -54,13 +54,13 @@
   backdrop.addEventListener('click', closeModal);
 
   // Close when clicking outside the modal panel (on backdrop or wrapper)
-  modal.addEventListener('click', (event) => {
+  detailsModal.addEventListener('click', (event) => {
     if (!panel.contains(event.target)) {
       closeModal();
     }
   });
 
-  modal.addEventListener('keydown', (event) => {
+  detailsModal.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       event.preventDefault();
       closeModal();

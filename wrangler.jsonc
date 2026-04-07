@@ -2,11 +2,22 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "website",
   "pages_build_output_dir": "dist/",
-  "compatibility_date": "2026-02-16",
+  "compatibility_date": "2026-04-07",
 
   // Rebuild dist/ during local Pages dev whenever src/ changes.
   "build": {
     "command": "npm run build",
     "watch_dir": "src"
+  },
+  
+  "env": {
+    "production": {
+        "name": "website",
+        "compatibility_date": "2026-04-07",
+    },
+    "preview": {
+      "name": "website",
+      "compatibility_date": "2026-04-07",
+    }
   }
 }

@@ -1,5 +1,5 @@
 (() => {
-  const ENDPOINT = 'https://pnsqcnewsletter.substack.com/api/v1/free';
+  const ENDPOINT = 'https://newsletter.pnsqc.org/api/v1/free';
 
   const initForm = (form) => {
     const msgEl = form.parentElement.querySelector('[data-substack-msg]');
@@ -68,9 +68,5 @@
     document.querySelectorAll('[data-substack-form]').forEach(initForm);
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main, { once: true });
-  } else {
-    main();
-  }
+  main();
 })();

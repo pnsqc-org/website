@@ -22,6 +22,11 @@ cleanup() {
 
 trap cleanup EXIT INT HUP TERM
 
+if [ -n "$(git status --porcelain --untracked-files=no -- wrangler-local.jsonc)" ]; then
+  printf '\n> Resetting wrangler-local.jsonc\n'
+  git restore --source=HEAD --staged --worktree -- wrangler-local.jsonc
+fi
+
 if ! git diff --quiet --ignore-submodules -- || [ -n "$(git ls-files --others --exclude-standard)" ]; then
   printf '\n> Stashing unstaged changes\n'
   git stash push --quiet --keep-index --include-untracked --message "$stash_name"

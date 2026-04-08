@@ -1,66 +1,60 @@
-(function () {
-  // Pricing period cutoffs (inclusive ranges)
-  // Super Early Bird: January 1 - June 30
-  // Early Bird: July 1 - September 15
-  // Regular: October 1 - December 31
-  const today = new Date();
-  const month = today.getMonth(); // 0-indexed (0 = January)
-  const day = today.getDate();
-
-  // Determine active pricing period based on date
-  let activeColumnIndex;
-  let endDate;
-  if (month < 5 || (month === 5 && day <= 30)) {
-    // Super Early Bird: Jan 1 - June 30
-    activeColumnIndex = 1;
-    endDate = 'June 30';
-  } else if (month < 8 || (month === 8 && day <= 15)) {
-    // Early Bird: July 1 - September 15
-    activeColumnIndex = 2;
-    endDate = 'September 15';
-  } else {
-    // Regular: October 1 onwards
-    activeColumnIndex = 3;
-    endDate = null; // No end date for Regular (it's the final period)
-  }
-
-  // Highlight the active pricing period column
+(() => {
   const pricingTable = document.querySelector('.pricing-table');
-  if (pricingTable) {
-    const rows = pricingTable.querySelectorAll('tr');
-    rows.forEach((row) => {
-      const cells = row.querySelectorAll('th, td');
-      if (cells[activeColumnIndex]) {
-        cells[activeColumnIndex].classList.add('active-pricing-period');
-      }
-    });
+  if (!pricingTable) return;
+
+  const periods = [
+    { month: 5, day: 30, columnIndex: 1, label: 'Super Early Bird', endDate: 'June 30' },
+    { month: 8, day: 15, columnIndex: 2, label: 'Early Bird', endDate: 'September 15' },
+  ];
+
+  const getActivePeriod = (today = new Date()) => {
+    const month = today.getMonth();
+    const day = today.getDate();
+
+    return (
+      periods.find(
+        (period) => month < period.month || (month === period.month && day <= period.day),
+      ) || { columnIndex: 3, label: 'Regular', endDate: '' }
+    );
+  };
+
+  const createTooltip = (text) => {
+    const container = document.createElement('span');
+    container.className = 'tooltip-container';
+
+    const icon = document.createElement('span');
+    icon.className = 'tooltip-icon';
+    icon.textContent = 'i';
+    container.appendChild(icon);
+
+    const tooltip = document.createElement('span');
+    tooltip.className = 'tooltip-text';
+
+    const strong = document.createElement('strong');
+    strong.textContent = text;
+    tooltip.appendChild(strong);
+
+    container.appendChild(tooltip);
+    return container;
+  };
+
+  const { columnIndex, label, endDate } = getActivePeriod();
+
+  for (const row of pricingTable.rows) {
+    row.cells[columnIndex]?.classList.add('active-pricing-period');
   }
 
-  // Add a label indicating the active period with tooltip
-  const activeLabels = ['Super Early Bird', 'Early Bird', 'Regular'];
-  const labelWrapper = document.createElement('div');
-  labelWrapper.style.textAlign = 'center';
-  labelWrapper.style.marginTop = '0.75rem';
+  const summary = document.createElement('div');
+  summary.className = 'pricing-period-summary';
 
-  const activeLabel = document.createElement('span');
-  activeLabel.className = 'text-md text-pnsqc-gold font-semibold';
-  activeLabel.textContent = `Current Pricing: ${activeLabels[activeColumnIndex - 1]}`;
-  labelWrapper.appendChild(activeLabel);
+  const summaryLabel = document.createElement('span');
+  summaryLabel.className = 'pricing-period-summary__label';
+  summaryLabel.textContent = `Current Pricing: ${label}`;
+  summary.appendChild(summaryLabel);
 
-  // Add tooltip if there's an end date
   if (endDate) {
-    const tooltipContainer = document.createElement('span');
-    tooltipContainer.className = 'tooltip-container';
-    tooltipContainer.style.marginLeft = '0.5rem';
-    tooltipContainer.innerHTML = `
-      <span class="tooltip-icon">i</span>
-      <span class="tooltip-text"><strong>Ends ${endDate}</strong></span>
-    `;
-    labelWrapper.appendChild(tooltipContainer);
+    summary.appendChild(createTooltip(`Ends ${endDate}`));
   }
 
-  const pricingSection = pricingTable ? pricingTable.parentElement : null;
-  if (pricingSection) {
-    pricingSection.insertBefore(labelWrapper, pricingTable.nextSibling);
-  }
+  pricingTable.insertAdjacentElement('afterend', summary);
 })();

@@ -1,33 +1,33 @@
 (() => {
-  const moduleRoot = document.querySelector('[data-speaker-module]');
-  if (!moduleRoot) return;
+  const directoryRoot = document.querySelector('[data-presenter-directory]');
+  if (!directoryRoot) return;
 
-  const endpoint = moduleRoot.getAttribute('data-speaker-endpoint');
+  const endpoint = directoryRoot.getAttribute('data-presenter-endpoint');
   if (!endpoint) return;
 
   const fallbackAvatar =
-    moduleRoot.getAttribute('data-speaker-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
-  const statusEl = moduleRoot.querySelector('[data-speaker-status]');
-  const templateRoot = moduleRoot.querySelector('[data-speaker-templates]') || moduleRoot;
-  const defaultSectionEl = moduleRoot.querySelector('[data-speaker-default-section]');
+    directoryRoot.getAttribute('data-presenter-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
+  const statusEl = directoryRoot.querySelector('[data-presenter-status]');
+  const templateRoot = directoryRoot.querySelector('[data-presenter-templates]') || directoryRoot;
+  const defaultSectionEl = directoryRoot.querySelector('[data-presenter-default-section]');
 
   const sections = new Map();
-  moduleRoot.querySelectorAll('[data-speaker-category-id]').forEach((section) => {
-    const idValue = Number(section.getAttribute('data-speaker-category-id'));
-    const grid = section.querySelector('[data-speaker-grid]');
-    const emptyState = section.querySelector('[data-speaker-empty]');
-    const title = section.querySelector('[data-speaker-category-title]');
+  directoryRoot.querySelectorAll('[data-presenter-category-id]').forEach((section) => {
+    const idValue = Number(section.getAttribute('data-presenter-category-id'));
+    const grid = section.querySelector('[data-presenter-grid]');
+    const emptyState = section.querySelector('[data-presenter-empty]');
+    const title = section.querySelector('[data-presenter-category-title]');
     if (!Number.isNaN(idValue) && grid) {
       sections.set(idValue, { grid, emptyState, title });
     }
   });
 
   const defaultSection =
-    defaultSectionEl && defaultSectionEl.querySelector('[data-speaker-grid]')
+    defaultSectionEl && defaultSectionEl.querySelector('[data-presenter-grid]')
       ? {
-          grid: defaultSectionEl.querySelector('[data-speaker-grid]'),
-          emptyState: defaultSectionEl.querySelector('[data-speaker-empty]'),
-          title: defaultSectionEl.querySelector('[data-speaker-category-title]'),
+          grid: defaultSectionEl.querySelector('[data-presenter-grid]'),
+          emptyState: defaultSectionEl.querySelector('[data-presenter-empty]'),
+          title: defaultSectionEl.querySelector('[data-presenter-category-title]'),
         }
       : null;
   const usesDefaultSection = Boolean(defaultSection);
@@ -46,22 +46,23 @@
   };
 
   const loadingText =
-    normalizeSpace(moduleRoot.getAttribute('data-speaker-loading-text')) ||
+    normalizeSpace(directoryRoot.getAttribute('data-presenter-loading-text')) ||
     normalizeSpace(statusEl?.textContent || '') ||
-    'Loading speakers...';
+    'Loading presenters...';
   const errorText =
-    normalizeSpace(moduleRoot.getAttribute('data-speaker-error-text')) ||
-    'Speakers will be announced soon.';
+    normalizeSpace(directoryRoot.getAttribute('data-presenter-error-text')) ||
+    'Presenters will be announced soon.';
   const requestedPresentationDate = normalizeSpace(
-    moduleRoot.getAttribute('data-speaker-presentation-date'),
+    directoryRoot.getAttribute('data-presenter-presentation-date'),
   );
   const excludedPresentationDate = normalizeSpace(
-    moduleRoot.getAttribute('data-speaker-exclude-presentation-date'),
+    directoryRoot.getAttribute('data-presenter-exclude-presentation-date'),
   );
   const defaultCategoryLabel =
-    normalizeSpace(moduleRoot.getAttribute('data-speaker-default-label')) || 'Speaker';
+    normalizeSpace(directoryRoot.getAttribute('data-presenter-default-label')) || 'Presenter';
 
   const normalizeCompareText = (value) => normalizeSpace(value).replace(/:\s*$/, '').toLowerCase();
+  const abstractMapCache = new WeakMap();
 
   const extractDateKey = (value) => {
     if (typeof value !== 'string') return '';
@@ -119,13 +120,16 @@
     return wrapper.innerHTML.trim();
   };
 
-  const getDetails = (speaker) => {
-    if (!speaker || typeof speaker !== 'object') return {};
-    const numericKey = Object.keys(speaker).find((key) => /^\d+$/.test(key));
-    if (numericKey && speaker[numericKey]) return speaker[numericKey];
-    if (speaker.details && typeof speaker.details === 'object') return speaker.details;
+  const getPresenterDetails = (presenter) => {
+    if (!presenter || typeof presenter !== 'object') return {};
+    const numericKey = Object.keys(presenter).find((key) => /^\d+$/.test(key));
+    if (numericKey && presenter[numericKey]) return presenter[numericKey];
+    if (presenter.details && typeof presenter.details === 'object') return presenter.details;
     return {};
   };
+
+  const getPresenterName = (presenter) =>
+    `${presenter?.firstname || ''} ${presenter?.lastname || ''}`.trim() || 'Presenter';
 
   const getPresentations = (details) =>
     (Array.isArray(details?.presentations) ? details.presentations : []).filter(Boolean);
@@ -168,25 +172,34 @@
     );
   };
 
-  const shouldDisplaySpeaker = (details) => {
+  const getPresenterDisplayState = (details) => {
     const presentations = getPresentations(details);
     const eligiblePresentations = getEligiblePresentations(details);
+    const displayPresentation = eligiblePresentations[0] || null;
 
-    if (presentationDateFilter) return eligiblePresentations.length > 0;
-    if (excludedPresentationDateFilter && presentations.length > 0) {
-      return eligiblePresentations.length > 0;
+    if (presentationDateFilter) {
+      return { displayPresentation, shouldDisplay: eligiblePresentations.length > 0 };
     }
-    return true;
+    if (excludedPresentationDateFilter && presentations.length > 0) {
+      return { displayPresentation, shouldDisplay: eligiblePresentations.length > 0 };
+    }
+    return { displayPresentation, shouldDisplay: true };
   };
-
-  const getDisplayPresentation = (details) => getEligiblePresentations(details)[0] || null;
 
   const getPresentationTitle = (presentation) => presentation?.title || 'Presentation TBA';
 
   const extractAbstractMap = (session) => {
+    if (session && abstractMapCache.has(session)) {
+      return abstractMapCache.get(session);
+    }
+
     const html = session?.description;
     const map = new Map();
-    if (!html || typeof html !== 'string') return map;
+    if (!html || typeof html !== 'string') {
+      if (session) abstractMapCache.set(session, map);
+      return map;
+    }
+
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const children = Array.from(doc.body.children);
@@ -212,6 +225,7 @@
       if (abstractHtml) map.set(titleText, abstractHtml);
     }
 
+    if (session) abstractMapCache.set(session, map);
     return map;
   };
 
@@ -222,6 +236,32 @@
     const session = getSessionRecord(presentation);
     const abstractMap = extractAbstractMap(session);
     return abstractMap.get(normalizedTitle) || '';
+  };
+
+  const createSvgIcon = ({
+    className,
+    pathData,
+    fill = 'currentColor',
+    stroke,
+    strokeWidth,
+    linecap,
+    linejoin,
+  }) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('fill', fill);
+    if (stroke) svg.setAttribute('stroke', stroke);
+    if (className) svg.setAttribute('class', className);
+    svg.setAttribute('aria-hidden', 'true');
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', pathData);
+    if (strokeWidth) path.setAttribute('stroke-width', String(strokeWidth));
+    if (linecap) path.setAttribute('stroke-linecap', linecap);
+    if (linejoin) path.setAttribute('stroke-linejoin', linejoin);
+    svg.appendChild(path);
+
+    return svg;
   };
 
   const createIconLink = ({ href, label, svgPath }) => {
@@ -236,28 +276,45 @@
     link.rel = 'noopener noreferrer';
     link.setAttribute('aria-label', label);
     link.setAttribute('title', label);
-
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 24 24');
-    svg.setAttribute('fill', 'currentColor');
-    svg.setAttribute('class', 'w-4 h-4 text-white/80');
-    svg.setAttribute('aria-hidden', 'true');
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', svgPath);
-    svg.appendChild(path);
-    link.appendChild(svg);
+    link.appendChild(createSvgIcon({ className: 'w-4 h-4 text-white/80', pathData: svgPath }));
 
     return link;
   };
 
-  const buildModalTemplate = (speaker, details, categoryName, displayPresentation) => {
-    const speakerName = `${speaker.firstname || ''} ${speaker.lastname || ''}`.trim() || 'Speaker';
+  const presenterLinkConfigs = [
+    {
+      hrefKey: 'linkedin',
+      label: 'LinkedIn profile',
+      svgPath:
+        'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
+    },
+    {
+      hrefKey: 'homepage',
+      label: 'Presenter homepage',
+      svgPath: 'M12 3l9 8h-3v9a1 1 0 01-1 1h-4v-6H11v6H7a1 1 0 01-1-1v-9H3l9-8z',
+    },
+  ];
+
+  const createPresenterLinks = (details, className) => {
+    const linkRow = createEl('div', className, null);
+
+    presenterLinkConfigs.forEach(({ hrefKey, label, svgPath }) => {
+      const link = createIconLink({ href: details[hrefKey], label, svgPath });
+      if (link) {
+        linkRow.appendChild(link);
+      }
+    });
+
+    return linkRow.childElementCount > 0 ? linkRow : null;
+  };
+
+  const buildDetailsTemplate = (presenter, details, categoryName, displayPresentation) => {
+    const presenterName = getPresenterName(presenter);
     const presentationTitle = getPresentationTitle(displayPresentation);
     const abstractHtml = getAbstractHtml(displayPresentation);
 
     const template = document.createElement('template');
-    template.id = `speaker-modal-${speaker.id}`;
+    template.id = `details-modal-template-presenter-${presenter.id}`;
 
     const wrapper = createEl('div', 'space-y-6', null);
 
@@ -267,33 +324,19 @@
       'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
       null,
     );
-    avatar.src = speaker.avatar || fallbackAvatar;
-    avatar.alt = speakerName + ' avatar';
+    avatar.src = presenter.avatar || fallbackAvatar;
+    avatar.alt = presenterName + ' avatar';
     avatar.loading = 'lazy';
 
     const topContent = createEl('div', 'space-y-2', null);
-    topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', speakerName));
-    if (speaker.profession) {
-      topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', speaker.profession));
+    topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', presenterName));
+    if (presenter.profession) {
+      topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', presenter.profession));
     }
     topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', presentationTitle));
 
-    const iconRow = createEl('div', 'flex flex-wrap items-center gap-2', null);
-    const linkedinLink = createIconLink({
-      href: details.linkedin,
-      label: 'LinkedIn profile',
-      svgPath:
-        'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
-    });
-    const homepageLink = createIconLink({
-      href: details.homepage,
-      label: 'Speaker homepage',
-      svgPath: 'M12 3l9 8h-3v9a1 1 0 01-1 1h-4v-6H11v6H7a1 1 0 01-1-1v-9H3l9-8z',
-    });
-
-    if (linkedinLink) iconRow.appendChild(linkedinLink);
-    if (homepageLink) iconRow.appendChild(homepageLink);
-    if (iconRow.childElementCount > 0) {
+    const iconRow = createPresenterLinks(details, 'flex flex-wrap items-center gap-2');
+    if (iconRow) {
       topContent.appendChild(iconRow);
     }
 
@@ -310,11 +353,7 @@
       ),
     );
     if (abstractHtml) {
-      const abstractBody = createEl(
-        'div',
-        'speakers-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
-        null,
-      );
+      const abstractBody = createEl('div', 'rich-content rich-content--compact space-y-3', null);
       abstractBody.innerHTML = abstractHtml;
       abstractSection.appendChild(abstractBody);
     } else {
@@ -346,14 +385,20 @@
     return {
       template,
       templateId: template.id,
-      speakerName,
+      presenterName,
       presentationTitle,
-      categoryLabel: categoryName || 'Speaker',
+      categoryLabel: categoryName || 'Presenter',
     };
   };
 
-  const buildCard = ({ speaker, details, displayPresentation, templateId, categoryLabel }) => {
-    const speakerName = `${speaker.firstname || ''} ${speaker.lastname || ''}`.trim() || 'Speaker';
+  const buildPresenterCard = ({
+    presenter,
+    details,
+    displayPresentation,
+    templateId,
+    categoryLabel,
+  }) => {
+    const presenterName = getPresenterName(presenter);
     const presentationTitle = getPresentationTitle(displayPresentation);
 
     const card = createEl(
@@ -369,36 +414,23 @@
       'w-32 h-32 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
       null,
     );
-    avatar.src = speaker.avatar || fallbackAvatar;
-    avatar.alt = speakerName + ' avatar';
+    avatar.src = presenter.avatar || fallbackAvatar;
+    avatar.alt = presenterName + ' avatar';
     avatar.loading = 'lazy';
     avatarWrap.appendChild(avatar);
 
     const content = createEl('div', 'w-full min-w-0 flex-1', null);
     const header = createEl('div', 'flex w-full items-start gap-3', null);
     header.appendChild(
-      createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', speakerName),
+      createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', presenterName),
     );
 
-    const iconRow = createEl('div', 'ml-auto flex shrink-0 items-center gap-2', null);
-    const linkedinLink = createIconLink({
-      href: details.linkedin,
-      label: 'LinkedIn profile',
-      svgPath:
-        'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z',
-    });
-    const homepageLink = createIconLink({
-      href: details.homepage,
-      label: 'Speaker homepage',
-      svgPath: 'M12 3l9 8h-3v9a1 1 0 01-1 1h-4v-6H11v6H7a1 1 0 01-1-1v-9H3l9-8z',
-    });
-    if (linkedinLink) iconRow.appendChild(linkedinLink);
-    if (homepageLink) iconRow.appendChild(homepageLink);
-    if (iconRow.childElementCount > 0) header.appendChild(iconRow);
+    const iconRow = createPresenterLinks(details, 'ml-auto flex shrink-0 items-center gap-2');
+    if (iconRow) header.appendChild(iconRow);
 
     content.appendChild(header);
-    if (speaker.profession) {
-      content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', speaker.profession));
+    if (presenter.profession) {
+      content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', presenter.profession));
     }
     content.appendChild(createEl('p', 'mt-2 text-sm text-pnsqc-gold', presentationTitle));
 
@@ -409,23 +441,20 @@
       'Read More',
     );
     button.type = 'button';
-    button.setAttribute('data-track-modal-open', templateId);
-    button.setAttribute('data-track-modal-title', speakerName);
-    button.setAttribute('data-track-modal-label', categoryLabel);
-
-    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    arrow.setAttribute('class', 'h-3.5 w-3.5');
-    arrow.setAttribute('fill', 'none');
-    arrow.setAttribute('stroke', 'currentColor');
-    arrow.setAttribute('viewBox', '0 0 24 24');
-    arrow.setAttribute('aria-hidden', 'true');
-    const arrowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    arrowPath.setAttribute('stroke-linecap', 'round');
-    arrowPath.setAttribute('stroke-linejoin', 'round');
-    arrowPath.setAttribute('stroke-width', '2');
-    arrowPath.setAttribute('d', 'M9 5l7 7-7 7');
-    arrow.appendChild(arrowPath);
-    button.appendChild(arrow);
+    button.setAttribute('data-details-modal-open', templateId);
+    button.setAttribute('data-details-modal-title', presenterName);
+    button.setAttribute('data-details-modal-label', categoryLabel);
+    button.appendChild(
+      createSvgIcon({
+        className: 'h-3.5 w-3.5',
+        pathData: 'M9 5l7 7-7 7',
+        fill: 'none',
+        stroke: 'currentColor',
+        strokeWidth: 2,
+        linecap: 'round',
+        linejoin: 'round',
+      }),
+    );
     buttonWrap.appendChild(button);
 
     content.appendChild(buttonWrap);
@@ -447,19 +476,22 @@
   fetch(endpoint)
     .then((response) => {
       if (!response.ok) {
-        throw new Error('Failed to load speakers.');
+        throw new Error('Failed to load presenters.');
       }
       return response.json();
     })
     .then((payload) => {
       const eventData = payload?.data || payload || {};
-      const categories = Array.isArray(eventData.speaker_categories)
+      const presenterCategories = Array.isArray(eventData.speaker_categories)
         ? eventData.speaker_categories
         : [];
-      const speakers = Array.isArray(eventData.speakers) ? eventData.speakers : [];
+      const categoryNames = new Map(
+        presenterCategories.map((category) => [category.id, category.name || 'Presenter']),
+      );
+      const presenters = Array.isArray(eventData.speakers) ? eventData.speakers : [];
 
       if (!usesDefaultSection) {
-        categories.forEach((category) => {
+        presenterCategories.forEach((category) => {
           const section = sections.get(category.id);
           if (section?.title) {
             section.title.textContent = category.name;
@@ -467,33 +499,38 @@
         });
       }
 
-      const sortedSpeakers = speakers
-        .filter((speaker) => speaker && speaker.publish)
+      const sortedPresenters = presenters
+        .filter((presenter) => presenter && presenter.publish)
         .slice()
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
       const counts = new Map();
 
-      sortedSpeakers.forEach((speaker) => {
-        const details = getDetails(speaker);
-        if (!shouldDisplaySpeaker(details)) return;
+      sortedPresenters.forEach((presenter) => {
+        const details = getPresenterDetails(presenter);
+        const { shouldDisplay, displayPresentation } = getPresenterDisplayState(details);
+        if (!shouldDisplay) return;
 
-        const displayPresentation = getDisplayPresentation(details);
-        const categoryId = speaker.event_speaker_category_id;
+        const categoryId = presenter.event_speaker_category_id;
         const section = usesDefaultSection ? defaultSection : sections.get(categoryId);
         if (!section) return;
 
         const categoryName = usesDefaultSection
           ? defaultCategoryLabel
-          : categories.find((cat) => cat.id === categoryId)?.name || 'Speaker';
-        const modalData = buildModalTemplate(speaker, details, categoryName, displayPresentation);
-        templateRoot.appendChild(modalData.template);
+          : categoryNames.get(categoryId) || 'Presenter';
+        const detailsTemplate = buildDetailsTemplate(
+          presenter,
+          details,
+          categoryName,
+          displayPresentation,
+        );
+        templateRoot.appendChild(detailsTemplate.template);
 
-        const card = buildCard({
-          speaker,
+        const card = buildPresenterCard({
+          presenter,
           details,
           displayPresentation,
-          templateId: modalData.templateId,
+          templateId: detailsTemplate.templateId,
           categoryLabel: categoryName,
         });
         section.grid.appendChild(card);

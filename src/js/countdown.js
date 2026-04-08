@@ -80,9 +80,5 @@
     for (const node of nodes) initCountdown(node);
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main, { once: true });
-  } else {
-    main();
-  }
+  main();
 })();

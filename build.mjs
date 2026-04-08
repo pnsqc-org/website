@@ -158,7 +158,7 @@ function wrapPrimaryContentInMain(html) {
       : html.lastIndexOf('<!--', footerLabelIndex);
   if (footerStart === -1 || footerStart <= headerEnd) return html;
 
-  const modalMatch = html.match(/\n[ \t]*<div[^>]*\sdata-track-modal(?:\s|>)/);
+  const modalMatch = html.match(/\n[ \t]*<div[^>]*\sdata-details-modal(?:\s|>)/);
   const contentEnd =
     modalMatch && modalMatch.index > headerEnd && modalMatch.index < footerStart
       ? modalMatch.index

@@ -1,4 +1,4 @@
-function normalizeOverrideEntry(value) {
+function normalizeMapEntry(value) {
   if (typeof value === 'string') {
     const trimmed = value.trim();
     return trimmed ? { lumaUrl: trimmed } : null;
@@ -12,7 +12,7 @@ function normalizeOverrideEntry(value) {
   return null;
 }
 
-export function parseLumaOverrides(rawValue) {
+export function parseLumaMap(rawValue) {
   const normalized = String(rawValue ?? '').trim();
   if (!normalized) return {};
 
@@ -20,22 +20,22 @@ export function parseLumaOverrides(rawValue) {
   try {
     parsed = JSON.parse(normalized);
   } catch (error) {
-    throw new Error(`Invalid MEETUP_LUMA_OVERRIDES_JSON value: ${error.message}`);
+    throw new Error(`Invalid MEETUP_LUMA_MAP_JSON value: ${error.message}`);
   }
 
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-    throw new Error('MEETUP_LUMA_OVERRIDES_JSON must be a JSON object keyed by Meetup event id');
+    throw new Error('MEETUP_LUMA_MAP_JSON must be a JSON object keyed by Meetup event ID');
   }
 
-  const overrides = {};
+  const map = {};
   for (const [eventId, value] of Object.entries(parsed)) {
-    const normalizedEntry = normalizeOverrideEntry(value);
-    if (normalizedEntry) overrides[String(eventId)] = normalizedEntry;
+    const normalizedEntry = normalizeMapEntry(value);
+    if (normalizedEntry) map[String(eventId)] = normalizedEntry;
   }
 
-  return overrides;
+  return map;
 }
 
-export function getLumaOverrides(env) {
-  return parseLumaOverrides(env?.MEETUP_LUMA_OVERRIDES_JSON);
+export function getLumaMap(env) {
+  return parseLumaMap(env?.MEETUP_LUMA_MAP_JSON);
 }

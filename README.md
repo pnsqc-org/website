@@ -67,7 +67,7 @@ When ready to upload your changes:
 
 We deploy our built website to Cloudflare Pages, which hosts our site and manages our DNS. This is done automatically as code is pushed to our repository with an installed GitHub app.
 
-There are certain environment variables defined in Cloudflare so that we can authenticate with Meetup's API to retrieve event data. There is also an environment variable that allows us to define Luma event URLs for particular events (`MEETUP_LUMA_OVERRIDES_JSON`), since we cannot fetch that information ourselves. It is in the form of a JSON object, keyed by Meetup event ID, with a value of the Luma URL string to use. It has to be edited manually in [Cloudflare's admin configuration page](https://dash.cloudflare.com/8299d84bde3077353c5d4c71e98131f5/pages/view/website/settings/production#variables) as events are created.
+There are certain environment variables defined in Cloudflare so that we can authenticate with Meetup's API to retrieve event data. There is also an environment variable that allows us to define Luma event URLs for particular events (`MEETUP_LUMA_MAP_JSON`), since we cannot fetch that information ourselves. It is in the form of a JSON object, keyed by Meetup event ID, with a value of the Luma URL string to use. It has to be edited manually in [Cloudflare's admin configuration page](https://dash.cloudflare.com/8299d84bde3077353c5d4c71e98131f5/pages/view/website/settings/production#variables) as events are created.
 
 Example value:
 

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
 
-import { parseLumaOverrides } from '../functions/_lib/luma-overrides.mjs';
+import { parseLumaMap } from '../functions/_lib/luma-map.mjs';
 import { buildMeetupJwt, fetchMeetupRecentEvents } from '../functions/_lib/meetup-api.mjs';
 import {
   formatEventDateLine,
@@ -15,11 +15,11 @@ import {
   selectRecentEvents,
 } from '../functions/_lib/recent-events.mjs';
 
-function createEvent(id, dateTime, overrides = {}) {
+function createEvent(id, dateTime, map = {}) {
   return {
     dateTime,
     description: `<p>Event ${id}</p>`,
-    endTime: overrides.endTime ?? dateTime,
+    endTime: map.endTime ?? dateTime,
     eventType: 'PHYSICAL',
     eventUrl: `https://www.meetup.com/pnw-software-quality-professionals-pnsqc/events/${id}/`,
     howToFindUs: '',
@@ -28,12 +28,14 @@ function createEvent(id, dateTime, overrides = {}) {
     shortDescription: '',
     title: `Event ${id}`,
     venues: [],
-    ...overrides,
+    ...map,
   };
 }
 
 function decodeBase64Url(value) {
-  const normalized = String(value ?? '').replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = String(value ?? '')
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
   const padding = normalized.length % 4 === 0 ? '' : '='.repeat(4 - (normalized.length % 4));
   return Buffer.from(`${normalized}${padding}`, 'base64');
 }
@@ -67,7 +69,10 @@ test('selectRecentEvents falls back to only past events when there are no upcomi
     upcomingEvents: [],
   });
 
-  assert.deepEqual(selected.map((event) => event.id), ['past-1', 'past-2', 'past-3']);
+  assert.deepEqual(
+    selected.map((event) => event.id),
+    ['past-1', 'past-2', 'past-3'],
+  );
 });
 
 test('selectRecentEvents keeps exactly five upcoming events when five are available', () => {
@@ -83,7 +88,10 @@ test('selectRecentEvents keeps exactly five upcoming events when five are availa
   });
 
   assert.equal(selected.length, 5);
-  assert.deepEqual(selected.map((event) => event.id), ['1', '2', '3', '4', '5']);
+  assert.deepEqual(
+    selected.map((event) => event.id),
+    ['1', '2', '3', '4', '5'],
+  );
 });
 
 test('selectRecentEvents caps the result at the five soonest upcoming events', () => {
@@ -99,10 +107,13 @@ test('selectRecentEvents caps the result at the five soonest upcoming events', (
     pastEvents: [createEvent('past', '2026-03-01T18:00:00-08:00')],
   });
 
-  assert.deepEqual(selected.map((event) => event.id), ['1', '2', '3', '4', '5']);
+  assert.deepEqual(
+    selected.map((event) => event.id),
+    ['1', '2', '3', '4', '5'],
+  );
 });
 
-test('normalizeMeetupEvent formats hybrid venue lines and carries the optional Luma override', () => {
+test('normalizeMeetupEvent formats hybrid venue lines and carries the optional Luma map', () => {
   const normalized = normalizeMeetupEvent(
     createEvent('313839680', '2026-04-22T18:00:00-07:00', {
       description: '<p>Hybrid description</p>',
@@ -134,7 +145,7 @@ test('normalizeMeetupEvent formats hybrid venue lines and carries the optional L
   );
 });
 
-test('normalizeMeetupEvent formats virtual venue lines without a Luma override', () => {
+test('normalizeMeetupEvent formats virtual venue lines without a Luma map', () => {
   const normalized = normalizeMeetupEvent(
     createEvent('313809611', '2026-04-02T17:30:00-07:00', {
       description: '<p>Virtual description</p>',
@@ -268,11 +279,13 @@ test('renderRecentEventCard includes description preview and full-description tr
   assert.match(markup, /aria-controls="recent-events-description-modal"/);
 });
 
-test('renderRecentEventsMarkup includes the Luma icon only when an override exists', () => {
+test('renderRecentEventsMarkup includes the Luma icon only when a map entry exists', () => {
   const withLuma = normalizeMeetupEvent(createEvent('with-luma', '2026-04-22T18:00:00-07:00'), {
     lumaUrl: 'https://luma.com/with-luma',
   });
-  const withoutLuma = normalizeMeetupEvent(createEvent('without-luma', '2026-04-23T18:00:00-07:00'));
+  const withoutLuma = normalizeMeetupEvent(
+    createEvent('without-luma', '2026-04-23T18:00:00-07:00'),
+  );
 
   const markup = renderRecentEventsMarkup(
     [withLuma, withoutLuma],
@@ -289,39 +302,42 @@ test('renderRecentEventsMarkup includes the Luma icon only when an override exis
 test('renderEmptyStateCard keeps the Meetup group link text tight', () => {
   const markup = renderEmptyStateCard('pnw-software-quality-professionals-pnsqc');
 
-  assert.match(markup, /class="inline-text-link">Meetup group<\/a>[\r\n\s]*directly for the latest event details\./);
+  assert.match(
+    markup,
+    /class="inline-text-link">Meetup group<\/a>[\r\n\s]*directly for the latest event details\./,
+  );
 });
 
 test('renderErrorStateCard keeps the Meetup group link text tight', () => {
   const markup = renderErrorStateCard('pnw-software-quality-professionals-pnsqc');
 
-  assert.match(markup, /class="inline-text-link">Meetup group<\/a>[\r\n\s]*directly for the latest event details\./);
+  assert.match(
+    markup,
+    /class="inline-text-link">Meetup group<\/a>[\r\n\s]*directly for the latest event details\./,
+  );
 });
 
-test('parseLumaOverrides accepts both string and object forms', () => {
-  const overrides = parseLumaOverrides(
+test('parseLumamap accepts both string and object forms', () => {
+  const map = parseLumaMap(
     JSON.stringify({
-      '312975891': 'https://luma.com/9f10qhq7',
-      '313839680': { lumaUrl: 'https://luma.com/7443v31u' },
+      312975891: 'https://luma.com/9f10qhq7',
+      313839680: { lumaUrl: 'https://luma.com/7443v31u' },
       'ignore-me': { notLumaUrl: true },
     }),
   );
 
-  assert.deepEqual(overrides, {
-    '312975891': { lumaUrl: 'https://luma.com/9f10qhq7' },
-    '313839680': { lumaUrl: 'https://luma.com/7443v31u' },
+  assert.deepEqual(map, {
+    312975891: { lumaUrl: 'https://luma.com/9f10qhq7' },
+    313839680: { lumaUrl: 'https://luma.com/7443v31u' },
   });
 });
 
-test('parseLumaOverrides returns an empty object when no override config is provided', () => {
-  assert.deepEqual(parseLumaOverrides(''), {});
+test('parseLumamap returns an empty object when no map is provided', () => {
+  assert.deepEqual(parseLumaMap(''), {});
 });
 
 test('formatEventDateLine preserves the current Pacific time display style', () => {
-  const dateLine = formatEventDateLine(
-    '2026-04-22T18:00:00-07:00',
-    '2026-04-22T20:00:00-07:00',
-  );
+  const dateLine = formatEventDateLine('2026-04-22T18:00:00-07:00', '2026-04-22T20:00:00-07:00');
 
   assert.equal(dateLine, 'Wednesday, Apr 22 &middot; 6:00 PM to 8:00 PM PDT');
 });
@@ -366,10 +382,7 @@ test('buildMeetupJwt signs successfully with both PKCS#8 and PKCS#1 private key 
     assert.equal(header.kid, 'signing-key-id');
     assert.equal(payload.iss, 'client-id');
     assert.equal(payload.sub, '123456789');
-    assert.equal(
-      verifier.verify(publicKeyPem, decodeBase64Url(encodedSignature)),
-      true,
-    );
+    assert.equal(verifier.verify(publicKeyPem, decodeBase64Url(encodedSignature)), true);
   }
 });
 
@@ -383,7 +396,7 @@ test('fetchMeetupRecentEvents uses the current Meetup events query shape', async
   });
   const requests = [];
   const fetchImpl = async (input, init = {}) => {
-    const url = String(typeof input === 'string' ? input : input?.url ?? '');
+    const url = String(typeof input === 'string' ? input : (input?.url ?? ''));
     requests.push({
       body: init.body,
       url,

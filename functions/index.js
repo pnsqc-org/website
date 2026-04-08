@@ -1,4 +1,4 @@
-import { getLumaOverrides } from './_lib/luma-overrides.mjs';
+import { getLumaMap } from './_lib/luma-map.mjs';
 import { fetchMeetupRecentEvents } from './_lib/meetup-api.mjs';
 import {
   EVENT_LIMIT,
@@ -29,14 +29,14 @@ function buildCacheKey(requestUrl, groupUrlname) {
 
 async function buildRecentEventsMarkup(env) {
   const payload = await fetchMeetupRecentEvents(env, fetch, EVENT_LIMIT);
-  const lumaOverrides = getLumaOverrides(env);
+  const lumaMap = getLumaMap(env);
   const selectedEvents = selectRecentEvents({
     upcomingEvents: payload.upcomingEvents,
     pastEvents: payload.pastEvents,
   });
 
   const normalizedEvents = selectedEvents.map((event) =>
-    normalizeMeetupEvent(event, lumaOverrides[String(event?.id ?? '')]),
+    normalizeMeetupEvent(event, lumaMap[String(event?.id ?? '')]),
   );
 
   return renderRecentEventsMarkup(normalizedEvents, payload.groupUrlname);

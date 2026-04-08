@@ -68,9 +68,5 @@
     document.querySelectorAll('[data-substack-form]').forEach(initForm);
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main, { once: true });
-  } else {
-    main();
-  }
+  main();
 })();

@@ -420,50 +420,30 @@ og_image: /images/events/conference/2025/group_photo.jpg
 
     <!-- Track Details Modal -->
     <div class="fixed inset-0 z-50 hidden" data-details-modal>
-      <div
-        class="absolute inset-0 bg-pnsqc-navy/85 backdrop-blur-sm"
-        data-details-modal-backdrop
-      ></div>
-      <div class="relative min-h-full p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+      <div class="modal-backdrop" data-details-modal-backdrop></div>
+      <div class="modal-shell">
         <div
-          class="w-full max-w-4xl rounded-2xl border border-white/10 bg-gradient-to-br from-pnsqc-blue-dark to-pnsqc-navy shadow-2xl overflow-hidden"
+          class="modal-panel modal-panel--wide"
           role="dialog"
           aria-modal="true"
           aria-labelledby="details-modal-title"
           tabindex="-1"
           data-details-modal-panel
         >
-          <div
-            class="flex items-start justify-between gap-4 px-5 py-4 sm:px-6 border-b border-white/10"
-          >
+          <div class="modal-header">
             <div>
-              <p
-                class="text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80"
-                data-details-modal-label
-              >
-                Track
-              </p>
-              <h3
-                id="details-modal-title"
-                class="mt-1 text-lg sm:text-xl font-bold text-white"
-                data-details-modal-title
-              >
+              <p class="modal-label" data-details-modal-label>Track</p>
+              <h3 id="details-modal-title" class="modal-title" data-details-modal-title>
                 Track Details
               </h3>
             </div>
             <button
               type="button"
-              class="shrink-0 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-pnsqc-slate hover:text-white hover:bg-white/10 transition-colors"
+              class="modal-close"
               aria-label="Close track details"
               data-details-modal-close
             >
-              <svg
-                class="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -473,23 +453,20 @@ og_image: /images/events/conference/2025/group_photo.jpg
               </svg>
             </button>
           </div>
-          <div
-            class="max-h-[75vh] overflow-y-auto px-5 py-5 sm:px-6 sm:py-6"
-            data-details-modal-body
-          ></div>
+          <div class="modal-body" data-details-modal-body></div>
         </div>
       </div>
     </div>
 
     <!-- Track Details Content Templates -->
     <template id="details-modal-template-track-1">
-      <div class="space-y-6">
-        <p class="text-sm leading-7 text-pnsqc-slate">
+      <div class="rich-content rich-content--compact space-y-6">
+        <p>
           This track focuses on how teams design, test, and sustain quality in software systems of
           all kinds, whether systems are built in-house, assembled from multiple components, or
           integrated with vendor-provided platforms.
         </p>
-        <p class="text-sm leading-7 text-pnsqc-slate">
+        <p>
           Submissions may address human-driven testing, automation where appropriate, or
           combinations of both, with an emphasis on what actually works in practice to improve
           reliability and reduce risk.
@@ -499,27 +476,12 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-pnsqc-gold">
             Topics May Include
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Test design, exploratory testing, and coverage strategies</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Automation approaches and long-term maintainability</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>System, integration, and reliability testing</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Observability, metrics, and feedback loops</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Managing technical risk in complex or integrated systems</span>
-            </li>
+          <ul class="rich-list">
+            <li>Test design, exploratory testing, and coverage strategies</li>
+            <li>Automation approaches and long-term maintainability</li>
+            <li>System, integration, and reliability testing</li>
+            <li>Observability, metrics, and feedback loops</li>
+            <li>Managing technical risk in complex or integrated systems</li>
           </ul>
         </section>
 
@@ -527,63 +489,33 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-pnsqc-gold">
             Example Paper Titles
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Exploratory Testing as a Reliability Signal, Not a Last Resort</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>What Actually Improved System Stability: Lessons from Production Defects</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Balancing Manual and Automated Testing in a Growing Product</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Testing Integrations When You Don't Control All the Dependencies</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Coverage Isn't Confidence: Rethinking What Our Tests Really Tell Us</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Improving Reliability Without Adding More Tests</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>How We Identified Risk Early Using Lightweight Testing Techniques</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>From Defects to Insights: Using Failures to Strengthen System Design</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>Designing Tests for Complex Systems with Limited Observability</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-gold">&bull;</span
-              ><span>When Simpler Testing Approaches Outperformed Sophisticated Tooling</span>
-            </li>
+          <ul class="rich-list">
+            <li>Exploratory Testing as a Reliability Signal, Not a Last Resort</li>
+            <li>What Actually Improved System Stability: Lessons from Production Defects</li>
+            <li>Balancing Manual and Automated Testing in a Growing Product</li>
+            <li>Testing Integrations When You Don't Control All the Dependencies</li>
+            <li>Coverage Isn't Confidence: Rethinking What Our Tests Really Tell Us</li>
+            <li>Improving Reliability Without Adding More Tests</li>
+            <li>How We Identified Risk Early Using Lightweight Testing Techniques</li>
+            <li>From Defects to Insights: Using Failures to Strengthen System Design</li>
+            <li>Designing Tests for Complex Systems with Limited Observability</li>
+            <li>When Simpler Testing Approaches Outperformed Sophisticated Tooling</li>
           </ul>
         </section>
       </div>
     </template>
     <template id="details-modal-template-track-2">
-      <div class="space-y-6">
-        <p class="text-sm leading-7 text-pnsqc-slate">
+      <div class="rich-content rich-content--compact space-y-6">
+        <p>
           This track focuses on how people and organizations plan, govern, and sustain quality,
           especially as delivery speeds increase, systems grow more complex, and responsibility is
           distributed across teams and vendors.
         </p>
-        <p class="text-sm leading-7 text-pnsqc-slate">
+        <p>
           It is a strong home for Agile practices, test management, and leadership perspectives that
           shape how quality decisions are made, communicated, and acted upon.
         </p>
-        <p class="text-sm leading-7 text-pnsqc-slate">
+        <p>
           The track also welcomes perspectives from enterprise and public-sector organizations
           responsible for procuring, configuring, integrating, and assuring the quality of software
           they do not fully control, where visibility, accountability, and risk management are
@@ -594,31 +526,13 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-pnsqc-cyan">
             Topics May Include
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Agile and Lean quality practices</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Test management, planning, and reporting</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Risk-based testing and prioritization</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Quality metrics and decision frameworks</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Leadership, culture, and cross-team coordination</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Managing quality across vendors, platforms, and integrated systems</span>
-            </li>
+          <ul class="rich-list rich-list--cyan">
+            <li>Agile and Lean quality practices</li>
+            <li>Test management, planning, and reporting</li>
+            <li>Risk-based testing and prioritization</li>
+            <li>Quality metrics and decision frameworks</li>
+            <li>Leadership, culture, and cross-team coordination</li>
+            <li>Managing quality across vendors, platforms, and integrated systems</li>
           </ul>
         </section>
 
@@ -626,61 +540,29 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-pnsqc-cyan">
             Example Paper Titles
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Test Management That Supports Teams Instead of Slowing Them Down</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>How We Made Better Quality Decisions with Fewer Metrics</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Aligning Agile Teams on Quality Without Heavy Process</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Risk-Based Testing as an Organizational Practice, Not a Spreadsheet</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Turning Test Reports into Decisions Leaders Actually Use</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Quality Ownership in Cross-Functional Teams: What Worked and What Didn't</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Planning for Quality in Fast-Moving Agile Environments</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Managing Quality Across Multiple Teams and Vendors</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span>Quality Governance When You Don't Own the Code</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-pnsqc-cyan">&bull;</span
-              ><span
-                >Creating a Shared Definition of Quality Across Product, Engineering, and QA</span
-              >
-            </li>
+          <ul class="rich-list rich-list--cyan">
+            <li>Test Management That Supports Teams Instead of Slowing Them Down</li>
+            <li>How We Made Better Quality Decisions with Fewer Metrics</li>
+            <li>Aligning Agile Teams on Quality Without Heavy Process</li>
+            <li>Risk-Based Testing as an Organizational Practice, Not a Spreadsheet</li>
+            <li>Turning Test Reports into Decisions Leaders Actually Use</li>
+            <li>Quality Ownership in Cross-Functional Teams: What Worked and What Didn't</li>
+            <li>Planning for Quality in Fast-Moving Agile Environments</li>
+            <li>Managing Quality Across Multiple Teams and Vendors</li>
+            <li>Quality Governance When You Don't Own the Code</li>
+            <li>Creating a Shared Definition of Quality Across Product, Engineering, and QA</li>
           </ul>
         </section>
       </div>
     </template>
 
     <template id="details-modal-template-track-3">
-      <div class="space-y-6">
-        <p class="text-sm leading-7 text-pnsqc-slate">
+      <div class="rich-content rich-content--compact space-y-6">
+        <p>
           This track addresses quality challenges unique to AI-enabled and intelligent systems,
           including how such systems are evaluated, governed, and monitored in real-world use.
         </p>
-        <p class="text-sm leading-7 text-pnsqc-slate">
+        <p>
           Submissions should emphasize practical testing and assessment techniques, governance and
           oversight approaches, and lessons learned from deployment and operation rather than
           speculative or promotional content.
@@ -690,27 +572,12 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-purple-300">
             Topics May Include
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Testing AI-enabled features and systems</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Bias, fairness, explainability, and transparency</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Reliability, safety, and validation of intelligent behavior</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Human oversight and governance models</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Regulatory, ethical, and compliance considerations</span>
-            </li>
+          <ul class="rich-list rich-list--purple">
+            <li>Testing AI-enabled features and systems</li>
+            <li>Bias, fairness, explainability, and transparency</li>
+            <li>Reliability, safety, and validation of intelligent behavior</li>
+            <li>Human oversight and governance models</li>
+            <li>Regulatory, ethical, and compliance considerations</li>
           </ul>
         </section>
 
@@ -718,61 +585,31 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-purple-300">
             Example Paper Titles
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Testing AI Features When Expected Results Aren't Deterministic</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>What "Good Enough" Means for AI-Driven Decisions</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Introducing AI Testing into a Traditional QA Organization</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Evaluating AI Systems Without a Data Science Background</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Bias, Risk, and Responsibility: A Tester's Perspective</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Human Oversight Models That Actually Work for AI Systems</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Validating Intelligent Behavior in Production Environments</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Lessons Learned Governing AI Features Under Real Constraints</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>Trusting AI Outputs: What We Measure and Why</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-purple-300">&bull;</span
-              ><span>When AI Behaved Unexpectedly: How We Detected, Diagnosed, and Responded</span>
-            </li>
+          <ul class="rich-list rich-list--purple">
+            <li>Testing AI Features When Expected Results Aren't Deterministic</li>
+            <li>What "Good Enough" Means for AI-Driven Decisions</li>
+            <li>Introducing AI Testing into a Traditional QA Organization</li>
+            <li>Evaluating AI Systems Without a Data Science Background</li>
+            <li>Bias, Risk, and Responsibility: A Tester's Perspective</li>
+            <li>Human Oversight Models That Actually Work for AI Systems</li>
+            <li>Validating Intelligent Behavior in Production Environments</li>
+            <li>Lessons Learned Governing AI Features Under Real Constraints</li>
+            <li>Trusting AI Outputs: What We Measure and Why</li>
+            <li>When AI Behaved Unexpectedly: How We Detected, Diagnosed, and Responded</li>
           </ul>
         </section>
       </div>
     </template>
     <template id="details-modal-template-track-4">
-      <div class="space-y-6">
-        <p class="text-sm leading-7 text-pnsqc-slate">
+      <div class="rich-content rich-content--compact space-y-6">
+        <p>
           This track focuses on practical tools, frameworks, and techniques that improve the
           productivity and effectiveness of quality engineering teams.<br />
           Submissions should emphasize real-world experience, engineering insights, and lessons
           learned from building, integrating, or applying tools in modern software development
           environments.
         </p>
-        <p class="text-sm leading-7 text-pnsqc-slate">
+        <p>
           Submissions should focus on technical insights and practical experience rather than
           product demonstrations or sales presentations.<br />
           Tools may be referenced, but talks should provide lessons and techniques that other teams
@@ -783,43 +620,16 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-emerald-300">
             Topics May Include
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Test automation platforms and frameworks</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Developer productivity and testing workflows</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Observability, diagnostics, and debugging tools</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>CI/CD testing infrastructure</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Managing flaky tests and test reliability</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>AI-assisted testing tools and practices</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Toolchains for modern quality engineering</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Integrating testing into developer workflows</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Scaling test automation in large systems</span>
-            </li>
+          <ul class="rich-list rich-list--emerald">
+            <li>Test automation platforms and frameworks</li>
+            <li>Developer productivity and testing workflows</li>
+            <li>Observability, diagnostics, and debugging tools</li>
+            <li>CI/CD testing infrastructure</li>
+            <li>Managing flaky tests and test reliability</li>
+            <li>AI-assisted testing tools and practices</li>
+            <li>Toolchains for modern quality engineering</li>
+            <li>Integrating testing into developer workflows</li>
+            <li>Scaling test automation in large systems</li>
           </ul>
         </section>
 
@@ -827,39 +637,15 @@ og_image: /images/events/conference/2025/group_photo.jpg
           <h4 class="mb-3 text-xs font-semibold uppercase tracking-widest text-emerald-300">
             Example Paper Titles
           </h4>
-          <ul class="space-y-2 text-sm text-pnsqc-slate">
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Lessons Learned Building AI-Generated Test Suites</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Managing Flaky Tests in CI at Scale</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Using Observability Data to Diagnose Test Failures</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Integrating Quality Signals into Developer Workflows</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Tooling Strategies for Testing Microservices</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Improving Test Feedback Loops for Developers</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Reducing Test Execution Time in Large CI Pipelines</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="mt-1 text-emerald-300">&bull;</span
-              ><span>Making Test Automation Maintainable Over Time</span>
-            </li>
+          <ul class="rich-list rich-list--emerald">
+            <li>Lessons Learned Building AI-Generated Test Suites</li>
+            <li>Managing Flaky Tests in CI at Scale</li>
+            <li>Using Observability Data to Diagnose Test Failures</li>
+            <li>Integrating Quality Signals into Developer Workflows</li>
+            <li>Tooling Strategies for Testing Microservices</li>
+            <li>Improving Test Feedback Loops for Developers</li>
+            <li>Reducing Test Execution Time in Large CI Pipelines</li>
+            <li>Making Test Automation Maintainable Over Time</li>
           </ul>
         </section>
       </div>

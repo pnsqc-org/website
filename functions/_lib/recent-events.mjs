@@ -372,7 +372,7 @@ function renderRsvpLinks(event) {
           src="/images/brand/luma.png"
           alt="Luma Signup"
           aria-hidden="true"
-          class="w-5 h-5"
+          class="w-7 h-7"
           decoding="async"
         />
       </a>
@@ -389,7 +389,8 @@ function renderStaticStatusBadge(label, variant = 'neutral') {
       : variant === 'upcoming'
         ? 'border-pnsqc-gold/35 bg-pnsqc-gold/10 text-pnsqc-gold-light'
         : 'border-white/10 bg-white/5 text-white/75';
-  const icon = variant === 'past' ? PAST_BADGE_ICON : variant === 'upcoming' ? UPCOMING_BADGE_ICON : '';
+  const icon =
+    variant === 'past' ? PAST_BADGE_ICON : variant === 'upcoming' ? UPCOMING_BADGE_ICON : '';
 
   return `
     <span class="${STATUS_BADGE_BASE_CLASSES} ${variantClasses}">

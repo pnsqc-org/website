@@ -213,35 +213,28 @@
     }
   };
 
-  const createDescriptionModalController = () => {
-    const modal = document.querySelector('[data-event-description-modal]');
-    if (!modal) return null;
+  const createModalSection = (content, labelText = '') => {
+    const section = document.createElement('section');
+    section.className = 'modal-section';
 
-    const panel = modal.querySelector('[data-event-description-modal-panel]');
-    const body = modal.querySelector('[data-event-description-modal-body]');
-    const titleEl = modal.querySelector('[data-event-description-modal-title]');
-    const labelEl = modal.querySelector('[data-event-description-modal-label]');
-    const closeButton = modal.querySelector('[data-event-description-modal-close]');
-    const backdrop = modal.querySelector('[data-event-description-modal-backdrop]');
-
-    if (!panel || !body || !titleEl || !labelEl || !closeButton || !backdrop) {
-      return null;
+    if (labelText) {
+      const label = document.createElement('p');
+      label.className = 'modal-section-label';
+      label.textContent = labelText;
+      section.appendChild(label);
     }
 
-    let lastFocused = null;
+    section.appendChild(content);
+    return section;
+  };
 
-    const closeModal = () => {
-      if (modal.classList.contains('hidden')) return;
-
-      modal.classList.add('hidden');
-      document.body.classList.remove('overflow-hidden');
-      body.replaceChildren();
-
-      if (lastFocused instanceof HTMLElement) {
-        lastFocused.focus();
-      }
-      lastFocused = null;
-    };
+  const createDescriptionModalController = () => {
+    const modal = document.querySelector('[data-event-description-modal]');
+    const modalController = window.PNSQCModal?.createModalControllerFromRoot?.(
+      modal,
+      'event-description-modal',
+    );
+    if (!modalController) return null;
 
     const buildModalContent = (slide) => {
       const wrapper = document.createElement('div');
@@ -249,35 +242,22 @@
 
       const metaSource = slide.querySelector('[data-event-modal-meta]');
       if (metaSource) {
-        const metaSection = document.createElement('section');
-        metaSection.className = 'rounded-xl border border-white/10 bg-white/5 p-4';
-
         const metaClone = metaSource.cloneNode(true);
         metaClone.removeAttribute('data-event-modal-meta');
         metaClone.classList.add('space-y-3');
 
-        metaSection.appendChild(metaClone);
-        wrapper.appendChild(metaSection);
+        wrapper.appendChild(createModalSection(metaClone));
       }
 
       const descriptionSource = slide.querySelector('[data-event-description-content]');
       if (descriptionSource) {
-        const descriptionSection = document.createElement('section');
-        descriptionSection.className = 'rounded-xl border border-white/10 bg-white/5 p-4';
-
-        const label = document.createElement('p');
-        label.className = 'text-xs font-semibold uppercase tracking-wider text-white/80 mb-3';
-        label.textContent = 'Full Description';
-        descriptionSection.appendChild(label);
-
         const descriptionClone = descriptionSource.cloneNode(true);
         descriptionClone.removeAttribute('data-event-description-content');
         descriptionClone.removeAttribute('hidden');
         descriptionClone.classList.remove('hidden');
-        descriptionClone.classList.add('leading-7');
-        descriptionSection.appendChild(descriptionClone);
+        descriptionClone.classList.add('rich-content', 'rich-content--compact');
 
-        wrapper.appendChild(descriptionSection);
+        wrapper.appendChild(createModalSection(descriptionClone, 'Full Description'));
       }
 
       return wrapper;
@@ -292,14 +272,12 @@
       const stateLabel =
         slide.dataset.eventState === 'past' ? 'Past Meetup Event' : 'Upcoming Meetup Event';
 
-      body.replaceChildren(buildModalContent(slide));
-      titleEl.textContent = titleText;
-      labelEl.textContent = stateLabel;
-
-      lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      modal.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
-      closeButton.focus();
+      modalController.openModal({
+        content: buildModalContent(slide),
+        title: titleText,
+        label: stateLabel,
+        trigger,
+      });
     };
 
     document.addEventListener('click', (event) => {
@@ -312,24 +290,6 @@
       event.preventDefault();
       openModal(trigger);
     });
-
-    closeButton.addEventListener('click', closeModal);
-    backdrop.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', (event) => {
-      if (!panel.contains(event.target)) {
-        closeModal();
-      }
-    });
-
-    modal.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        closeModal();
-      }
-    });
-
-    return { closeModal };
   };
 
   const createFeaturedImageController = (root) => {
@@ -503,9 +463,5 @@
     for (const carousel of carousels) initCarousel(carousel);
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  init();
 })();

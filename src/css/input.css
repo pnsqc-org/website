@@ -44,6 +44,10 @@ html {
   --header-cta-bg: var(--color-pnsqc-gold);
   --header-cta-hover-bg: var(--color-pnsqc-gold-light);
   --header-cta-text: var(--color-pnsqc-navy);
+  --modal-panel-border: rgba(255, 255, 255, 0.1);
+  --modal-divider-border: rgba(255, 255, 255, 0.1);
+  --modal-section-bg: rgba(255, 255, 255, 0.05);
+  --modal-section-border: rgba(255, 255, 255, 0.1);
 }
 
 .has-fixed-header {
@@ -294,6 +298,10 @@ html {
   --header-cta-bg: var(--color-pnsqc-gold);
   --header-cta-hover-bg: var(--color-pnsqc-gold-light);
   --header-cta-text: var(--gold-button-text);
+  --modal-panel-border: color-mix(in srgb, var(--color-pnsqc-gold) 18%, transparent);
+  --modal-divider-border: color-mix(in srgb, var(--color-pnsqc-gold) 18%, transparent);
+  --modal-section-bg: color-mix(in srgb, var(--color-pnsqc-blue) 45%, var(--color-pnsqc-navy));
+  --modal-section-border: color-mix(in srgb, var(--color-pnsqc-gold) 22%, transparent);
 }
 
 .text-pnsqc-cyan {
@@ -454,9 +462,9 @@ html {
 .modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(28, 24, 20, 0.85);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: color-mix(in srgb, var(--color-pnsqc-navy) 85%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .modal-shell {
@@ -473,7 +481,7 @@ html {
   width: 100%;
   max-width: 48rem;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--modal-panel-border);
   border-radius: 1rem;
   background: linear-gradient(135deg, var(--color-pnsqc-blue-dark), var(--color-pnsqc-navy));
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
@@ -493,7 +501,7 @@ html {
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--modal-divider-border);
   padding: 1rem 1.25rem;
 }
 
@@ -549,9 +557,9 @@ html {
 }
 
 .modal-section {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--modal-section-border);
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--modal-section-bg);
   padding: 1rem;
 }
 
@@ -562,7 +570,7 @@ html {
   line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--gold-readable-hover);
 }
 
 @media (min-width: 40rem) {

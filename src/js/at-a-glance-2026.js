@@ -373,7 +373,7 @@
           );
           const abstractBody = Dom.el(
             'div',
-            'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
+            'details-modal-content rich-content--compact space-y-3',
           );
           abstractBody.innerHTML = submissionDetail.abstract;
           abstractSection.appendChild(abstractBody);
@@ -391,17 +391,14 @@
           );
           const objectivesBody = Dom.el(
             'div',
-            'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
+            'details-modal-content rich-content--compact space-y-3',
           );
           objectivesBody.innerHTML = submissionDetail.objectives;
           objectiveSection.appendChild(objectivesBody);
           wrapper.appendChild(objectiveSection);
         }
       } else if (abstractHtml) {
-        const abstractBody = Dom.el(
-          'div',
-          'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
-        );
+        const abstractBody = Dom.el('div', 'details-modal-content rich-content--compact space-y-3');
         abstractBody.innerHTML = abstractHtml;
         wrapper.appendChild(abstractBody);
       } else {
@@ -503,7 +500,7 @@
       if (useSubmission) {
         const submissionBioBody = Dom.el(
           'div',
-          'schedule-modal-content text-sm leading-7 text-pnsqc-slate space-y-3',
+          'details-modal-content rich-content--compact space-y-3',
         );
         submissionBioBody.innerHTML = submissionBio || 'Bio coming soon.';
         bioSection.appendChild(submissionBioBody);
@@ -857,9 +854,9 @@
                 : 'text-left text-white font-medium hover:text-pnsqc-gold transition-colors';
               const titleButton = Dom.el('button', titleButtonClass, itemTitle);
               titleButton.type = 'button';
-              titleButton.setAttribute('data-track-modal-open', templateId);
-              titleButton.setAttribute('data-track-modal-title', itemTitle);
-              titleButton.setAttribute('data-track-modal-label', 'Abstract');
+              titleButton.setAttribute('data-details-modal-open', templateId);
+              titleButton.setAttribute('data-details-modal-title', itemTitle);
+              titleButton.setAttribute('data-details-modal-label', 'Abstract');
               if (submissionId) {
                 titleButton.setAttribute('data-schedule-abstract-trigger', 'true');
                 titleButton.setAttribute('data-schedule-submission-id', submissionId);
@@ -871,8 +868,8 @@
                 : 'text-left text-white font-medium hover:text-pnsqc-gold transition-colors';
               const titleButton = Dom.el('button', titleButtonClass, itemTitle);
               titleButton.type = 'button';
-              titleButton.setAttribute('data-track-modal-title', itemTitle);
-              titleButton.setAttribute('data-track-modal-label', 'Abstract');
+              titleButton.setAttribute('data-details-modal-title', itemTitle);
+              titleButton.setAttribute('data-details-modal-label', 'Abstract');
               titleButton.setAttribute('data-schedule-abstract-trigger', 'true');
               titleButton.setAttribute('data-schedule-submission-id', submissionId);
               titleContent.appendChild(titleButton);
@@ -896,9 +893,9 @@
                   : 'text-pnsqc-slate text-sm hover:text-pnsqc-gold transition-colors text-left';
                 const speakerButton = Dom.el('button', speakerButtonClass, itemSpeaker);
                 speakerButton.type = 'button';
-                speakerButton.setAttribute('data-track-modal-open', speakerTemplateId);
-                speakerButton.setAttribute('data-track-modal-title', itemSpeaker);
-                speakerButton.setAttribute('data-track-modal-label', 'Speaker');
+                speakerButton.setAttribute('data-details-modal-open', speakerTemplateId);
+                speakerButton.setAttribute('data-details-modal-title', itemSpeaker);
+                speakerButton.setAttribute('data-details-modal-label', 'Speaker');
                 titleContent.appendChild(speakerButton);
               } else if (isSubmissionType) {
                 const submissionBio = submissionDetail?.bio || 'Bio coming soon.';
@@ -922,11 +919,11 @@
                 );
                 submissionSpeakerButton.type = 'button';
                 submissionSpeakerButton.setAttribute(
-                  'data-track-modal-open',
+                  'data-details-modal-open',
                   submissionSpeakerTemplateId,
                 );
-                submissionSpeakerButton.setAttribute('data-track-modal-title', itemSpeaker);
-                submissionSpeakerButton.setAttribute('data-track-modal-label', 'Speaker');
+                submissionSpeakerButton.setAttribute('data-details-modal-title', itemSpeaker);
+                submissionSpeakerButton.setAttribute('data-details-modal-label', 'Speaker');
                 titleContent.appendChild(submissionSpeakerButton);
               } else {
                 const speakerLineClass = isKeynote
@@ -1087,7 +1084,7 @@
         timezoneLabel: document.getElementById('timezone-label'),
         eventMeta: document.getElementById('event-meta'),
         eventIntro: document.getElementById('event-intro'),
-        templateRoot: document.getElementById('schedule-abstract-templates'),
+        templateRoot: document.getElementById('details-modal-templates'),
       });
 
       const toggleRoot = document.getElementById('timezone-toggle');
@@ -1109,7 +1106,7 @@
               ? event.target.closest('[data-schedule-abstract-trigger="true"]')
               : null;
           if (!(trigger instanceof HTMLButtonElement)) return;
-          if (trigger.hasAttribute('data-track-modal-open')) return;
+          if (trigger.hasAttribute('data-details-modal-open')) return;
 
           event.preventDefault();
           event.stopPropagation();
@@ -1137,10 +1134,10 @@
       });
       const wasDisabled = trigger.disabled;
       if (wasDisabled) trigger.disabled = false;
-      trigger.setAttribute('data-track-modal-open', templateId);
+      trigger.setAttribute('data-details-modal-open', templateId);
       trigger.click();
       window.setTimeout(() => {
-        trigger.removeAttribute('data-track-modal-open');
+        trigger.removeAttribute('data-details-modal-open');
         if (wasDisabled) trigger.disabled = true;
       }, 0);
     }

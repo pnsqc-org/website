@@ -43,62 +43,84 @@ function parseMeta(html) {
   return meta;
 }
 
+function stripMetaBlock(html) {
+  return html.replace(/^\uFEFF?\s*<!--\s*meta\b[\s\S]*?-->\s*/i, '');
+}
+
+function parseMetaBoolean(value, defaultValue = true) {
+  if (value == null) return defaultValue;
+  return !/^(false|0|no|off)$/i.test(String(value).trim());
+}
+
+function insertBeforeHeadClose(html, lines) {
+  return html.replace(/^([ \t]*)<\/head>/m, (_, indent) => {
+    const childIndent = `${indent}  `;
+    const normalizedLines = Array.isArray(lines) ? lines : lines.split('\n');
+    const block = normalizedLines.map((line) => `${childIndent}${line}`).join('\n');
+    return `${block}\n${indent}</head>`;
+  });
+}
+
 // ── Inject <head> meta tags ─────────────────────────────────────────
 
 function injectHead(html, meta, config, filePath, baseDir) {
   const title = meta.title || config.siteName;
   const description = meta.description || config.defaultDescription;
   const ogImage = meta.og_image || config.defaultOgImage;
-  const relPath = relative(baseDir, filePath);
+  const ogImageAlt =
+    meta.og_image_alt || (ogImage === config.defaultOgImage ? config.defaultOgImageAlt : '');
+  const robots = meta.robots || config.defaultRobots;
+  const themeColor = config.themeColor?.trim();
+  const twitterSite = config.twitterSite?.trim();
+  const includeCanonical = parseMetaBoolean(meta.canonical, true);
+  const includeSocial = parseMetaBoolean(meta.social, true);
+  const siteOrigin = config.baseUrl.endsWith('/') ? config.baseUrl : `${config.baseUrl}/`;
+  const relPath = relative(baseDir, filePath).split(path.sep).join('/');
   const urlPath = '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
-  const canonical = config.baseUrl + urlPath;
+  const canonical = new URL(urlPath, siteOrigin).toString();
+  const ogImageUrl = new URL(ogImage, siteOrigin).toString();
 
-  // Replace <title>, or insert one if the source page omitted it.
-  const titleTag = `<title>${escAttr(title)}</title>`;
-  if (/<title\b[^>]*>[\s\S]*?<\/title>/i.test(html)) {
-    html = html.replace(/<title\b[^>]*>[\s\S]*?<\/title>/i, titleTag);
-  } else {
-    html = html.replace('</head>', `  ${titleTag}\n</head>`);
+  const managedHeadTagPatterns = [
+    /[ \t]*<title\b[^>]*>[\s\S]*?<\/title>\s*/gi,
+    /[ \t]*<meta\b[^>]*name=["']description["'][^>]*>\s*/gi,
+    /[ \t]*<meta\b[^>]*name=["']robots["'][^>]*>\s*/gi,
+    /[ \t]*<meta\b[^>]*name=["']theme-color["'][^>]*>\s*/gi,
+    /[ \t]*<link\b[^>]*rel=["']canonical["'][^>]*>\s*/gi,
+    /[ \t]*<meta\b[^>]*property=["']og:[^"']+["'][^>]*>\s*/gi,
+    /[ \t]*<meta\b[^>]*(?:name|property)=["']twitter:[^"']+["'][^>]*>\s*/gi,
+  ];
+
+  for (const pattern of managedHeadTagPatterns) {
+    html = html.replace(pattern, '');
   }
 
-  // Replace or insert <meta name="description">
-  if (html.includes('<meta name="description"')) {
-    html = html.replace(
-      /<meta name="description"[^>]*>/,
-      `<meta name="description" content="${escAttr(description)}">`,
-    );
-  } else {
-    html = html.replace(
-      '</title>',
-      `</title>\n  <meta name="description" content="${escAttr(description)}">`,
-    );
-  }
-
-  // Build OG / canonical block
-  const ogBlock = [
-    `<link rel="canonical" href="${canonical}">`,
-    `<meta property="og:title" content="${escAttr(title)}">`,
-    `<meta property="og:description" content="${escAttr(description)}">`,
-    `<meta property="og:image" content="${config.baseUrl}${ogImage}">`,
-    `<meta property="og:url" content="${canonical}">`,
-    `<meta property="og:type" content="website">`,
-    `<meta property="og:locale" content="${config.locale}">`,
-    `<meta property="og:site_name" content="${escAttr(config.siteName)}">`,
-    `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:title" content="${escAttr(title)}">`,
-    `<meta name="twitter:description" content="${escAttr(description)}">`,
-    `<meta name="twitter:image" content="${config.baseUrl}${ogImage}">`,
+  const headTags = [
+    `<title>${escAttr(title)}</title>`,
+    `<meta name="description" content="${escAttr(description)}">`,
+    robots ? `<meta name="robots" content="${escAttr(robots)}">` : '',
+    themeColor ? `<meta name="theme-color" content="${escAttr(themeColor)}">` : '',
+    includeCanonical ? `<link rel="canonical" href="${canonical}">` : '',
+    includeSocial ? `<meta property="og:title" content="${escAttr(title)}">` : '',
+    includeSocial ? `<meta property="og:description" content="${escAttr(description)}">` : '',
+    includeSocial ? `<meta property="og:image" content="${ogImageUrl}">` : '',
+    includeSocial && ogImageAlt
+      ? `<meta property="og:image:alt" content="${escAttr(ogImageAlt)}">`
+      : '',
+    includeSocial ? `<meta property="og:url" content="${canonical}">` : '',
+    includeSocial
+      ? `<meta property="og:type" content="${escAttr(meta.og_type || 'website')}">`
+      : '',
+    includeSocial ? `<meta property="og:locale" content="${escAttr(config.locale)}">` : '',
+    includeSocial ? `<meta property="og:site_name" content="${escAttr(config.siteName)}">` : '',
+    includeSocial ? `<meta name="twitter:card" content="summary_large_image">` : '',
+    includeSocial && twitterSite
+      ? `<meta name="twitter:site" content="${escAttr(twitterSite)}">`
+      : '',
   ]
-    .map((l) => '  ' + l)
+    .filter(Boolean)
     .join('\n');
 
-  // Remove existing OG / canonical / twitter tags
-  html = html.replace(/\s*<link rel="canonical"[^>]*>/g, '');
-  html = html.replace(/\s*<meta property="og:[^>]*>/g, '');
-  html = html.replace(/\s*<meta name="twitter:[^>]*>/g, '');
-
-  // Insert before </head>
-  html = html.replace('</head>', ogBlock + '\n</head>');
+  html = insertBeforeHeadClose(html, headTags);
 
   return html;
 }
@@ -112,19 +134,17 @@ function injectGoogleTag(html, config) {
     return html;
   }
 
-  const googleTagBlock = [
-    '  <!-- Google tag (gtag.js) -->',
-    `  <script async src="${scriptSrc}"></script>`,
-    '  <script>',
-    '    window.dataLayer = window.dataLayer || [];',
-    '    function gtag(){dataLayer.push(arguments);}',
-    "    gtag('js', new Date());",
+  return insertBeforeHeadClose(html, [
+    '<!-- Google tag (gtag.js) -->',
+    `<script async src="${scriptSrc}"></script>`,
+    '<script>',
+    '  window.dataLayer = window.dataLayer || [];',
+    '  function gtag(){dataLayer.push(arguments);}',
+    "  gtag('js', new Date());",
     '',
-    `    gtag('config', '${googleTagId}');`,
-    '  </script>',
-  ].join('\n');
-
-  return html.replace('</head>', `${googleTagBlock}\n</head>`);
+    `  gtag('config', '${googleTagId}');`,
+    '</script>',
+  ]);
 }
 
 function escAttr(s) {
@@ -203,7 +223,7 @@ function wrapPrimaryContentInMain(html) {
 function generateSitemap(files, config, targetDir) {
   const sitemapFiles = files.filter((f) => relative(targetDir, f) !== '404.html');
   const urls = sitemapFiles.map((f) => {
-    const rel = relative(targetDir, f);
+    const rel = relative(targetDir, f).split(path.sep).join('/');
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
     const lastmod = statSync(f).mtime.toISOString().split('T')[0];
     return `  <url>\n    <loc>${config.baseUrl}${urlPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
@@ -271,6 +291,7 @@ function main() {
     html = wrapPrimaryContentInMain(html);
     html = injectHead(html, meta, config, file, DIST); // Pass DIST as baseDir
     html = injectGoogleTag(html, config);
+    html = stripMetaBlock(html);
 
     writeFileSync(file, html);
     console.log(`  ✓ dist/${relFile}`);

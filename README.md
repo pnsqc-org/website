@@ -34,7 +34,7 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
    2. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
-   3. Reads each page's `<!-- meta ... -->` block and writes SEO tags into `<head>`
+   3. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
    4. Generates `dist/sitemap.xml` and `dist/robots.txt`
 2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
@@ -93,6 +93,16 @@ og_image: /images/events/conference/2025/group_photo.jpg
 ```
 
 Defaults come from `site.config.json`.
+The `meta` comment is source-only and is stripped from the generated files in `dist/`.
+
+Optional per-page fields:
+
+```html
+robots: noindex,follow
+og_image_alt: Describe the social preview image for screen readers and rich cards
+canonical: false
+social: false
+```
 
 ### 2) Keep partial placeholders empty
 
@@ -126,11 +136,15 @@ Edit `site.config.json` for site-wide defaults:
   "siteName": "PNSQC — Pacific NW Software Quality Conference",
   "defaultDescription": "...",
   "defaultOgImage": "/images/events/conference/2025/group_photo.jpg",
-  "locale": "en_US"
+  "defaultOgImageAlt": "...",
+  "locale": "en_US",
+  "defaultRobots": "index,follow,max-image-preview:large",
+  "themeColor": "#1c1814",
+  "twitterSite": "@PNSQC"
 }
 ```
 
-Important: update `baseUrl` to the production domain before release so canonical, Open Graph, Twitter tags, and sitemap URLs are correct.
+Important: update `baseUrl` to the production domain before release so canonical, Open Graph, X/Twitter tags, and sitemap URLs are correct.
 
 ## Directory Layout
 

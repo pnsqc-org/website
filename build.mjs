@@ -103,6 +103,30 @@ function injectHead(html, meta, config, filePath, baseDir) {
   return html;
 }
 
+function injectGoogleTag(html, config) {
+  const googleTagId = config.googleTagId?.trim();
+  if (!googleTagId) return html;
+
+  const scriptSrc = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleTagId)}`;
+  if (html.includes(scriptSrc) || html.includes(`gtag('config', '${googleTagId}')`)) {
+    return html;
+  }
+
+  const googleTagBlock = [
+    '  <!-- Google tag (gtag.js) -->',
+    `  <script async src="${scriptSrc}"></script>`,
+    '  <script>',
+    '    window.dataLayer = window.dataLayer || [];',
+    '    function gtag(){dataLayer.push(arguments);}',
+    "    gtag('js', new Date());",
+    '',
+    `    gtag('config', '${googleTagId}');`,
+    '  </script>',
+  ].join('\n');
+
+  return html.replace('</head>', `${googleTagBlock}\n</head>`);
+}
+
 function escAttr(s) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
@@ -246,6 +270,7 @@ function main() {
     html = injectPartials(html);
     html = wrapPrimaryContentInMain(html);
     html = injectHead(html, meta, config, file, DIST); // Pass DIST as baseDir
+    html = injectGoogleTag(html, config);
 
     writeFileSync(file, html);
     console.log(`  ✓ dist/${relFile}`);

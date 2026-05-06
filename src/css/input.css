@@ -773,6 +773,15 @@ a.gold-readable--tinted:focus-visible {
   color: var(--inline-text-link-hover);
 }
 
+[data-theme='light'] .inline-text-link--gold-panel {
+  color: #744a15;
+}
+
+[data-theme='light'] .inline-text-link--gold-panel:hover,
+[data-theme='light'] .inline-text-link--gold-panel:focus-visible {
+  color: #5f3c11;
+}
+
 .muted-secondary-surface p.font-mono {
   color: var(--muted-secondary-readable);
 }

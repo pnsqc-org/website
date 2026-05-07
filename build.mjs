@@ -52,7 +52,15 @@ function injectHead(html, meta, config, filePath, baseDir) {
   const title = meta.title || config.siteName;
   const description = meta.description || config.defaultDescription;
   const ogImage = meta.og_image || config.defaultOgImage;
-  const relPath = relative(baseDir, filePath);
+  const ogImageAlt =
+    meta.og_image_alt || (ogImage === config.defaultOgImage ? config.defaultOgImageAlt : '');
+  const robots = meta.robots || config.defaultRobots;
+  const themeColor = config.themeColor?.trim();
+  const twitterSite = config.twitterSite?.trim();
+  const includeCanonical = parseMetaBoolean(meta.canonical, true);
+  const includeSocial = parseMetaBoolean(meta.social, true);
+  const siteOrigin = config.baseUrl.endsWith('/') ? config.baseUrl : `${config.baseUrl}/`;
+  const relPath = relative(baseDir, filePath).split(path.sep).join('/');
   const urlPath = '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
   const canonical = config.baseUrl + urlPath;
 

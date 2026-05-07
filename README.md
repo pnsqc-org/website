@@ -155,7 +155,6 @@ website/
 ├── site.config.json
 ├── .agents/                  # local agent skills + scripts
 ├── content/                  # markdown source material
-├── design/                   # design references
 ├── src/                      # editable site source
 │   ├── _partials/            # shared header/footer snippets
 │   └── ...

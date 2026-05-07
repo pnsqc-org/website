@@ -353,7 +353,9 @@
   };
 
   const getEligiblePresentations = (presenter) => {
-    let presentations = Array.isArray(presenter.presentations) ? presenter.presentations.slice() : [];
+    let presentations = Array.isArray(presenter.presentations)
+      ? presenter.presentations.slice()
+      : [];
     if (excludedPresentationDateFilter) {
       presentations = presentations.filter(
         (presentation) => extractDateKey(presentation.date) !== excludedPresentationDateFilter,
@@ -371,10 +373,18 @@
     const displayPresentation = eligiblePresentations[0] || presentations[0] || null;
 
     if (presentationDateFilter) {
-      return { displayPresentation, eligiblePresentations, shouldDisplay: eligiblePresentations.length > 0 };
+      return {
+        displayPresentation,
+        eligiblePresentations,
+        shouldDisplay: eligiblePresentations.length > 0,
+      };
     }
     if (excludedPresentationDateFilter && presentations.length > 0) {
-      return { displayPresentation, eligiblePresentations, shouldDisplay: eligiblePresentations.length > 0 };
+      return {
+        displayPresentation,
+        eligiblePresentations,
+        shouldDisplay: eligiblePresentations.length > 0,
+      };
     }
 
     return { displayPresentation, eligiblePresentations, shouldDisplay: true };

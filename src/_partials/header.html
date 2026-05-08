@@ -54,6 +54,11 @@
                 class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
                 >Register</a
               >
+              <a
+                href="/conference/2026/sponsors/"
+                class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
+                >Sponsors</a
+              >
               <div class="relative group/program" data-submenu-root>
                 <button
                   class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
@@ -228,39 +233,11 @@
                 class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
                 >Volunteer</a
               >
-              <!-- Sponsor with nested submenu -->
-              <div class="relative group/sponsor" data-submenu-root>
-                <button
-                  class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                >
-                  Sponsor
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-                <div
-                  class="absolute left-full top-0 ml-1 w-56 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/sponsor:opacity-100 group-hover/sponsor:visible transition-all duration-200"
-                  data-submenu-menu
-                >
-                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
-                    <a
-                      href="/sponsor/sponsors/"
-                      class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                      >Sponsors</a
-                    >
-                    <a
-                      href="/sponsor/become-a-sponsor/"
-                      class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                      >Become a Sponsor</a
-                    >
-                  </div>
-                </div>
-              </div>
+              <a
+                href="/become-a-sponsor/"
+                class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
+                >Become a Sponsor</a
+              >
             </div>
           </div>
         </div>
@@ -525,6 +502,11 @@
               class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
               >Register</a
             >
+            <a
+              href="/conference/2026/sponsors/"
+              class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
+              >Sponsors</a
+            >
             <div>
               <button
                 id="mobile-conference-2026-program-toggle"
@@ -714,41 +696,11 @@
               class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
               >Volunteer</a
             >
-            <!-- Sponsor Section (Expandable) -->
-            <div>
-              <button
-                id="mobile-sponsor-toggle"
-                class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-              >
-                <span>Sponsor</span>
-                <svg
-                  id="mobile-sponsor-chevron"
-                  class="w-4 h-4 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div id="mobile-sponsor-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-                <a
-                  href="/sponsor/sponsors/"
-                  class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                  >Sponsors</a
-                >
-                <a
-                  href="/sponsor/become-a-sponsor/"
-                  class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                  >Become a Sponsor</a
-                >
-              </div>
-            </div>
+            <a
+              href="/become-a-sponsor/"
+              class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
+              >Become a Sponsor</a
+            >
           </div>
         </div>
 
@@ -1219,18 +1171,6 @@
         mobileInvolvedToggle.addEventListener('click', () => {
           mobileInvolvedSubmenu.classList.toggle('hidden');
           mobileInvolvedChevron.classList.toggle('rotate-180');
-        });
-      }
-
-      // Mobile Sponsor menu toggle (nested under Get Involved)
-      const mobileSponsorToggle = document.getElementById('mobile-sponsor-toggle');
-      const mobileSponsorSubmenu = document.getElementById('mobile-sponsor-submenu');
-      const mobileSponsorChevron = document.getElementById('mobile-sponsor-chevron');
-
-      if (mobileSponsorToggle && mobileSponsorSubmenu && mobileSponsorChevron) {
-        mobileSponsorToggle.addEventListener('click', () => {
-          mobileSponsorSubmenu.classList.toggle('hidden');
-          mobileSponsorChevron.classList.toggle('rotate-180');
         });
       }
 

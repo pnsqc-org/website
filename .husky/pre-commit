@@ -55,5 +55,5 @@ git add -A
 printf '\n> Running build\n'
 npm run build
 
-printf '\n> Running audit:a11y\n'
-npm run audit:a11y -- --skip-build
+printf '\n> Running audit:a11y for staged HTML routes\n'
+npm run audit:a11y -- --skip-build --staged

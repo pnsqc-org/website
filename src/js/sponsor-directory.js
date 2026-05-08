@@ -230,8 +230,12 @@
     logoWrap.appendChild(logo);
 
     const topContent = createEl('div', 'space-y-3 min-w-0 flex-1', null);
-    topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', sponsorName));
-    topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', tierName + ' Sponsor'));
+    topContent.appendChild(
+      createEl('h3', 'text-lg font-semibold text-white text-center sm:text-left', sponsorName),
+    );
+    topContent.appendChild(
+      createEl('p', 'text-sm text-pnsqc-gold text-center sm:text-left', tierName + ' Sponsor'),
+    );
 
     const links = createSponsorLinks(sponsor);
     if (links) topContent.appendChild(links);

@@ -80,34 +80,54 @@ og_image: /images/events/conference/2025/group_photo.jpg
 
             <div class="mt-6 flex flex-wrap justify-center gap-4">
               <a
-                href="/cfp/"
-                class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 bg-pnsqc-gold/10 text-white font-medium rounded-lg hover:bg-pnsqc-gold/20 transition-colors"
-              >
-                Submit Proposal
-              </a>
-              <a
                 href="/register/"
                 class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-cyan/50 bg-pnsqc-cyan/10 text-white font-medium rounded-lg hover:bg-pnsqc-cyan/20 transition-colors"
               >
                 Register to Attend
               </a>
+              <a
+                href="/conference/2026/poster/"
+                class="inline-flex items-center gap-2 px-6 py-3 border border-pnsqc-gold/50 bg-pnsqc-gold/10 text-white font-medium rounded-lg hover:bg-pnsqc-gold/20 transition-colors"
+              >
+                Submit a Poster Paper
+              </a>
             </div>
 
-            <!-- CFP Countdown (progressive enhancement) -->
+            <!-- Registration Countdown (progressive enhancement) -->
             <div class="mt-6">
-              <div class="rounded-xl bg-pnsqc-navy/70 border border-white/10 px-5 py-4">
+              <div
+                class="rounded-xl bg-pnsqc-navy/70 border border-white/10 px-5 py-4"
+                data-countdown
+                data-countdown-expired-text="PNSQC 2026 has begun!"
+                data-countdown-stages='[
+                  {
+                    "deadline": "2026-06-30T23:59:59-07:00",
+                    "label": "Super Early Bird registration ends:",
+                    "timeText": "June 30, 2026",
+                    "timeDateTime": "2026-06-30",
+                    "srLabel": "Super Early Bird registration ends"
+                  },
+                  {
+                    "deadline": "2026-09-15T23:59:59-07:00",
+                    "label": "Early Bird registration ends:",
+                    "timeText": "September 15, 2026",
+                    "timeDateTime": "2026-09-15",
+                    "srLabel": "Early Bird registration ends"
+                  },
+                  {
+                    "deadline": "2026-10-12T00:00:00-07:00",
+                    "label": "PNSQC 2026 begins:",
+                    "timeText": "October 12, 2026",
+                    "timeDateTime": "2026-10-12",
+                    "srLabel": "PNSQC 2026 begins"
+                  }
+                ]'
+              >
                 <p class="text-sm text-pnsqc-slate text-center">
-                  Call for Proposals deadline:
-                  <time datetime="2026-05-04" class="text-white font-semibold"
-                    ><s>April 20, 2026</s> Extended to May 4, 2026!</time
-                  >
+                  <span data-countdown-label>Registration countdown:</span>
+                  <time class="text-white font-semibold" data-countdown-date hidden></time>
                 </p>
-                <div
-                  class="mt-3 grid grid-cols-4 gap-2 sm:gap-3 max-w-md mx-auto"
-                  data-countdown
-                  data-countdown-deadline="2026-05-04T23:59:59-07:00"
-                  data-countdown-expired-text="CFP deadline has passed."
-                >
+                <div class="mt-3 grid grid-cols-4 gap-2 sm:gap-3 max-w-md mx-auto">
                   <div class="rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-center">
                     <div
                       class="text-2xl sm:text-3xl font-extrabold tabular-nums text-white"
@@ -164,136 +184,6 @@ og_image: /images/events/conference/2025/group_photo.jpg
                 alt="Software quality professionals collaborating"
                 class="w-full h-auto"
               />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-       THEME INTRODUCTION
-       ============================================================ -->
-    <section class="relative py-12 bg-gradient-to-b from-pnsqc-navy to-pnsqc-blue-dark/30">
-      <div class="home-container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-          <!-- Left: Illustration -->
-          <div>
-            <div
-              class="rounded-2xl overflow-hidden border border-pnsqc-gold/20 shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-teal-50"
-            >
-              <img
-                src="/images/brand/pnsqc_2026_banner_dark.jpg"
-                alt="PNSQC 2026 conference banner"
-                class="theme-image theme-image-dark"
-              />
-              <img
-                src="/images/brand/pnsqc_2026_banner_light.jpg"
-                alt="PNSQC 2026 conference banner"
-                class="theme-image theme-image-light"
-              />
-            </div>
-            <div class="hidden lg:block mt-4">
-              <div
-                class="rounded-2xl overflow-hidden border border-pnsqc-gold/20 shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-teal-50"
-              >
-                <img
-                  src="/images/events/conference/2025/presentation_closeup.jpg"
-                  alt="Presentation closeup"
-                  class="w-full h-auto"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Content -->
-          <div>
-            <div
-              class="inline-block px-4 py-2 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-4"
-            >
-              <span class="text-pnsqc-gold text-sm font-semibold uppercase tracking-wider"
-                >Call for Abstracts — PNSQC 2026</span
-              >
-            </div>
-
-            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-              Share your insights on <span class="text-pnsqc-gold">software quality</span>
-            </h2>
-
-            <div class="space-y-4 text-pnsqc-slate mb-6">
-              <p class="text-lg leading-relaxed">
-                For over 40 years, the Pacific Northwest Software Quality Conference has brought
-                together practitioners and researchers to exchange practical lessons, engineering
-                techniques, and new ideas that advance software quality.
-              </p>
-            </div>
-
-            <div class="p-5 rounded-xl bg-pnsqc-navy/70 border border-pnsqc-gold/30 mb-6">
-              <h3 class="text-xl font-bold text-white mb-3">
-                Quality in the Age of Autonomy - PNSQC's 2026 Theme
-              </h3>
-              <p class="text-lg leading-relaxed text-pnsqc-slate mb-3">
-                As software increasingly incorporates automation, AI, and autonomous systems,
-                ensuring quality requires new approaches to reliability, validation, and trust.
-              </p>
-              <p class="text-lg leading-relaxed text-pnsqc-slate">
-                We invite practitioners, engineers, researchers, and leaders to submit abstracts and
-                share their experience with the community.
-              </p>
-            </div>
-
-            <div class="mb-6">
-              <h3 class="text-sm font-semibold uppercase tracking-wider text-pnsqc-gold mb-3">
-                Tracks include:
-              </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div
-                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
-                >
-                  <div class="w-2 h-2 rounded-full bg-pnsqc-gold mt-0"></div>
-                  <span class="text-pnsqc-slate text-sm"
-                    >Quality Engineering & Systems Reliability</span
-                  >
-                </div>
-                <div
-                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
-                >
-                  <div class="w-2 h-2 rounded-full bg-pnsqc-cyan mt-0"></div>
-                  <span class="text-pnsqc-slate text-sm">Organizational Quality & Leadership</span>
-                </div>
-                <div
-                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
-                >
-                  <div class="w-2 h-2 rounded-full bg-purple-400 mt-0"></div>
-                  <span class="text-pnsqc-slate text-sm">Emerging Technologies and AI Systems</span>
-                </div>
-                <div
-                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
-                >
-                  <div class="w-2 h-2 rounded-full bg-emerald-400 mt-0"></div>
-                  <span class="text-pnsqc-slate text-sm">Tools & Productivity</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-col sm:flex-row sm:justify-center gap-3 sm:gap-4">
-              <a
-                href="https://meetinghand.com/e/pnsqc-2026/abstract"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-pnsqc-gold/50 bg-pnsqc-gold/10 text-white font-medium rounded-lg hover:bg-pnsqc-gold/20 transition-colors text-center"
-              >
-                Submit an Abstract proposal
-              </a>
-              <a
-                href="/conference/2026/tracks/"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-pnsqc-cyan/50 bg-pnsqc-cyan/10 text-white font-medium rounded-lg hover:bg-pnsqc-cyan/20 transition-colors text-center"
-              >
-                View Tracks
-              </a>
-              <a
-                href="/cfp/"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-emerald-400/50 bg-emerald-400/10 text-white font-medium rounded-lg hover:bg-emerald-400/20 transition-colors text-center"
-              >
-                Write & Present at PNSQC
-              </a>
             </div>
           </div>
         </div>
@@ -442,6 +332,117 @@ og_image: /images/events/conference/2025/group_photo.jpg
               </svg>
             </span>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+       POSTER PAPER CALL
+       ============================================================ -->
+    <section class="relative py-8 bg-gradient-to-b from-pnsqc-navy to-pnsqc-blue-dark/30">
+      <div class="home-container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+          <!-- Left: Illustration -->
+          <div>
+            <div class="max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
+              <div
+                class="rounded-2xl overflow-hidden border border-pnsqc-gold/20 shadow-2xl bg-gradient-to-br from-amber-50 via-orange-50 to-teal-50"
+              >
+                <img
+                  src="/images/poster-papers/poster-papers-2.jpg"
+                  alt="A sample PNSQC poster paper displayed on an easel"
+                  class="w-full h-auto"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Content -->
+          <div>
+            <div
+              class="inline-block px-4 py-2 rounded-full bg-pnsqc-gold/10 border border-pnsqc-gold/20 mb-4"
+            >
+              <span class="text-pnsqc-gold text-sm font-semibold uppercase tracking-wider"
+                >Call for Poster Papers &mdash; PNSQC 2026</span
+              >
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
+              Share your software quality idea in a
+              <span class="text-pnsqc-gold">visual, conversational format</span>
+            </h2>
+
+            <div class="space-y-4 text-pnsqc-slate mb-6">
+              <p class="text-lg leading-relaxed">
+                Poster Papers are PNSQC's lower-pressure path for first-time speakers and
+                practitioners who want to explore an idea with the community. Authors display a
+                compact visual poster in a prominent networking area and talk casually with
+                attendees about lessons, questions, and work in progress.
+              </p>
+              <p class="text-lg leading-relaxed">
+                Bring a topic you are passionate about, field-test an early technical paper concept,
+                or invite focused feedback from people who care deeply about software quality.
+              </p>
+            </div>
+
+            <div class="p-5 rounded-xl bg-pnsqc-navy/70 border border-pnsqc-gold/30 mb-6">
+              <h3 class="text-xl font-bold text-white mb-3">Bring your idea to the conference</h3>
+              <p class="text-lg leading-relaxed text-pnsqc-slate mb-3">
+                Poster Paper authors share ideas in a relaxed atmosphere of peer engagement and
+                review, making the format a strong fit for brainstorming, lessons learned, and
+                practical problem solving.
+              </p>
+            </div>
+
+            <div class="mb-6">
+              <h3 class="text-sm font-semibold uppercase tracking-wider text-pnsqc-gold mb-3">
+                Benefits of writing a poster paper:
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div
+                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
+                >
+                  <div class="w-2 h-2 shrink-0 rounded-full bg-pnsqc-cyan mt-0"></div>
+                  <span class="text-pnsqc-slate text-sm"
+                    >Build confidence in a lower-pressure speaking format</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
+                >
+                  <div class="w-2 h-2 shrink-0 rounded-full bg-purple-400 mt-0"></div>
+                  <span class="text-pnsqc-slate text-sm"
+                    >Get focused peer feedback on an idea or work in progress</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
+                >
+                  <div class="w-2 h-2 shrink-0 rounded-full bg-emerald-400 mt-0"></div>
+                  <span class="text-pnsqc-slate text-sm"
+                    >Meet quality practitioners through informal conversations</span
+                  >
+                </div>
+                <div
+                  class="flex items-center gap-2.5 p-3 rounded-lg bg-white/5 border border-white/10 min-h-16"
+                >
+                  <div class="w-2 h-2 shrink-0 rounded-full bg-pnsqc-gold mt-0"></div>
+                  <span class="text-pnsqc-slate text-sm"
+                    >Receive 50% off conference admission if selected</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-center">
+              <a
+                href="/conference/2026/poster/"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 border border-pnsqc-gold/50 bg-pnsqc-gold/10 text-white font-medium rounded-lg hover:bg-pnsqc-gold/20 transition-colors text-center"
+              >
+                Learn More About Poster Papers
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

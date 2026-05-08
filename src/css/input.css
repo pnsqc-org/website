@@ -642,6 +642,10 @@ h1 {
   font-size: 1.15rem;
 }
 
+.page-content :is(.page-callout, .page-content-box) > :first-child {
+  margin-top: 0;
+}
+
 .page-content p {
   margin-top: 1rem;
 }
@@ -771,6 +775,15 @@ a.gold-readable--tinted:focus-visible {
 .inline-text-link:hover,
 .inline-text-link:focus-visible {
   color: var(--inline-text-link-hover);
+}
+
+[data-theme='light'] .inline-text-link--gold-panel {
+  color: #744a15;
+}
+
+[data-theme='light'] .inline-text-link--gold-panel:hover,
+[data-theme='light'] .inline-text-link--gold-panel:focus-visible {
+  color: #5f3c11;
 }
 
 .muted-secondary-surface p.font-mono {

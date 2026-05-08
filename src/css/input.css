@@ -642,6 +642,10 @@ h1 {
   font-size: 1.15rem;
 }
 
+.page-content :is(.page-callout, .page-content-box) > :first-child {
+  margin-top: 0;
+}
+
 .page-content p {
   margin-top: 1rem;
 }

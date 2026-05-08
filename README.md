@@ -98,10 +98,8 @@ The `meta` comment is source-only and is stripped from the generated files in `d
 Optional per-page fields:
 
 ```html
-robots: noindex,follow
-og_image_alt: Describe the social preview image for screen readers and rich cards
-canonical: false
-social: false
+robots: noindex,follow og_image_alt: Describe the social preview image for screen readers and rich
+cards canonical: false social: false
 ```
 
 ### 2) Keep partial placeholders empty

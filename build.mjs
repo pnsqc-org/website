@@ -136,14 +136,24 @@ function injectGoogleTag(html, config) {
 
   return insertBeforeHeadClose(html, [
     '<!-- Google tag (gtag.js) -->',
-    `<script async src="${scriptSrc}"></script>`,
     '<script>',
     '  window.dataLayer = window.dataLayer || [];',
     '  function gtag(){dataLayer.push(arguments);}',
+    "  gtag('consent', 'default', {",
+    "    'ad_storage': 'denied',",
+    "    'ad_user_data': 'denied',",
+    "    'ad_personalization': 'denied',",
+    "    'analytics_storage': 'granted'",
+    '  });',
+    "  gtag('set', 'ads_data_redaction', true);",
     "  gtag('js', new Date());",
     '',
-    `  gtag('config', '${googleTagId}');`,
+    `  gtag('config', '${googleTagId}', {`,
+    "    'allow_google_signals': false,",
+    "    'allow_ad_personalization_signals': false",
+    '  });',
     '</script>',
+    `<script async src="${scriptSrc}"></script>`,
   ]);
 }
 

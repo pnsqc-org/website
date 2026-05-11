@@ -46,8 +46,12 @@
     row.cells[columnIndex]?.classList.add('active-pricing-period');
   }
 
+  for (const separator of document.querySelectorAll('[data-pricing-period-separator]')) {
+    separator.classList.add('sm:inline');
+  }
+
   for (const suffix of document.querySelectorAll('[data-pricing-period-text]')) {
-    suffix.textContent = ` - ${ctaSuffix}`;
+    suffix.textContent = ctaSuffix;
   }
 
   const summary = document.createElement('div');

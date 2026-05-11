@@ -3,8 +3,24 @@
   if (!pricingTable) return;
 
   const periods = [
-    { month: 5, day: 30, columnIndex: 1, label: 'Super Early Bird', endDate: 'June 30' },
-    { month: 8, day: 15, columnIndex: 2, label: 'Early Bird', endDate: 'September 15' },
+    {
+      month: 5,
+      day: 30,
+      columnIndex: 1,
+      label: 'Super Early Bird',
+      ctaSuffix: 'Super Early Bird pricing ends June 30',
+      savings: 320,
+      windowClose: 'June 30',
+    },
+    {
+      month: 8,
+      day: 15,
+      columnIndex: 2,
+      label: 'Early Bird',
+      ctaSuffix: 'Early Bird pricing ends Sept 15',
+      savings: 160,
+      windowClose: 'Sept 15',
+    },
   ];
 
   const getActivePeriod = (today = new Date()) => {
@@ -14,34 +30,24 @@
     return (
       periods.find(
         (period) => month < period.month || (month === period.month && day <= period.day),
-      ) || { columnIndex: 3, label: 'Regular', endDate: '' }
+      ) || {
+        columnIndex: 3,
+        label: 'Regular',
+        ctaSuffix: 'sales end October 11',
+        savings: 0,
+        windowClose: 'October 11',
+      }
     );
   };
 
-  const createTooltip = (text) => {
-    const container = document.createElement('span');
-    container.className = 'tooltip-container';
-
-    const icon = document.createElement('span');
-    icon.className = 'tooltip-icon';
-    icon.textContent = 'i';
-    container.appendChild(icon);
-
-    const tooltip = document.createElement('span');
-    tooltip.className = 'tooltip-text';
-
-    const strong = document.createElement('strong');
-    strong.textContent = text;
-    tooltip.appendChild(strong);
-
-    container.appendChild(tooltip);
-    return container;
-  };
-
-  const { columnIndex, label, endDate } = getActivePeriod();
+  const { columnIndex, label, ctaSuffix, savings, windowClose } = getActivePeriod();
 
   for (const row of pricingTable.rows) {
     row.cells[columnIndex]?.classList.add('active-pricing-period');
+  }
+
+  for (const suffix of document.querySelectorAll('[data-pricing-period-text]')) {
+    suffix.textContent = ` - ${ctaSuffix}`;
   }
 
   const summary = document.createElement('div');
@@ -49,12 +55,10 @@
 
   const summaryLabel = document.createElement('span');
   summaryLabel.className = 'pricing-period-summary__label';
-  summaryLabel.textContent = `Current Pricing: ${label}`;
+  summaryLabel.textContent = savings
+    ? `Current pricing: ${label} - save up to $${savings} on registration compared to the regular price.`
+    : `Current pricing: ${label} - sales end ${windowClose}.`;
   summary.appendChild(summaryLabel);
-
-  if (endDate) {
-    summary.appendChild(createTooltip(`Ends ${endDate}`));
-  }
 
   pricingTable.insertAdjacentElement('afterend', summary);
 })();

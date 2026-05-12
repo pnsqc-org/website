@@ -1085,6 +1085,14 @@ a.gold-readable--tinted:focus-visible {
   border-bottom: 2px solid var(--color-pnsqc-gold);
 }
 
+.pricing-period-badge {
+  color: var(--color-pnsqc-gold-light);
+}
+
+[data-theme='light'] .pricing-period-badge {
+  color: #704915;
+}
+
 @media (max-width: 768px) {
   .pricing-table th,
   .pricing-table td {

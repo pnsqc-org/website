@@ -24,6 +24,8 @@
   ];
 
   const getActivePeriod = (today = new Date()) => {
+    if (!(today instanceof Date) || Number.isNaN(today.getTime())) return null;
+
     const month = today.getMonth();
     const day = today.getDate();
 
@@ -40,18 +42,28 @@
     );
   };
 
-  const { columnIndex, label, ctaSuffix, savings, windowClose } = getActivePeriod();
+  const activePeriod = getActivePeriod();
+  if (!activePeriod) {
+    for (const badge of document.querySelectorAll('[data-pricing-period-badge]')) {
+      badge.textContent = '';
+      badge.classList.add('hidden');
+      badge.classList.remove('inline-flex');
+    }
+
+    return;
+  }
+
+  const { columnIndex, label, ctaSuffix, savings, windowClose } = activePeriod;
+  const ctaSuffixText = typeof ctaSuffix === 'string' ? ctaSuffix.trim() : '';
 
   for (const row of pricingTable.rows) {
     row.cells[columnIndex]?.classList.add('active-pricing-period');
   }
 
-  for (const separator of document.querySelectorAll('[data-pricing-period-separator]')) {
-    separator.classList.add('sm:inline');
-  }
-
-  for (const suffix of document.querySelectorAll('[data-pricing-period-text]')) {
-    suffix.textContent = ctaSuffix;
+  for (const badge of document.querySelectorAll('[data-pricing-period-badge]')) {
+    badge.textContent = ctaSuffixText;
+    badge.classList.toggle('hidden', !ctaSuffixText);
+    badge.classList.toggle('inline-flex', Boolean(ctaSuffixText));
   }
 
   const summary = document.createElement('div');

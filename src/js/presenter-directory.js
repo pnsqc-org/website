@@ -188,6 +188,21 @@
 
   const getPresentationTitle = (presentation) => presentation?.title || 'Presentation TBA';
 
+  const getPresentationGroupKey = (presentation, presenter) => {
+    const session = getSessionRecord(presentation);
+    const title = normalizeCompareText(presentation?.title || '');
+    const sectionKey = usesDefaultSection
+      ? defaultSectionKey
+      : presenter?.event_speaker_category_id || 'category';
+    if (session?.id && title) return `session-${session.id}-${title}-${sectionKey}`;
+    const date = getPresentationDateKey(presentation);
+    const start = normalizeSpace(session?.start || '');
+    if (date && start && title) return `slot-${date}-${start}-${title}-${sectionKey}`;
+    if (title) return `title-${title}-${sectionKey}`;
+    if (presentation?.id) return `presentation-${presentation.id}`;
+    return `presenter-${presenter?.id || 'unknown'}`;
+  };
+
   const extractAbstractMap = (session) => {
     if (session && abstractMapCache.has(session)) {
       return abstractMapCache.get(session);
@@ -308,41 +323,53 @@
     return linkRow.childElementCount > 0 ? linkRow : null;
   };
 
-  const buildDetailsTemplate = (presenter, details, categoryName, displayPresentation) => {
-    const presenterName = getPresenterName(presenter);
+  const buildDetailsTemplate = ({ speakers, categoryName, displayPresentation, templateId }) => {
     const presentationTitle = getPresentationTitle(displayPresentation);
     const abstractHtml = getAbstractHtml(displayPresentation);
 
     const template = document.createElement('template');
-    template.id = `details-modal-template-presenter-${presenter.id}`;
+    template.id = templateId;
 
     const wrapper = createEl('div', 'space-y-6', null);
 
-    const top = createEl('div', 'flex flex-col sm:flex-row items-start gap-5', null);
-    const avatar = createEl(
-      'img',
-      'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
-      null,
+    const speakersSection = createEl('div', 'space-y-3', null);
+    speakersSection.appendChild(
+      createEl(
+        'p',
+        'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80',
+        speakers.length === 1 ? 'Speaker' : 'Speakers',
+      ),
     );
-    avatar.src = presenter.avatar || fallbackAvatar;
-    avatar.alt = presenterName + ' avatar';
-    avatar.loading = 'lazy';
 
-    const topContent = createEl('div', 'space-y-2', null);
-    topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', presenterName));
-    if (presenter.profession) {
-      topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', presenter.profession));
-    }
-    topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', presentationTitle));
+    const speakersList = createEl('div', 'space-y-4', null);
+    speakers.forEach(({ presenter, details }) => {
+      const speakerName = getPresenterName(presenter);
+      const speakerRow = createEl('div', 'flex flex-col sm:flex-row items-start gap-4', null);
+      const avatar = createEl(
+        'img',
+        'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
+        null,
+      );
+      avatar.src = presenter.avatar || fallbackAvatar;
+      avatar.alt = speakerName + ' avatar';
+      avatar.loading = 'lazy';
 
-    const iconRow = createPresenterLinks(details, 'flex flex-wrap items-center gap-2');
-    if (iconRow) {
-      topContent.appendChild(iconRow);
-    }
+      const speakerContent = createEl('div', 'space-y-2', null);
+      speakerContent.appendChild(createEl('h4', 'text-base font-semibold text-white', speakerName));
+      if (presenter.profession) {
+        speakerContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', presenter.profession));
+      }
+      const iconRow = createPresenterLinks(details, 'flex flex-wrap items-center gap-2');
+      if (iconRow) {
+        speakerContent.appendChild(iconRow);
+      }
 
-    top.appendChild(avatar);
-    top.appendChild(topContent);
-    wrapper.appendChild(top);
+      speakerRow.appendChild(avatar);
+      speakerRow.appendChild(speakerContent);
+      speakersList.appendChild(speakerRow);
+    });
+    speakersSection.appendChild(speakersList);
+    wrapper.appendChild(speakersSection);
 
     const abstractSection = createEl('div', 'space-y-2', null);
     abstractSection.appendChild(
@@ -367,17 +394,28 @@
     }
     wrapper.appendChild(abstractSection);
 
-    const bioSection = createEl('div', 'space-y-2', null);
-    bioSection.appendChild(
-      createEl('p', 'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80', 'Bio'),
-    );
+    const bioSection = createEl('div', 'space-y-3', null);
     bioSection.appendChild(
       createEl(
         'p',
-        'text-sm leading-7 text-pnsqc-slate whitespace-pre-line',
-        details.short_bio || 'Bio coming soon.',
+        'text-xs font-semibold uppercase tracking-widest text-pnsqc-gold/80',
+        speakers.length === 1 ? 'Bio' : 'Bios',
       ),
     );
+    speakers.forEach(({ presenter, details }) => {
+      if (speakers.length > 1) {
+        bioSection.appendChild(
+          createEl('h4', 'text-sm font-semibold text-white', getPresenterName(presenter)),
+        );
+      }
+      bioSection.appendChild(
+        createEl(
+          'p',
+          'text-sm leading-7 text-pnsqc-slate whitespace-pre-line',
+          details.short_bio || 'Bio coming soon.',
+        ),
+      );
+    });
     wrapper.appendChild(bioSection);
 
     template.content.appendChild(wrapper);
@@ -385,20 +423,12 @@
     return {
       template,
       templateId: template.id,
-      presenterName,
       presentationTitle,
       categoryLabel: categoryName || 'Presenter',
     };
   };
 
-  const buildPresenterCard = ({
-    presenter,
-    details,
-    displayPresentation,
-    templateId,
-    categoryLabel,
-  }) => {
-    const presenterName = getPresenterName(presenter);
+  const buildPresenterCard = ({ speakers, displayPresentation, templateId, categoryLabel }) => {
     const presentationTitle = getPresentationTitle(displayPresentation);
 
     const card = createEl(
@@ -408,31 +438,49 @@
     );
 
     const layout = createEl('div', 'flex flex-col sm:flex-row items-start gap-6', null);
-    const avatarWrap = createEl('div', 'flex-shrink-0', null);
-    const avatar = createEl(
-      'img',
-      'w-32 h-32 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
-      null,
-    );
-    avatar.src = presenter.avatar || fallbackAvatar;
-    avatar.alt = presenterName + ' avatar';
-    avatar.loading = 'lazy';
-    avatarWrap.appendChild(avatar);
+    const avatarWrap = createEl('div', 'flex shrink-0 -space-x-4 sm:block sm:space-x-0', null);
+    speakers.slice(0, 3).forEach(({ presenter }, index) => {
+      const speakerName = getPresenterName(presenter);
+      const avatar = createEl(
+        'img',
+        'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30 sm:h-32 sm:w-32',
+        null,
+      );
+      avatar.src = presenter.avatar || fallbackAvatar;
+      avatar.alt = speakerName + ' avatar';
+      avatar.loading = 'lazy';
+      avatar.style.zIndex = String(speakers.length - index);
+      if (index > 0) avatar.classList.add('sm:mt-3');
+      avatarWrap.appendChild(avatar);
+    });
 
     const content = createEl('div', 'w-full min-w-0 flex-1', null);
     const header = createEl('div', 'flex w-full items-start gap-3', null);
     header.appendChild(
-      createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', presenterName),
+      createEl('h3', 'min-w-0 flex-1 text-xl font-semibold text-white', presentationTitle),
     );
 
-    const iconRow = createPresenterLinks(details, 'ml-auto flex shrink-0 items-center gap-2');
+    const iconRow =
+      speakers.length === 1
+        ? createPresenterLinks(speakers[0].details, 'ml-auto flex shrink-0 items-center gap-2')
+        : null;
     if (iconRow) header.appendChild(iconRow);
 
     content.appendChild(header);
-    if (presenter.profession) {
-      content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', presenter.profession));
-    }
-    content.appendChild(createEl('p', 'mt-2 text-sm text-pnsqc-gold', presentationTitle));
+
+    const speakerList = createEl('div', 'mt-3 space-y-2', null);
+    speakers.forEach(({ presenter }) => {
+      const speakerItem = createEl('div', 'min-w-0', null);
+      speakerItem.appendChild(
+        createEl('p', 'text-sm text-pnsqc-gold', getPresenterName(presenter)),
+      );
+      const profession = normalizeSpace(presenter.profession || '');
+      if (profession) {
+        speakerItem.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', profession));
+      }
+      speakerList.appendChild(speakerItem);
+    });
+    content.appendChild(speakerList);
 
     const buttonWrap = createEl('div', 'mt-4', null);
     const button = createEl(
@@ -442,7 +490,7 @@
     );
     button.type = 'button';
     button.setAttribute('data-details-modal-open', templateId);
-    button.setAttribute('data-details-modal-title', presenterName);
+    button.setAttribute('data-details-modal-title', presentationTitle);
     button.setAttribute('data-details-modal-label', categoryLabel);
     button.appendChild(
       createSvgIcon({
@@ -504,31 +552,72 @@
         .slice()
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-      const counts = new Map();
+      const presentationGroups = [];
+      const presentationGroupsByKey = new Map();
 
       sortedPresenters.forEach((presenter) => {
         const details = getPresenterDetails(presenter);
-        const { shouldDisplay, displayPresentation } = getPresenterDisplayState(details);
+        const { shouldDisplay } = getPresenterDisplayState(details);
         if (!shouldDisplay) return;
 
         const categoryId = presenter.event_speaker_category_id;
         const section = usesDefaultSection ? defaultSection : sections.get(categoryId);
         if (!section) return;
 
+        const eligiblePresentations = getEligiblePresentations(details);
+        eligiblePresentations.forEach((displayPresentation) => {
+          const groupKey = getPresentationGroupKey(displayPresentation, presenter);
+          let group = presentationGroupsByKey.get(groupKey);
+          if (!group) {
+            group = {
+              groupKey,
+              categoryId,
+              displayPresentation,
+              speakers: [],
+              order: Number(presenter.order ?? Number.MAX_SAFE_INTEGER),
+            };
+            presentationGroupsByKey.set(groupKey, group);
+            presentationGroups.push(group);
+          }
+          group.order = Math.min(group.order, Number(presenter.order ?? Number.MAX_SAFE_INTEGER));
+          group.speakers.push({ presenter, details });
+        });
+      });
+
+      presentationGroups.forEach((group) => {
+        group.speakers.sort(
+          (left, right) => (left.presenter.order ?? 0) - (right.presenter.order ?? 0),
+        );
+      });
+      presentationGroups.sort((left, right) => {
+        const presentationOrder = comparePresentations(
+          left.displayPresentation,
+          right.displayPresentation,
+        );
+        if (presentationOrder !== 0) return presentationOrder;
+        return left.order - right.order;
+      });
+
+      const counts = new Map();
+
+      presentationGroups.forEach((group, index) => {
+        const { categoryId, displayPresentation, speakers } = group;
+        const section = usesDefaultSection ? defaultSection : sections.get(categoryId);
+        if (!section) return;
+
         const categoryName = usesDefaultSection
           ? defaultCategoryLabel
           : categoryNames.get(categoryId) || 'Presenter';
-        const detailsTemplate = buildDetailsTemplate(
-          presenter,
-          details,
+        const detailsTemplate = buildDetailsTemplate({
+          speakers,
           categoryName,
           displayPresentation,
-        );
+          templateId: `details-modal-template-presentation-${index}`,
+        });
         templateRoot.appendChild(detailsTemplate.template);
 
         const card = buildPresenterCard({
-          presenter,
-          details,
+          speakers,
           displayPresentation,
           templateId: detailsTemplate.templateId,
           categoryLabel: categoryName,

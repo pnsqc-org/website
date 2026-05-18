@@ -73,8 +73,29 @@ function normalizeThemes(values) {
   return themes.length > 0 ? themes : DEFAULT_THEMES;
 }
 
-function normalizeRoutes(values) {
-  return normalizeList(values);
+function normalizeRoute(value) {
+  let route = String(value || '').trim().replaceAll('\\', '/');
+
+  const gitForWindowsPath = route.match(/^[A-Za-z]:\/Program Files\/Git(\/.*)$/i);
+  if (gitForWindowsPath) {
+    route = gitForWindowsPath[1];
+  }
+
+  route = route.replace(/\/\.$/, '/');
+
+  if (!route.startsWith('/')) {
+    route = `/${route}`;
+  }
+
+  if (route !== '/' && !path.extname(route) && !route.endsWith('/')) {
+    route = `${route}/`;
+  }
+
+  return route;
+}
+
+export function normalizeRoutes(values) {
+  return normalizeList(values).map(normalizeRoute);
 }
 
 async function collectHtmlFiles(dir) {

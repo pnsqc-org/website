@@ -1,0 +1,12 @@
+---
+{
+  "presentations": [
+    {
+      "title": "Modern QA's Roots: From 1800s Industry to Today",
+      "description": "Nowadays, ensuring quality in the products we develop and deliver to customers and users is quite challenging. The main reason is that the time to go to production is very short. Execution environments and integrations are complex and comprehensive. We are building modern, sophisticated features that are not easy to test, and trying to manage all these workflows under tight schedules.\n\nTo conduct quality assurance in the most efficient way, we can apply several approaches. Looking back over the last 100 years of quality, we see that quality is a living and evolving cycle. To better understand the approaches we use today, it's important to be familiar with the background and original ideas that shaped them. Because actually, most pressing challenges in today's fast-paced software delivery still mirror the problems industrial pioneers faced over a century ago. Therefore, the solutions developed by those leaders can ease modern development challenges.\n\nSome of those fundamental quality assurance approaches are:\n\n- Lean Development - Lean focuses on eliminating waste, improving flow, and delivering value efficiently [1] - principles are applied far beyond manufacturing. A fundamental practice of Lean development is TQM (Total Quality Management) - Evolving over decades, TQM emphasizes organization-wide quality responsibility, customer focus, and continuous improvement. [2].\n- Prioritization and focusing on value. One example is Pareto Principle (80/20 Rule) - Vilfredo Pareto was an economist/sociologist who first noted and reported his observation that about 80 % of wealth was concentrated in about 20 % of a population in the late nineteenth‐century [3].\n- Continuous improvement: A core method is PDCA Cycle (Plan-Do-Check-Act) - Originally developed by Walter Shewhart [4] and popularized by W. Edwards Deming. It provides a structured, iterative approach to solving problems and refining processes.\n- Bug analysis and prevention methods like FMEA, SWOT Analysis, Taguchi Model and Six Sigma.\n\nThese fundamental approaches, along with several others, have gradually evolved to shape modern QA practices. This paper argues how they bridge to today's methodologies and that teams achieve better QA outcomes when they apply classic quality principles as guiding intent, not just tools.",
+      "label": "Conference Paper"
+    }
+  ]
+}
+---
+

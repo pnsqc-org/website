@@ -1,5 +1,9 @@
 backup_stash=''
 stash_name="husky-pre-commit-$(date +%s)"
+stash_paths_file=$(mktemp)
+partial_paths_file=$(mktemp)
+partial_patch_file=$(mktemp)
+has_partially_staged_files=false
 
 restore_backup_stash() {
   if [ -n "$backup_stash" ]; then
@@ -14,9 +18,28 @@ restore_backup_stash() {
   fi
 }
 
+restore_partially_staged_files() {
+  if [ -s "$partial_patch_file" ]; then
+    printf '\n> Restoring unstaged changes in partially staged files\n'
+
+    if ! git apply --whitespace=nowarn "$partial_patch_file"; then
+      echo
+      echo 'Husky could not restore unstaged changes in partially staged files cleanly.'
+      echo "Your backup patch is still available at $partial_patch_file."
+      return 1
+    fi
+  fi
+}
+
 cleanup() {
   status=$?
   restore_backup_stash || status=1
+  restore_partially_staged_files || status=1
+
+  if [ "$status" -eq 0 ]; then
+    rm -f "$partial_patch_file"
+  fi
+  rm -f "$stash_paths_file" "$partial_paths_file"
   exit "$status"
 }
 
@@ -27,30 +50,67 @@ if [ -n "$(git status --porcelain --untracked-files=no -- wrangler-local.jsonc)"
   git restore --source=HEAD --staged --worktree -- wrangler-local.jsonc
 fi
 
-if ! git diff --quiet --ignore-submodules -- || [ -n "$(git ls-files --others --exclude-standard)" ]; then
-  printf '\n> Stashing unstaged changes\n'
-  git stash push --quiet --keep-index --include-untracked --message "$stash_name"
+if ! git diff --quiet --ignore-submodules --; then
+  while IFS= read -r file; do
+    if [ -z "$file" ]; then
+      continue
+    fi
 
-  backup_stash=$(
-    git stash list --format='%gd %gs' |
-      awk -v stash_name="$stash_name" '$0 ~ stash_name { print $1; exit }'
-  )
+    if git diff --cached --quiet -- "$file"; then
+      printf '%s\n' "$file" >>"$stash_paths_file"
+    else
+      printf '%s\n' "$file" >>"$partial_paths_file"
+      has_partially_staged_files=true
+    fi
+  done <<EOF
+$(git diff --name-only --)
+EOF
 
-  if [ -z "$backup_stash" ]; then
-    echo
-    echo 'Husky could not find the backup stash it just created.'
-    exit 1
+  if [ -s "$partial_paths_file" ]; then
+    while IFS= read -r file; do
+      git diff --binary -- "$file" >>"$partial_patch_file"
+    done <"$partial_paths_file"
+
+    git restore --worktree --pathspec-from-file="$partial_paths_file"
+  fi
+
+  if [ -s "$stash_paths_file" ]; then
+    printf '\n> Stashing unstaged-only files\n'
+    git stash push \
+      --quiet \
+      --keep-index \
+      --message "$stash_name" \
+      --pathspec-from-file="$stash_paths_file"
+
+    backup_stash=$(
+      git stash list --format='%gd %gs' |
+        awk -v stash_name="$stash_name" '$0 ~ stash_name { print $1; exit }'
+    )
+
+    if [ -z "$backup_stash" ]; then
+      echo
+      echo 'Husky could not find the backup stash it just created.'
+      exit 1
+    fi
   fi
 fi
 
-printf '\n> Running lint:fix\n'
-npm run lint:fix
+if [ "$has_partially_staged_files" = true ]; then
+  printf '\n> Running lint\n'
+  npm run lint
 
-printf '\n> Running format:write\n'
-npm run format:write
+  printf '\n> Running format\n'
+  npm run format
+else
+  printf '\n> Running lint:fix\n'
+  npm run lint:fix
 
-printf '\n> Staging lint and format changes\n'
-git add -A
+  printf '\n> Running format:write\n'
+  npm run format:write
+
+  printf '\n> Staging lint and format changes\n'
+  git add -u
+fi
 
 printf '\n> Running build\n'
 npm run build

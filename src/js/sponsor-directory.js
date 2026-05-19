@@ -44,9 +44,32 @@
   const sanitizeHtmlFragment = (value) => {
     if (!value) return '';
 
+    const rawValue = String(value)
+      .replace(/\r\n?/g, '\n')
+      .replace(/\u00a0/g, ' ')
+      .trim();
+    if (!rawValue) return '';
+
     const parser = new DOMParser();
-    const doc = parser.parseFromString(String(value), 'text/html');
+    const doc = parser.parseFromString(rawValue, 'text/html');
     const allowedTags = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'br'];
+
+    const buildPlainTextFragment = (text) => {
+      const fragment = document.createDocumentFragment();
+      text
+        .split(/\n{2,}/)
+        .map((paragraph) => paragraph.trim())
+        .filter(Boolean)
+        .forEach((paragraph) => {
+          const paragraphEl = document.createElement('p');
+          paragraph.split('\n').forEach((line, index) => {
+            if (index > 0) paragraphEl.appendChild(document.createElement('br'));
+            paragraphEl.appendChild(document.createTextNode(line.trim()));
+          });
+          fragment.appendChild(paragraphEl);
+        });
+      return fragment;
+    };
 
     const sanitizeNode = (node) => {
       if (!node) return null;
@@ -76,10 +99,14 @@
     };
 
     const wrapper = document.createElement('div');
-    Array.from(doc.body.childNodes).forEach((child) => {
-      const cleaned = sanitizeNode(child);
-      if (cleaned) wrapper.appendChild(cleaned);
-    });
+    if (doc.body.childElementCount === 0) {
+      wrapper.appendChild(buildPlainTextFragment(rawValue));
+    } else {
+      Array.from(doc.body.childNodes).forEach((child) => {
+        const cleaned = sanitizeNode(child);
+        if (cleaned) wrapper.appendChild(cleaned);
+      });
+    }
 
     return wrapper.innerHTML.trim();
   };
@@ -128,6 +155,9 @@
     normalizeSpace(sponsor?.title) || normalizeSpace(sponsor?.name) || 'Sponsor';
 
   const getSponsorLogo = (sponsor) => sanitizeUrl(sponsor?.logo) || fallbackLogo;
+
+  const getTierSponsorLabel = (tierName) =>
+    normalizeName(tierName) === 'community' ? 'Community Partner' : tierName + ' Sponsor';
 
   const compareSponsors = (left, right) => {
     const leftOrder = Number(left?.order ?? Number.MAX_SAFE_INTEGER);
@@ -229,16 +259,29 @@
     logo.loading = 'lazy';
     logoWrap.appendChild(logo);
 
-    const topContent = createEl('div', 'space-y-3 min-w-0 flex-1', null);
-    topContent.appendChild(
-      createEl('h3', 'text-lg font-semibold text-white text-center sm:text-left', sponsorName),
+    const topContent = createEl('div', 'min-w-0 flex-1', null);
+    const titleGroup = createEl('div', 'space-y-0.5', null);
+    titleGroup.appendChild(
+      createEl(
+        'h3',
+        'text-lg font-semibold leading-tight text-white text-center sm:text-left',
+        sponsorName,
+      ),
     );
-    topContent.appendChild(
-      createEl('p', 'text-sm text-pnsqc-gold text-center sm:text-left', tierName + ' Sponsor'),
+    titleGroup.appendChild(
+      createEl(
+        'p',
+        'text-sm leading-tight text-pnsqc-gold text-center sm:text-left',
+        getTierSponsorLabel(tierName),
+      ),
     );
+    topContent.appendChild(titleGroup);
 
     const links = createSponsorLinks(sponsor);
-    if (links) topContent.appendChild(links);
+    if (links) {
+      links.classList.add('mt-3');
+      topContent.appendChild(links);
+    }
 
     top.appendChild(logoWrap);
     top.appendChild(topContent);
@@ -268,7 +311,7 @@
     card.type = 'button';
     card.setAttribute('data-details-modal-open', templateId);
     card.setAttribute('data-details-modal-title', sponsorName);
-    card.setAttribute('data-details-modal-label', tierName + ' Sponsor');
+    card.setAttribute('data-details-modal-label', getTierSponsorLabel(tierName));
 
     const logoWrap = createEl('div', config.logoWrap, null);
     const logo = createEl('img', config.logo, null);

@@ -1,0 +1,21 @@
+{
+  "name": "Gaurav Rathor",
+  "profession": "Performance Architect",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "g.rathor2210@gmail.com",
+  "organization": "Omnissa Inc",
+  "description": "Gaurav Rathor is a Performance Architect with 17 years of experience optimizing enterprise applications, microservices, and infrastructure performance across diverse technology landscapes. He leads performance benchmarking and optimization initiatives at Omnissa Inc., partnering with product and engineering leadership to embed performance-first practices throughout the development lifecycle.",
+  "presentations": [
+    {
+      "slug": "rag-to-the-rescue-reimagining-enterprise-unit-test",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 269,
+    "section": "Biography"
+  }
+}

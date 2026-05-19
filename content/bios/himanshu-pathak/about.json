@@ -1,0 +1,21 @@
+{
+  "name": "Himanshu Pathak",
+  "profession": "",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "Himanshu.Pathak086@gmail.com",
+  "organization": "",
+  "description": "",
+  "presentations": [
+    {
+      "slug": "layout-validation-using-generative-ai-a-new-approa",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 37,
+    "section": "Biography"
+  }
+}

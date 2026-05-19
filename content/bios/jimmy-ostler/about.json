@@ -1,0 +1,21 @@
+{
+  "name": "Jimmy Ostler",
+  "profession": "undergraduate researcher in Mathematics and Computer Science (Engineering) at Willamette University",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "jtostler@willamette.edu",
+  "organization": "Willamette University",
+  "description": "Jimmy Ostler is an undergraduate researcher in Mathematics and Computer Science (Engineering) at Willamette University. Jimmy Ostler is the inaugural president of the Willamette Computer Science Student Association and a developmental intern at Cloudflare on C++/Rust interoperability.",
+  "presentations": [
+    {
+      "slug": "rtl-arrow-hardware-to-cloud-bridge",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 80,
+    "section": "Biography"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Gage Pacifera",
+  "profession": "web developer, designer and project manager",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "gage@harmonicnw.com",
+  "organization": "Harmonic Northwest",
+  "description": "Gage Pacifera is a web developer, designer and project manager with over twenty years of experience building and improving websites. Gage began his career in design, animation and UX before shifting focus to website development. He specializes in custom WordPress sites and front-end technologies. He is the owner of Harmonic Northwest, a web development-focused agency based in the Pacific Northwest.",
+  "presentations": [
+    {
+      "slug": "a-framework-for-enterprise-level-accessibility-man",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 232,
+    "section": "Biography"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Sneha Mirajkar",
+  "profession": "Security Software Engineer",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "Sneha.mirajkar@gmail.com",
+  "organization": "",
+  "description": "Sneha Mirajkar Security Software Engineer – Specializes in secure cloud-native system design and generative AI engineering practices, with a focus on practical implementation and scalable solutions.",
+  "presentations": [
+    {
+      "slug": "ensuring-quality-and-security-in-generative-ai-int",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 201,
+    "section": "Authors"
+  }
+}

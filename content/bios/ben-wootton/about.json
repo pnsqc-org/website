@@ -1,0 +1,21 @@
+{
+  "name": "Ben Wootton",
+  "profession": "",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "bwootton@redborder.com",
+  "organization": "Redborder",
+  "description": "Ben Wootton, the SDR Team Lead, turns complex cybersecurity into simple, actionable wins. Together they bring over sixty years of IT and cybersecurity experience combined, helping organizations implement proactive detection strategies.",
+  "presentations": [
+    {
+      "slug": "knowledge-automation-security-the-next-step-in-net",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 73,
+    "section": "About the Authors"
+  }
+}

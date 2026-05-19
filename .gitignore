@@ -149,8 +149,12 @@ src/css/site.css
 
 # Reports
 reports
+pdf-report
 
 # Project-local Playwright browser cache
 .playwright-browsers/
 .wrangler/
 wrangler.jsonc
+
+# Python cache
+__pycache__

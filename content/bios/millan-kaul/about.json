@@ -1,0 +1,21 @@
+{
+  "name": "Millan Kaul",
+  "profession": "Quality Engineering (QE) leader",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "https://qualitywithmillan.github.io",
+  "email": "",
+  "organization": "",
+  "description": "Millan Kaul is a Quality Engineering (QE) leader with hands-on experience of working with enterprise, mid-scale and start-ups across the globe. He has driven QE initiatives in multiple domains such as banking, IoT, fuel analytics and payments, with a persistent focus on accessibility, scalability and engineering excellence. Millan publishes his learnings in the form of easy to understand blogs at https://qualitywithmillan.github.io, he has also published Fitbit (now Google) smartwatch apps, created his own VS Code extension “Quality-with-Millan” as well as a npm package named allure-tldr. He is passionate about empowering teams through clarity, context and care.",
+  "presentations": [
+    {
+      "slug": "transforming-teams-and-chief-technology-officers-c",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 131,
+    "section": "Author Bio"
+  }
+}

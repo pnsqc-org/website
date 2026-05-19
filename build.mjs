@@ -247,26 +247,21 @@ function markdownToHtml(markdown) {
   return String(marked.parse(normalized, { gfm: true, breaks: true })).trim();
 }
 
-function parseFrontMatterFile(filePath) {
-  const source = readFileSync(filePath, 'utf8');
-  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
-  if (!match) {
-    throw new Error(`Missing or malformed front matter in ${relative(ROOT, filePath)}`);
-  }
-
+function readContentJsonFile(filePath) {
   let data;
   try {
-    data = JSON.parse(match[1]);
+    data = JSON.parse(readFileSync(filePath, 'utf8'));
   } catch (error) {
-    throw new Error(`Malformed front matter in ${relative(ROOT, filePath)}: ${error.message}`, {
+    throw new Error(`Malformed JSON in ${relative(ROOT, filePath)}: ${error.message}`, {
       cause: error,
     });
   }
 
-  return {
-    data,
-    body: source.slice(match[0].length),
-  };
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error(`Expected a JSON object in ${relative(ROOT, filePath)}`);
+  }
+
+  return data;
 }
 
 function requireString(value, filePath, label, options = {}) {
@@ -295,9 +290,21 @@ function assertSourceAssetExists(assetPath, filePath, label) {
   }
 }
 
-function loadSharedSpeakerProfiles() {
+function optionalString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function readOptionalObject(value, filePath, label) {
+  if (value === undefined) return {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`Expected "${label}" to be an object in ${relative(ROOT, filePath)}`);
+  }
+  return value;
+}
+
+function loadSharedAuthorBios() {
   const profiles = new Map();
-  const profilesDir = join(CONTENT, 'speakers');
+  const profilesDir = join(CONTENT, 'bios');
   if (!existsSync(profilesDir)) return profiles;
 
   const speakerDirs = readdirSync(profilesDir, { withFileTypes: true }).filter((entry) =>
@@ -305,25 +312,27 @@ function loadSharedSpeakerProfiles() {
   );
 
   for (const entry of speakerDirs) {
-    const filePath = join(profilesDir, entry.name, 'index.md');
+    const filePath = join(profilesDir, entry.name, 'about.json');
     if (!existsSync(filePath)) {
-      throw new Error(`Missing shared speaker profile file: ${relative(ROOT, filePath)}`);
+      throw new Error(`Missing shared author bio file: ${relative(ROOT, filePath)}`);
     }
 
-    const { data, body } = parseFrontMatterFile(filePath);
+    const data = readContentJsonFile(filePath);
     const name = requireString(data.name, filePath, 'name');
     const profession =
       data.profession === undefined
         ? ''
         : requireString(data.profession, filePath, 'profession', { allowEmpty: true });
     const avatar = requireString(data.avatar, filePath, 'avatar');
-    const linkedin = typeof data.linkedin === 'string' ? data.linkedin.trim() : '';
-    const homepage = typeof data.homepage === 'string' ? data.homepage.trim() : '';
-    const bioMarkdown = body.trim();
-
-    if (!bioMarkdown) {
-      throw new Error(`Expected a speaker bio body in ${relative(ROOT, filePath)}`);
-    }
+    const linkedin = optionalString(data.linkedin);
+    const homepage = optionalString(data.homepage);
+    const email = optionalString(data.email);
+    const organization = optionalString(data.organization);
+    const description =
+      data.description === undefined
+        ? ''
+        : requireString(data.description, filePath, 'description', { allowEmpty: true });
+    const source = readOptionalObject(data.source, filePath, 'source');
 
     assertSourceAssetExists(avatar, filePath, 'avatar');
 
@@ -334,7 +343,11 @@ function loadSharedSpeakerProfiles() {
       avatar,
       linkedin,
       homepage,
-      bioHtml: markdownToHtml(bioMarkdown),
+      email,
+      organization,
+      source,
+      description,
+      bioHtml: markdownToHtml(description),
     });
   }
 
@@ -343,80 +356,82 @@ function loadSharedSpeakerProfiles() {
 
 function loadArchiveSpeakersForYear(year, sharedProfiles) {
   const yearDir = join(CONTENT, year);
-  const speakerDirs = readdirSync(yearDir, { withFileTypes: true }).filter((entry) =>
+  const presentationDirs = readdirSync(yearDir, { withFileTypes: true }).filter((entry) =>
     entry.isDirectory(),
   );
-  const speakers = [];
+  const speakersBySlug = new Map();
 
-  for (const entry of speakerDirs) {
-    const filePath = join(yearDir, entry.name, 'index.md');
+  for (const entry of presentationDirs) {
+    const filePath = join(yearDir, entry.name, 'about.json');
     if (!existsSync(filePath)) {
-      throw new Error(`Missing year speaker file: ${relative(ROOT, filePath)}`);
+      throw new Error(`Missing year presentation file: ${relative(ROOT, filePath)}`);
     }
 
-    const sharedProfile = sharedProfiles.get(entry.name);
-    if (!sharedProfile) {
-      throw new Error(
-        `Missing shared speaker profile for "${entry.name}" referenced by ${relative(ROOT, filePath)}`,
-      );
+    const data = readContentJsonFile(filePath);
+    const title = requireString(data.title, filePath, 'title');
+    const description = requireString(data.description, filePath, 'description');
+    const label =
+      data.label === undefined
+        ? ''
+        : requireString(data.label, filePath, 'label', { allowEmpty: true });
+    const date =
+      data.date === undefined
+        ? ''
+        : requireString(data.date, filePath, 'date', { allowEmpty: true });
+    const source = readOptionalObject(data.source, filePath, 'source');
+
+    if (!Array.isArray(data.authors) || data.authors.length === 0) {
+      throw new Error(`Expected at least one author in ${relative(ROOT, filePath)}`);
     }
 
-    const { data } = parseFrontMatterFile(filePath);
-    if (!Array.isArray(data.presentations) || data.presentations.length === 0) {
-      throw new Error(`Expected at least one presentation in ${relative(ROOT, filePath)}`);
-    }
+    const authors = data.authors.map((author, index) =>
+      requireString(author, filePath, `authors[${index}]`),
+    );
 
-    const presentations = data.presentations.map((presentation, index) => {
-      if (!presentation || typeof presentation !== 'object') {
+    const presentation = {
+      title,
+      description,
+      descriptionHtml: markdownToHtml(description),
+      date,
+      label,
+      authors,
+      source,
+    };
+
+    authors.forEach((authorSlug) => {
+      const sharedProfile = sharedProfiles.get(authorSlug);
+      if (!sharedProfile) {
         throw new Error(
-          `Expected presentation ${index + 1} to be an object in ${relative(ROOT, filePath)}`,
+          `Missing shared author bio for "${authorSlug}" referenced by ${relative(
+            ROOT,
+            filePath,
+          )}`,
         );
       }
 
-      const title = requireString(presentation.title, filePath, `presentations[${index}].title`);
-      const description = requireString(
-        presentation.description,
-        filePath,
-        `presentations[${index}].description`,
-      );
-      const date =
-        presentation.date === undefined
-          ? ''
-          : requireString(presentation.date, filePath, `presentations[${index}].date`, {
-              allowEmpty: true,
-            });
-      const label =
-        presentation.label === undefined
-          ? ''
-          : requireString(presentation.label, filePath, `presentations[${index}].label`, {
-              allowEmpty: true,
-            });
-
-      return {
-        title,
-        descriptionHtml: markdownToHtml(description),
-        date,
-        label,
-      };
-    });
-
-    speakers.push({
-      ...sharedProfile,
-      presentations,
+      if (!speakersBySlug.has(authorSlug)) {
+        speakersBySlug.set(authorSlug, {
+          ...sharedProfile,
+          presentations: [],
+        });
+      }
+      speakersBySlug.get(authorSlug).presentations.push(presentation);
     });
   }
 
-  return speakers.sort((left, right) => left.name.localeCompare(right.name));
+  return Array.from(speakersBySlug.values()).sort((left, right) =>
+    left.name.localeCompare(right.name),
+  );
 }
 
 function buildArchiveSpeakerData() {
   if (!existsSync(CONTENT)) return;
 
-  const sharedProfiles = loadSharedSpeakerProfiles();
+  const sharedProfiles = loadSharedAuthorBios();
   if (!sharedProfiles.size) return;
 
   const yearDirs = readdirSync(CONTENT, { withFileTypes: true }).filter(
-    (entry) => entry.isDirectory() && entry.name !== 'speakers',
+    (entry) => entry.isDirectory() && entry.name !== 'bios' && entry.name !== 'speakers',
   );
 
   for (const entry of yearDirs) {

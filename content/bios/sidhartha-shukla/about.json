@@ -1,0 +1,21 @@
+{
+  "name": "Sidhartha Shukla",
+  "profession": "",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "sidharth.shukla19@gmail.com",
+  "organization": "",
+  "description": "",
+  "presentations": [
+    {
+      "slug": "context-driven-test-data-generation-with-llms",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 331,
+    "section": ""
+  }
+}

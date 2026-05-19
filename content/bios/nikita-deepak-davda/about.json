@@ -1,0 +1,21 @@
+{
+  "name": "Nikita Deepak Davda",
+  "profession": "Lead Test Software Engineer",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "nikki.d.davda@hotmail.com",
+  "organization": "",
+  "description": "Nikita Deepak Davda is a Lead Test Software Engineer with over a decade of experience in designing, implementing and managing test plans to build high quality software. She believes that quality plays an important role in every stage of SDLC, right from when the Requirements are written all the way until Post deployment. She has filed a patent with USPTO with a solution for “Uninterrupted Usage and Access of Physically unreachable managed handheld devices.” She is passionate about testing applications on the Cloud and enjoys the challenge of testing integration between applications.",
+  "presentations": [
+    {
+      "slug": "cloud-chemistry-making-saas-solutions-play-nice-wi",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 63,
+    "section": "Biography"
+  }
+}

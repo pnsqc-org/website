@@ -1,0 +1,21 @@
+{
+  "name": "Joseph Petsche",
+  "profession": "seasoned Software Architect",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "Joe@CovertCoders.DEV",
+  "organization": "Covert Coders LLC",
+  "description": "Joseph Petsche is a seasoned Software Architect with over two decades of experience, specializing in automation, integration, and quality assurance. Currently serving as an Automation Architect at EverDriven, he streamlines DevOps pipelines and fosters cross-team collaboration to deliver high-quality software. His career includes automating data flows at WebMD and building resilient software through automated testing at Red Rock Tech Solutions. Joseph is passionate about solving complex problems and ensuring client satisfaction. An avid mountain climber, he approaches challenges with strategic determination. Joseph holds a degree in Computer Science & Engineering from the University of Toledo. Copyright H. Wilson and J. Petsche 2025",
+  "presentations": [
+    {
+      "slug": "data-driven-api-test-case-generation-using-ai-and",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 416,
+    "section": "Biography"
+  }
+}

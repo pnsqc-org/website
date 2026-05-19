@@ -33,9 +33,10 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
-   2. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
-   3. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
-   4. Generates `dist/sitemap.xml` and `dist/robots.txt`
+   2. Generates archive speaker data in `dist/data/archive/<year>/speakers.json` from JSON files in `content/`
+   3. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
+   4. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
+   5. Generates `dist/sitemap.xml` and `dist/robots.txt`
 2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
 - These files in the `dist/` folder are what will be deployed to our production website.
@@ -124,6 +125,64 @@ The build injects full partial content into `dist/`.
 
 Prefer links like `/conference/2026/venue/` rather than `.html` file paths.
 
+### 4) Author archive content as JSON
+
+Author biographies live at `content/bios/<author-slug>/about.json` and include identity fields,
+`description`, and presentation references:
+
+```json
+{
+  "name": "Author Name",
+  "profession": "Role or affiliation",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "",
+  "organization": "",
+  "description": "Author bio text. Markdown and simple inline HTML are supported.",
+  "presentations": [
+    {
+      "slug": "presentation-title-slug",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 0,
+    "section": ""
+  }
+}
+```
+
+Year-specific presentation entries live at `content/<year>/<short-title-slug>/about.json`.
+Folder slugs are title-derived, lowercase, hyphenated, and at most 50 characters. The `authors`
+array stores author slugs that must match `content/bios/<author-slug>/about.json`.
+
+```json
+{
+  "title": "Presentation title",
+  "description": "Presentation abstract text.",
+  "label": "Conference Paper",
+  "authors": ["author-slug"],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 0
+  }
+}
+```
+
+Archive content can be audited or regenerated from a proceedings PDF by year. The extractor discovers
+the PDF link from `src/archive/proceedings/index.html`, parses the PDF table of contents for paper
+titles, author names, and start pages, then pulls abstracts, bios, emails, links, and organization text
+from the paper pages when that data is present in the PDF.
+
+```bash
+python scripts/extract-proceedings.py --year 2025 --write
+```
+
+The extractor uses Python `pdfplumber` and writes a temporary review report to
+`pdf-report/<year>-extraction.json`. To process another year, run the same command with that year.
+
 ## Configuration
 
 Edit `site.config.json` for site-wide defaults:
@@ -152,7 +211,7 @@ website/
 ├── package.json
 ├── site.config.json
 ├── .agents/                  # local agent skills + scripts
-├── content/                  # markdown source material
+├── content/                  # JSON archive source material
 ├── src/                      # editable site source
 │   ├── _partials/            # shared header/footer snippets
 │   └── ...

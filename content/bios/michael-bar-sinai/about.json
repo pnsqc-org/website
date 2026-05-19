@@ -1,0 +1,21 @@
+{
+  "name": "Michael Bar-Sinai",
+  "profession": "software engineer and researcher",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "michael@provengo.tech",
+  "organization": "",
+  "description": "Michael Bar-Sinai is a software engineer and researcher. Co-Founder and CTO of Provengo Technologies, a startup building development tools based on formal methods. Michael earned a PhD in Software Engineering, studying Behavioral Programming, model-based software, requirement-based QA, and automation. Before launching Provengo, he was a postdoctoral researcher and fellow at Harvard’s Institute for Quantitative Social Sciences, worked as a senior software architect, and led consultancy projects across industry, academia, and NGOs.",
+  "presentations": [
+    {
+      "slug": "breaking-the-model-based-testing-barrier-how-ai-an",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 26,
+    "section": "Biography"
+  }
+}

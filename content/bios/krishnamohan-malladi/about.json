@@ -1,0 +1,21 @@
+{
+  "name": "Krishnamohan Malladi",
+  "profession": "",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "km_malladi@yahoo.com",
+  "organization": "",
+  "description": "Krishnamohan Malladi 2025",
+  "presentations": [
+    {
+      "slug": "from-layoff-to-innovation-genai-game-tool-showcasi",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 162,
+    "section": "Biography"
+  }
+}

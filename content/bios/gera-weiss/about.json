@@ -1,0 +1,21 @@
+{
+  "name": "Gera Weiss",
+  "profession": "Professor of Computer Science at Ben-Gurion University",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "geraw@cs.bgu.ac.il",
+  "organization": "Ben-Gurion University",
+  "description": "Gera Weiss is a Professor of Computer Science at Ben-Gurion University. He has led research and development efforts at the intersection of software engineering, formal methods, and artificial intelligence. His recent work focuses on using scenario-based modeling and Behavioral Programming to simplify test automation and Model-Based Testing. Gera collaborates with industry and academia to bring advanced testing techniques into practical software development workflows.",
+  "presentations": [
+    {
+      "slug": "breaking-the-model-based-testing-barrier-how-ai-an",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 26,
+    "section": "Biography"
+  }
+}

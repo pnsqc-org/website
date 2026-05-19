@@ -1,0 +1,21 @@
+{
+  "name": "Arun Vishwanathan",
+  "profession": "",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
+  "linkedin": "",
+  "homepage": "",
+  "email": "arunvishwanathan88@gmail.com",
+  "organization": "",
+  "description": "Arun Vishwanathan June 29, 2025",
+  "presentations": [
+    {
+      "slug": "identifying-test-case-combinatorial-explosions-wit",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 398,
+    "section": "Biography"
+  }
+}

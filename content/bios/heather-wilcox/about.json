@@ -1,13 +1,14 @@
 {
+  "slug": "heather-wilcox",
   "name": "Heather Wilcox",
   "profession": "senior software quality professional",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "heatherwilc@yahoo.com",
-  "organization": "",
-  "description": "Heather Wilcox is a senior software quality professional with extensive experience in testing, development, and management. Over her career she has led teams in both co-located and distributed environments, with a focus on practical strategies for sustaining quality under real-world constraints. Heather brings a strong interest in how outsourcing, DevOps, and emerging technologies like AI reshape the Iron Triangle. She regularly contributes to industry discussions and collaborates on thought-leadership papers to advance quality practices across the profession. In her spare time, Heather enjoys fiber arts, equestrian sports, and training donkeys.",
-  "presentations": [
+  "bio": "Heather Wilcox is a senior software quality professional with extensive experience in testing, development, and management. Over her career she has led teams in both co-located and distributed environments, with a focus on practical strategies for sustaining quality under real-world constraints. Heather brings a strong interest in how outsourcing, DevOps, and emerging technologies like AI reshape the Iron Triangle. She regularly contributes to industry discussions and collaborates on thought-leadership papers to advance quality practices across the profession. In her spare time, Heather enjoys fiber arts, equestrian sports, and training donkeys.",
+  "presentationRefs": [
     {
       "slug": "is-the-iron-triangle-dead-in-software-development",
       "year": "2025"

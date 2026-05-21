@@ -68,7 +68,7 @@ test('legacy content/speakers folder is removed', () => {
   assert.equal(existsSync(join(CONTENT, 'speakers')), false);
 });
 
-test('author bios use the description schema and presentation references', () => {
+test('author bios use the common speaker schema and presentation references', () => {
   const bioSlugs = listDirs(BIOS);
   const presentationSlugs = new Set(listDirs(ARCHIVE_2025));
   assert.equal(bioSlugs.length, 64);
@@ -78,7 +78,9 @@ test('author bios use the description schema and presentation references', () =>
     const profile = readJson(filePath);
 
     assertNonEmptyString(profile.name, 'name', filePath);
+    assert.equal(profile.slug, slug, `${relativePath(filePath)} slug must match its folder`);
     assertString(profile.profession, 'profession', filePath);
+    assertString(profile.organization, 'organization', filePath);
     assertNonEmptyString(profile.avatar, 'avatar', filePath);
     assert.ok(
       profile.avatar.startsWith('/'),
@@ -87,30 +89,33 @@ test('author bios use the description schema and presentation references', () =>
     assertString(profile.linkedin, 'linkedin', filePath);
     assertString(profile.homepage, 'homepage', filePath);
     assertString(profile.email, 'email', filePath);
-    assertString(profile.organization, 'organization', filePath);
-    assertString(profile.description, 'description', filePath);
-    assert.equal(Object.hasOwn(profile, 'bio'), false, `${relativePath(filePath)} must not use bio`);
+    assertString(profile.bio, 'bio', filePath);
+    assert.equal(
+      Object.hasOwn(profile, 'description'),
+      false,
+      `${relativePath(filePath)} must not use description`,
+    );
     assertSource(profile.source, filePath);
     assert.equal(
-      Array.isArray(profile.presentations),
+      Array.isArray(profile.presentationRefs),
       true,
-      `${relativePath(filePath)} presentations must be an array`,
+      `${relativePath(filePath)} presentationRefs must be an array`,
     );
     assert.ok(
-      profile.presentations.length > 0,
+      profile.presentationRefs.length > 0,
       `${relativePath(filePath)} must include at least one presentation reference`,
     );
 
-    profile.presentations.forEach((presentation, index) => {
+    profile.presentationRefs.forEach((presentation, index) => {
       assert.ok(
         presentation && typeof presentation === 'object',
-        `${relativePath(filePath)} presentations[${index}] must be an object`,
+        `${relativePath(filePath)} presentationRefs[${index}] must be an object`,
       );
-      assertNonEmptyString(presentation.slug, `presentations[${index}].slug`, filePath);
+      assertNonEmptyString(presentation.slug, `presentationRefs[${index}].slug`, filePath);
       assert.equal(
         presentation.year,
         '2025',
-        `${relativePath(filePath)} presentations[${index}].year must be 2025`,
+        `${relativePath(filePath)} presentationRefs[${index}].year must be 2025`,
       );
       assert.ok(
         presentationSlugs.has(presentation.slug),
@@ -120,7 +125,7 @@ test('author bios use the description schema and presentation references', () =>
       const presentationPath = join(ARCHIVE_2025, presentation.slug, 'about.json');
       const presentationData = readJson(presentationPath);
       assert.ok(
-        Array.isArray(presentationData.authors) && presentationData.authors.includes(slug),
+        Array.isArray(presentationData.speakerSlugs) && presentationData.speakerSlugs.includes(slug),
         `${relativePath(presentationPath)} must reference ${slug}`,
       );
     });
@@ -143,22 +148,25 @@ test('2025 presentations are title folders that reference author bios', () => {
 
     const filePath = join(ARCHIVE_2025, slug, 'about.json');
     const presentation = readJson(filePath);
+    assert.equal(presentation.slug, slug, `${relativePath(filePath)} slug must match its folder`);
     assertNonEmptyString(presentation.title, 'title', filePath);
-    assertNonEmptyString(presentation.description, 'description', filePath);
-    assertNonEmptyString(presentation.label, 'label', filePath);
+    assertNonEmptyString(presentation.abstract, 'abstract', filePath);
+    assert.equal(presentation.presentationType, 'paper');
+    assert.equal(presentation.categorySlug, 'paper-presenters');
+    assert.equal(Object.hasOwn(presentation, 'label'), false);
     assert.equal(
-      Array.isArray(presentation.authors),
+      Array.isArray(presentation.speakerSlugs),
       true,
-      `${relativePath(filePath)} authors must be an array`,
+      `${relativePath(filePath)} speakerSlugs must be an array`,
     );
     assert.ok(
-      presentation.authors.length > 0,
+      presentation.speakerSlugs.length > 0,
       `${relativePath(filePath)} must include at least one author`,
     );
     assertSource(presentation.source, filePath);
 
-    presentation.authors.forEach((authorSlug, index) => {
-      assertNonEmptyString(authorSlug, `authors[${index}]`, filePath);
+    presentation.speakerSlugs.forEach((authorSlug, index) => {
+      assertNonEmptyString(authorSlug, `speakerSlugs[${index}]`, filePath);
       assert.ok(
         bioSlugs.has(authorSlug),
         `${relativePath(filePath)} references missing author bio ${authorSlug}`,

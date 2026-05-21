@@ -1,13 +1,14 @@
 {
+  "slug": "regis-bernard",
   "name": "Regis Bernard",
-  "profession": "Software Development Engineer in Test",
+  "profession": "Software Development Engineer in Test at a large social media company, focusing on automation frameworks and UI validation through AI",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "RegisRozario@gmail.com",
-  "organization": "",
-  "description": "Regis Bernard is a Software Development Engineer in Test at a large social media company, focusing on automation frameworks and UI validation through AI.",
-  "presentations": [
+  "bio": "Regis Bernard is a Software Development Engineer in Test at a large social media company, focusing on automation frameworks and UI validation through AI.",
+  "presentationRefs": [
     {
       "slug": "layout-validation-using-generative-ai-a-new-approa",
       "year": "2025"

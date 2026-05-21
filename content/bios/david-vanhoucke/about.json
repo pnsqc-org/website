@@ -1,13 +1,14 @@
 {
+  "slug": "david-vanhoucke",
   "name": "David Vanhoucke",
   "profession": "",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "dvanhoucke@redborder.com",
-  "organization": "Redborder",
-  "description": "David Vanhoucke, the CTO, orchestrates networks that learn, adapt and neutralize threats on the fly.",
-  "presentations": [
+  "bio": "David Vanhoucke, the CTO, orchestrates networks that learn, adapt and neutralize threats on the fly.",
+  "presentationRefs": [
     {
       "slug": "knowledge-automation-security-the-next-step-in-net",
       "year": "2025"

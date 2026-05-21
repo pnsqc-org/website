@@ -1,13 +1,14 @@
 {
+  "slug": "borja-de-la-maza",
   "name": "Borja De La Maza",
-  "profession": "Chief Networking Officer",
+  "profession": "",
+  "organization": "Redborder",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "bmaza@redborder.com",
-  "organization": "Redborder",
-  "description": "Borja De La Maza, CNO at Redborder, combines deep expertise and forward-looking strategies to safeguard organizations from evolving cyber risks.",
-  "presentations": [
+  "bio": "Borja De La Maza, CNO at Redborder, combines deep expertise and forward-looking strategies to safeguard organizations from evolving cyber risks.",
+  "presentationRefs": [
     {
       "slug": "knowledge-automation-security-the-next-step-in-net",
       "year": "2025"

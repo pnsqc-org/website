@@ -1,0 +1,69 @@
+<!-- meta
+title: Program Details - PNSQC
+description: View PNSQC speaker and presentation details.
+canonical: false
+social: false
+og_image: /images/events/conference/2025/group_photo.jpg
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="icon" type="image/jpg" href="/images/brand/pnsqc-logo.jpg" />
+  </head>
+  <body class="has-fixed-header bg-pnsqc-navy text-white antialiased">
+    <!-- ============================================================
+       HEADER (from src/_partials/header.html)
+       ============================================================ -->
+    <header></header>
+
+    <section class="page-section">
+      <div
+        class="page-shell"
+        data-program-detail
+        data-program-detail-fallback-avatar="/images/brand/pnsqc-logo.jpg"
+      >
+        <div class="mx-auto mb-10 max-w-4xl">
+          <p
+            class="gold-readable--tinted inline-flex items-center rounded-full border border-pnsqc-gold/20 bg-pnsqc-gold/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-pnsqc-gold"
+            data-program-detail-eyebrow
+          >
+            Program Details
+          </p>
+          <h1
+            class="mt-5 bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-4xl font-bold text-transparent sm:text-5xl"
+            data-program-detail-title
+          >
+            Loading details...
+          </h1>
+          <p
+            class="mt-4 text-lg leading-relaxed text-pnsqc-slate"
+            data-program-detail-subtitle
+            hidden
+          ></p>
+          <p class="mt-5 text-sm text-pnsqc-slate" data-program-detail-status>
+            Loading program details...
+          </p>
+        </div>
+
+        <div
+          class="gold-readable-surface mx-auto max-w-4xl rounded-2xl border border-pnsqc-gold/20 bg-gradient-to-br from-pnsqc-blue-dark/35 to-pnsqc-navy p-6 sm:p-8"
+        >
+          <div data-program-detail-content></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+       FOOTER (from src/_partials/footer.html)
+       ============================================================ -->
+    <footer></footer>
+
+    <script src="/js/program-slugs.js" defer></script>
+    <script src="/js/program-data.js" defer></script>
+    <script src="/js/program-renderer.js" defer></script>
+    <script src="/js/program-detail-page.js" defer></script>
+  </body>
+</html>

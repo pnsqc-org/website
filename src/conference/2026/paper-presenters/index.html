@@ -1,0 +1,69 @@
+<!-- meta
+title: Paper Presenters - PNSQC 2026 Conference
+description: Browse PNSQC 2026 paper presenters as they are announced.
+og_image: /images/events/conference/2025/paper_presentation.jpg
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/site.css" />
+    <link rel="icon" type="image/jpg" href="/images/brand/pnsqc-logo.jpg" />
+  </head>
+  <body class="bg-pnsqc-navy text-white antialiased has-fixed-header">
+    <!-- ============================================================
+       HEADER (from src/_partials/header.html)
+       ============================================================ -->
+    <header></header>
+
+    <section class="page-section">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto mb-6">
+          <p class="text-sm uppercase tracking-[0.2em] text-pnsqc-cyan mb-3">
+            PNSQC 2026 Conference
+          </p>
+          <h1
+            class="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-pnsqc-gold to-pnsqc-gold-light bg-clip-text text-transparent mb-4"
+          >
+            Paper Presenters
+          </h1>
+          <p class="text-pnsqc-slate text-lg leading-relaxed">
+            Authors and presenters for accepted PNSQC 2026 conference papers.
+          </p>
+        </div>
+
+        <div class="mb-12 flex justify-center">
+          <div class="max-w-4xl mx-auto">
+            <img
+              src="/images/events/conference/2025/paper_presentation.jpg"
+              alt="Paper presentation"
+              class="w-auto h-auto rounded-lg shadow-lg mx-auto"
+            />
+          </div>
+        </div>
+
+        <div data-program-directory data-program-fallback-avatar="/images/brand/pnsqc-logo.jpg">
+          <p class="text-center text-sm text-pnsqc-slate" data-program-status>
+            Loading paper presenters...
+          </p>
+
+          <div class="mt-10 space-y-16 gold-readable-surface" data-program-sections></div>
+
+          <div class="hidden" aria-hidden="true" data-program-templates></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+       FOOTER (from src/_partials/footer.html)
+       ============================================================ -->
+    <footer></footer>
+
+    <script src="/js/program-slugs.js" defer></script>
+    <script src="/js/program-data.js" defer></script>
+    <script src="/js/program-renderer.js" defer></script>
+    <script src="/js/program-directory.js" defer></script>
+    <script src="/js/details-modal.js" defer></script>
+  </body>
+</html>

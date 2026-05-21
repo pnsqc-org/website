@@ -1,13 +1,14 @@
 {
+  "slug": "ying-ki-kwong",
   "name": "Ying Ki Kwong",
   "profession": "independent consultant",
-  "avatar": "/images/people/ying_ki_kwong.jpg",
+  "organization": "PNSQC",
+  "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "ying.ki.kwong@pnsqc.org",
-  "organization": "PNSQC",
-  "description": "Ying Ki Kwong is an independent consultant. In the public sector, his roles with the state of Oregon included: E-Government Program Manager, Statewide QA Program Manager, IT Investment Oversight Coordinator, and Project Office Manager of the Medicaid Management Information System. In the private sector, his roles included: CEO of a Hong Kong-based internet B2B portal for trading commodities futures and metals, program manager in the Video & Networking Division of Tektronix responsible for worldwide applications & channels marketing in the video server business, and research engineer in Tektronix Labs. In these roles, Dr. Kwong managed software-based business operations, systems, products, and business process improvements. He received the doctorate in applied physics from Cornell University and was adjunct faculty in the School of Business Administration at Portland State University. He holds certifications in project management (PMP), ITIL, and IT Service Management. He has served on the Board of PNSQC since 2021. As a Principal at TEK,",
-  "presentations": [
+  "bio": "Ying Ki Kwong is an independent consultant. In the public sector, his roles with the state of Oregon included: E-Government Program Manager, Statewide QA Program Manager, IT Investment Oversight Coordinator, and Project Office Manager of the Medicaid Management Information System. In the private sector, his roles included: CEO of a Hong Kong-based internet B2B portal for trading commodities futures and metals, program manager in the Video & Networking Division of Tektronix responsible for worldwide applications & channels marketing in the video server business, and research engineer in Tektronix Labs. In these roles, Dr. Kwong managed software-based business operations, systems, products, and business process improvements. He received the doctorate in applied physics from Cornell University and was adjunct faculty in the School of Business Administration at Portland State University. He holds certifications in project management (PMP), ITIL, and IT Service Management. He has served on the Board of PNSQC since 2021. As a Principal at TEK,",
+  "presentationRefs": [
     {
       "slug": "cloud-chemistry-making-saas-solutions-play-nice-wi",
       "year": "2025"

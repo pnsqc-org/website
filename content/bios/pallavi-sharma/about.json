@@ -1,13 +1,14 @@
 {
+  "slug": "pallavi-sharma",
   "name": "Pallavi Sharma",
   "profession": "",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "info@5elementslearning.dev",
-  "organization": "",
-  "description": "Pallavi Sharma Pallavi Sharma PNSQC.ORG",
-  "presentations": [
+  "bio": "Pallavi Sharma Pallavi Sharma PNSQC.ORG",
+  "presentationRefs": [
     {
       "slug": "the-test-automation-toolbox-exploring-frameworks-b",
       "year": "2025"

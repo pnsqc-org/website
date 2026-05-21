@@ -1,13 +1,14 @@
 {
+  "slug": "sapan-tiwari",
   "name": "Sapan Tiwari",
   "profession": "",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "SapanSanu@gmail.com",
-  "organization": "",
-  "description": "",
-  "presentations": [
+  "bio": "",
+  "presentationRefs": [
     {
       "slug": "layout-validation-using-generative-ai-a-new-approa",
       "year": "2025"

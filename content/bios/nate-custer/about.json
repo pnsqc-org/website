@@ -1,13 +1,14 @@
 {
+  "slug": "nate-custer",
   "name": "Nate Custer",
-  "profession": "Principal Technologist",
+  "profession": "",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "Nate.custer@ttcglobal.com",
-  "organization": "",
-  "description": "Nate Custer 7/30/2025",
-  "presentations": [
+  "bio": "Nate Custer 7/30/2025",
+  "presentationRefs": [
     {
       "slug": "metaphors-for-testing-ai",
       "year": "2025"

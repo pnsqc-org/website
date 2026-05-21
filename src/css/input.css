@@ -1142,3 +1142,123 @@ a.gold-readable--tinted:focus-visible {
     font-size: 0.5rem;
   }
 }
+
+/* At-a-glance schedule */
+.timeline-block {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.timeline-block::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 1.85rem;
+  bottom: -1.7rem;
+  width: 2px;
+  background: linear-gradient(to bottom, rgba(229, 168, 80, 0.4), rgba(93, 186, 168, 0.2));
+}
+
+.timeline-block:last-child::before {
+  display: none;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  z-index: 1;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--color-pnsqc-gold);
+  border-radius: 999px;
+  background: var(--color-pnsqc-navy);
+}
+
+.timeline-dot--keynote {
+  background: var(--color-pnsqc-gold);
+  box-shadow: 0 0 12px rgba(229, 168, 80, 0.5);
+}
+
+.timeline-dot--social {
+  border-color: var(--color-pnsqc-cyan);
+  background: var(--color-pnsqc-cyan);
+  box-shadow: 0 0 10px rgba(93, 186, 168, 0.4);
+}
+
+.timeline-dot--break {
+  left: 0.1875rem;
+  top: 0.65rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-color: var(--color-pnsqc-slate);
+}
+
+.day-nav-link {
+  color: var(--gold-ghost-button-text);
+  border-color: color-mix(in srgb, var(--gold-ghost-button-text) 35%, transparent);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.day-nav-link:hover,
+.day-nav-link:focus-visible {
+  color: var(--gold-ghost-button-text-hover);
+  background: color-mix(in srgb, var(--gold-ghost-button-text) 12%, transparent);
+  border-color: color-mix(in srgb, var(--gold-ghost-button-text) 55%, transparent);
+}
+
+.session-card {
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.session-card:hover {
+  border-color: rgba(229, 168, 80, 0.4);
+  background: rgba(59, 107, 116, 0.12);
+}
+
+.track-1 {
+  color: #f5c17f;
+  border: 1px solid rgba(229, 168, 80, 0.3);
+  background: rgba(229, 168, 80, 0.15);
+}
+
+.track-2 {
+  color: #5dbaa8;
+  border: 1px solid rgba(93, 186, 168, 0.3);
+  background: rgba(93, 186, 168, 0.15);
+}
+
+.track-3 {
+  color: #d4a5ff;
+  border: 1px solid rgba(192, 126, 255, 0.3);
+  background: rgba(192, 126, 255, 0.15);
+}
+
+.track-4 {
+  color: #00d294;
+  border: 1px solid rgba(0, 210, 148, 0.3);
+  background: rgba(0, 210, 148, 0.15);
+}
+
+.track-5 {
+  color: #82aaff;
+  border: 1px solid rgba(130, 170, 255, 0.3);
+  background: rgba(130, 170, 255, 0.15);
+}
+
+.schedule-sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .schedule-sessions-grid {
+    grid-template-columns: 1fr;
+  }
+}

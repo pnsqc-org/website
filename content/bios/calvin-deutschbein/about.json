@@ -1,13 +1,14 @@
 {
+  "slug": "calvin-deutschbein",
   "name": "Calvin Deutschbein",
-  "profession": "computer security researcher and educator",
+  "profession": "computer security and systems researcher and educator",
+  "organization": "University of North Carolina at Chapel Hill under the direction of Professor Cynthia Sturton",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "ckdeutschbein@willamette.edu",
-  "organization": "Willamette University",
-  "description": "Calvin Deutschbein is a computer security and systems researcher and educator. They completed their Ph.D. in Computer Science at University of North Carolina at Chapel Hill under the direction of Professor Cynthia Sturton. Their research focuses on computer security, especially at the level of hardware design, and in the usage of data mining and design specification to achieve security goals. Prior to joining Willamette, Calvin had years of teaching experience at the University of Chicago, the University of North Carolina at Chapel Hill, and Elon University, the number one ranked US News and World Report institution for undergraduate education. Calvin is especially passionate about expanding the impact of computing education and career and job placements for students. Calvin's research on hardware security has been well received by industry partners, including invited talks for Intel Corporation, the Semiconductor Research Corporation, and Cycuity (formerly Tortuga Logic). Within the research community, they have given invited talks at hardware security-oriented venues such as SEC-RISCV and clean-slate. Their lab group, Hardware Security at Willamette, maintains a variety of open-source hardware security tools and regularly publishes on electrical and computer engineering and computer and data science.",
-  "presentations": [
+  "bio": "Calvin Deutschbein is a computer security and systems researcher and educator. They completed their Ph.D. in Computer Science at University of North Carolina at Chapel Hill under the direction of Professor Cynthia Sturton. Their research focuses on computer security, especially at the level of hardware design, and in the usage of data mining and design specification to achieve security goals. Prior to joining Willamette, Calvin had years of teaching experience at the University of Chicago, the University of North Carolina at Chapel Hill, and Elon University, the number one ranked US News and World Report institution for undergraduate education. Calvin is especially passionate about expanding the impact of computing education and career and job placements for students. Calvin's research on hardware security has been well received by industry partners, including invited talks for Intel Corporation, the Semiconductor Research Corporation, and Cycuity (formerly Tortuga Logic). Within the research community, they have given invited talks at hardware security-oriented venues such as SEC-RISCV and clean-slate. Their lab group, Hardware Security at Willamette, maintains a variety of open-source hardware security tools and regularly publishes on electrical and computer engineering and computer and data science.",
+  "presentationRefs": [
     {
       "slug": "rtl-arrow-hardware-to-cloud-bridge",
       "year": "2025"

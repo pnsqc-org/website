@@ -33,7 +33,7 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
-   2. Generates archive speaker data in `dist/data/archive/<year>/speakers.json` from JSON files in `content/`
+   2. Generates archive program data in `dist/data/archive/<year>/program.json` from JSON files in `content/`
    3. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
    4. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
    5. Generates `dist/sitemap.xml` and `dist/robots.txt`
@@ -127,20 +127,21 @@ Prefer links like `/conference/2026/venue/` rather than `.html` file paths.
 
 ### 4) Author archive content as JSON
 
-Author biographies live at `content/bios/<author-slug>/about.json` and include identity fields,
-`description`, and presentation references:
+Author biographies live at `content/bios/<author-slug>/about.json` and use the same source shape
+that the browser program loader expects after Meetinghand data is normalized:
 
 ```json
 {
+  "slug": "author-slug",
   "name": "Author Name",
   "profession": "Role or affiliation",
+  "organization": "Organization",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "",
-  "organization": "",
-  "description": "Author bio text. Markdown and simple inline HTML are supported.",
-  "presentations": [
+  "bio": "Author bio text. Markdown and simple inline HTML are supported.",
+  "presentationRefs": [
     {
       "slug": "presentation-title-slug",
       "year": "2025"
@@ -155,15 +156,18 @@ Author biographies live at `content/bios/<author-slug>/about.json` and include i
 ```
 
 Year-specific presentation entries live at `content/<year>/<short-title-slug>/about.json`.
-Folder slugs are title-derived, lowercase, hyphenated, and at most 50 characters. The `authors`
-array stores author slugs that must match `content/bios/<author-slug>/about.json`.
+Folder slugs are title-derived, lowercase, hyphenated, and at most 50 characters. The
+`speakerSlugs` array stores author slugs that must match
+`content/bios/<author-slug>/about.json`.
 
 ```json
 {
+  "slug": "presentation-title-slug",
   "title": "Presentation title",
-  "description": "Presentation abstract text.",
-  "label": "Conference Paper",
-  "authors": ["author-slug"],
+  "abstract": "Presentation abstract text.",
+  "presentationType": "paper",
+  "categorySlug": "paper-presenters",
+  "speakerSlugs": ["author-slug"],
   "source": {
     "proceedings": "pnsqc2025.pdf",
     "page": 0
@@ -175,6 +179,9 @@ Archive content can be audited or regenerated from a proceedings PDF by year. Th
 the PDF link from `src/archive/proceedings/index.html`, parses the PDF table of contents for paper
 titles, author names, and start pages, then pulls abstracts, bios, emails, links, and organization text
 from the paper pages when that data is present in the PDF.
+
+During `npm run build`, the files under `content/` remain the source of truth. The canonical
+browser-facing archive payload is `dist/data/archive/<year>/program.json`.
 
 ```bash
 python scripts/extract-proceedings.py --year 2025 --write

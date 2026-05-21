@@ -1,13 +1,14 @@
 {
+  "slug": "vittalkumar-mirajkar",
   "name": "Vittalkumar Mirajkar",
   "profession": "Senior Engineering Manager",
+  "organization": "",
   "avatar": "/images/brand/pnsqc-logo.jpg",
   "linkedin": "",
   "homepage": "",
   "email": "vittalgm@gmail.com",
-  "organization": "",
-  "description": "Vittalkumar Mirajkar Senior Engineering Manager – Focuses on cost optimization, operational excellence, and compliance across hybrid cloud systems, driving strategic adoption of emerging technologies.",
-  "presentations": [
+  "bio": "Vittalkumar Mirajkar Senior Engineering Manager – Focuses on cost optimization, operational excellence, and compliance across hybrid cloud systems, driving strategic adoption of emerging technologies.",
+  "presentationRefs": [
     {
       "slug": "ensuring-quality-and-security-in-generative-ai-int",
       "year": "2025"

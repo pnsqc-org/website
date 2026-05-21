@@ -1,0 +1,4 @@
+/conference/:year/speaker /_program-detail/ 200
+/conference/:year/presentation /_program-detail/ 200
+/archive/:year/speaker /_program-detail/ 200
+/archive/:year/presentation /_program-detail/ 200

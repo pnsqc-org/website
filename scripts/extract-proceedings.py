@@ -22,7 +22,6 @@ except ImportError as error:  # pragma: no cover - runtime environment guard
 
 
 DEFAULT_AVATAR = "/images/brand/pnsqc-logo.jpg"
-DEFAULT_LABEL = "Conference Paper"
 DEFAULT_TITLE_SLUG_MAX_LENGTH = 50
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
@@ -651,19 +650,16 @@ def read_existing_json_files(root: Path, year: str) -> tuple[dict[str, dict], di
     bios: dict[str, dict] = {}
     presentations: dict[str, dict] = {}
 
-    for base in [root / "content" / "speakers", root / "content" / "bios"]:
-        if not base.exists():
-            continue
-        for file_path in base.glob("*/index.json"):
-            bios[file_path.parent.name] = json.loads(file_path.read_text(encoding="utf-8"))
-        for file_path in base.glob("*/about.json"):
+    bios_dir = root / "content" / "bios"
+    if bios_dir.exists():
+        for file_path in bios_dir.glob("*/about.json"):
             bios[file_path.parent.name] = json.loads(file_path.read_text(encoding="utf-8"))
 
     year_dir = root / "content" / year
     if year_dir.exists():
-        for file_path in list(year_dir.glob("*/index.json")) + list(year_dir.glob("*/about.json")):
+        for file_path in year_dir.glob("*/about.json"):
             data = json.loads(file_path.read_text(encoding="utf-8"))
-            title = data.get("title") or data.get("presentations", [{}])[0].get("title", "")
+            title = data.get("title", "")
             if title:
                 presentations[title] = data
 
@@ -673,15 +669,12 @@ def read_existing_json_files(root: Path, year: str) -> tuple[dict[str, dict], di
 def status_for_existing(slug_or_title: str, existing: dict[str, dict], data: dict) -> str:
     if slug_or_title not in existing:
         return "new"
-    comparable = existing[slug_or_title].copy()
-    if "bio" in comparable and "description" not in comparable:
-        comparable["description"] = comparable.pop("bio")
-    return "unchanged" if comparable == data else "changed"
+    return "unchanged" if existing[slug_or_title] == data else "changed"
 
 
 def base_presentation_refs(existing: dict, year: str) -> list[dict[str, str]]:
     refs: list[dict[str, str]] = []
-    for ref in existing.get("presentations", []):
+    for ref in existing.get("presentationRefs", []):
         if not isinstance(ref, dict):
             continue
         slug = ref.get("slug")
@@ -724,10 +717,12 @@ def build_extraction(
 
         presentation_slug = short_title_slug(title, presentation_slugs, DEFAULT_TITLE_SLUG_MAX_LENGTH)
         presentation = {
+            "slug": presentation_slug,
             "title": title,
-            "description": description,
-            "label": DEFAULT_LABEL,
-            "authors": author_slugs,
+            "abstract": description,
+            "presentationType": "paper",
+            "categorySlug": "paper-presenters",
+            "speakerSlugs": author_slugs,
             "source": {
                 "proceedings": source.pdf_filename,
                 "page": start_page,
@@ -739,7 +734,7 @@ def build_extraction(
             slug = slugify(author["name"])
             existing = existing_bios.get(slug, {})
             presentation_refs = bios.get(slug, {}).get(
-                "presentations",
+                "presentationRefs",
                 base_presentation_refs(existing, source.year),
             )
             presentation_ref = {"slug": presentation_slug, "year": source.year}
@@ -747,7 +742,7 @@ def build_extraction(
                 presentation_refs = [*presentation_refs, presentation_ref]
 
             author_description = author_descriptions.get(slug, "")
-            previous_description = bios.get(slug, {}).get("description", "")
+            previous_description = bios.get(slug, {}).get("bio", "")
             if previous_description and len(previous_description) > len(author_description):
                 author_description = previous_description
                 bio_source = bios[slug]["source"]
@@ -757,36 +752,31 @@ def build_extraction(
                     "page": biography_page or start_page,
                     "section": biography_section,
                 }
-            if not author_description and isinstance(existing.get("description"), str):
-                author_description = existing["description"]
-                bio_source = existing.get("source", bio_source)
 
-            avatar = existing.get("avatar", DEFAULT_AVATAR) or DEFAULT_AVATAR
-            linkedin = author.get("linkedin") or existing.get("linkedin", "")
-            homepage = author.get("homepage") or existing.get("homepage", "")
+            avatar = DEFAULT_AVATAR
+            linkedin = author.get("linkedin", "")
+            homepage = author.get("homepage", "")
             profession = extract_profession(
                 author["name"],
                 author_description,
-                author.get("profession") or existing.get("profession", ""),
+                author.get("profession", ""),
             )
             organization = author.get("organization") or extract_organization(
                 author_description,
-                existing.get("organization", ""),
+                "",
             )
 
-            if avatar == DEFAULT_AVATAR and existing.get("avatar", "") not in ("", DEFAULT_AVATAR):
-                avatar = existing["avatar"]
-
             bios[slug] = {
+                "slug": slug,
                 "name": author["name"],
                 "profession": profession,
+                "organization": organization,
                 "avatar": avatar,
                 "linkedin": linkedin,
                 "homepage": homepage,
-                "email": author.get("email", existing.get("email", "")),
-                "organization": organization,
-                "description": author_description,
-                "presentations": presentation_refs,
+                "email": author.get("email", ""),
+                "bio": author_description,
+                "presentationRefs": presentation_refs,
                 "source": bio_source,
             }
 

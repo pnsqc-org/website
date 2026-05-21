@@ -1,0 +1,214 @@
+(() => {
+  const root = document.querySelector('[data-program-detail]');
+  if (!root || !window.PNSQCProgramData || !window.PNSQCProgramRenderer) return;
+
+  const fallbackAvatar =
+    root.getAttribute('data-program-detail-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
+  const data = window.PNSQCProgramData;
+  const renderer = window.PNSQCProgramRenderer.createRenderer({ fallbackAvatar });
+  const statusEl = root.querySelector('[data-program-detail-status]');
+  const contentEl = root.querySelector('[data-program-detail-content]');
+  const eyebrowEl = root.querySelector('[data-program-detail-eyebrow]');
+  const titleEl = root.querySelector('[data-program-detail-title]');
+  const subtitleEl = root.querySelector('[data-program-detail-subtitle]');
+  const originalDocumentTitle = document.title;
+
+  const setStatus = (text) => {
+    if (!statusEl) return;
+    statusEl.textContent = text;
+    statusEl.hidden = !text;
+  };
+
+  const setHeader = ({ eyebrow, title, subtitle }) => {
+    if (eyebrowEl) eyebrowEl.textContent = eyebrow;
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) {
+      subtitleEl.textContent = subtitle || '';
+      subtitleEl.hidden = !subtitle;
+    }
+  };
+
+  const showMessage = ({ eyebrow, title, message }) => {
+    setHeader({ eyebrow, title, subtitle: '' });
+    setStatus('');
+    if (!contentEl) return;
+
+    const card = document.createElement('div');
+    card.className = 'mx-auto max-w-3xl p-4 text-center';
+    const text = document.createElement('p');
+    text.className = 'text-sm leading-7 text-pnsqc-slate';
+    text.textContent = message;
+    card.appendChild(text);
+    contentEl.replaceChildren(card);
+  };
+
+  const getEyebrow = ({ source, year, type }) => {
+    const sectionLabel = source === 'conference' ? 'Conference' : 'Archive';
+    const typeLabel = type === 'speaker' ? 'Speaker' : 'Presentation';
+    return `PNSQC ${year} ${sectionLabel} ${typeLabel}`;
+  };
+
+  const getSpeakerSubtitle = (speaker) => {
+    if (speaker.profession) return speaker.profession;
+    const presentationTitle = data.asArray(speaker.presentations)[0]?.title;
+    return presentationTitle || '';
+  };
+
+  const getPresentationSubtitle = (presentation) =>
+    data
+      .asArray(presentation.speakers)
+      .map((speaker) => speaker.name)
+      .filter(Boolean)
+      .join(', ');
+
+  const hasDetailText = (value) => !!data.normalizeSpace(value || '');
+
+  const hasPresentationDetail = (presentation) =>
+    !!(
+      hasDetailText(presentation?.abstract) ||
+      hasDetailText(presentation?.abstractHtml) ||
+      hasDetailText(presentation?.descriptionHtml) ||
+      hasDetailText(presentation?.objectives) ||
+      hasDetailText(presentation?.objectivesHtml)
+    );
+
+  const hasSpeakerBio = (speaker) =>
+    !!(hasDetailText(speaker?.bio) || hasDetailText(speaker?.bioHtml));
+
+  const getSubmissionId = (presentation) =>
+    data.getPresentationSubmissionId
+      ? data.getPresentationSubmissionId(presentation)
+      : data.normalizeSpace(
+          presentation?.submissionId ||
+            (presentation?.presentationType === 'paper' ? presentation?.id : ''),
+        );
+
+  const presentationNeedsSubmissionDetail = (presentation, speaker) =>
+    presentation?.presentationType === 'paper' &&
+    !!getSubmissionId(presentation) &&
+    (!hasPresentationDetail(presentation) ||
+      (speaker
+        ? !hasSpeakerBio(speaker)
+        : data.asArray(presentation?.speakers).some((person) => !hasSpeakerBio(person))));
+
+  const hydratePresentation = async (presentation) => {
+    if (!presentationNeedsSubmissionDetail(presentation)) return presentation;
+    try {
+      const detail = await data.loadMeetingHandSubmission({
+        year: presentation.year || '',
+        id: getSubmissionId(presentation),
+      });
+      return data.mergeMeetingHandSubmissionDetail
+        ? data.mergeMeetingHandSubmissionDetail(presentation, detail)
+        : presentation;
+    } catch (error) {
+      console.error(error);
+      return presentation;
+    }
+  };
+
+  const hydrateSpeaker = async (speaker, year) => {
+    let hydrated = speaker;
+    for (const presentation of data.asArray(speaker?.presentations)) {
+      if (!presentationNeedsSubmissionDetail(presentation, hydrated)) continue;
+      try {
+        const detail = await data.loadMeetingHandSubmission({
+          year,
+          id: getSubmissionId(presentation),
+        });
+        hydrated = data.mergeMeetingHandSubmissionDetailIntoSpeaker
+          ? data.mergeMeetingHandSubmissionDetailIntoSpeaker(hydrated, presentation, detail)
+          : hydrated;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    return hydrated;
+  };
+
+  const hydrateDetailItem = async (route, item) => {
+    if (route.source !== 'conference') return item;
+    return route.type === 'speaker'
+      ? hydrateSpeaker(item, route.year)
+      : hydratePresentation({ ...item, year: route.year });
+  };
+
+  const renderDetail = ({ route, item }) => {
+    const isSpeaker = route.type === 'speaker';
+    const title = isSpeaker ? item.name : item.title;
+    const subtitle = isSpeaker ? getSpeakerSubtitle(item) : getPresentationSubtitle(item);
+    const eyebrow = getEyebrow(route);
+    const content = isSpeaker
+      ? renderer.buildSpeakerDetailsContent(item)
+      : renderer.buildPresentationDetailsContent(item);
+
+    setHeader({ eyebrow, title, subtitle });
+    setStatus('');
+    if (contentEl) contentEl.replaceChildren(content);
+    document.title = `${title} - ${originalDocumentTitle}`;
+  };
+
+  const load = async () => {
+    const route = data.parseProgramDetailRoute(window.location.pathname);
+    if (!route) {
+      showMessage({
+        eyebrow: 'Program Details',
+        title: 'Page not found',
+        message: 'This program detail route is not recognized.',
+      });
+      return;
+    }
+
+    const name = new URLSearchParams(window.location.search).get('name')?.trim();
+    const eyebrow = getEyebrow(route);
+    if (!name) {
+      showMessage({
+        eyebrow,
+        title: 'Missing detail name',
+        message: 'Add a name query parameter to choose the speaker or presentation to display.',
+      });
+      return;
+    }
+
+    setHeader({
+      eyebrow,
+      title: route.type === 'speaker' ? 'Loading speaker...' : 'Loading presentation...',
+      subtitle: '',
+    });
+    setStatus(
+      route.type === 'speaker' ? 'Loading speaker details...' : 'Loading presentation details...',
+    );
+
+    try {
+      const indexes = await data.loadProgram({
+        source: route.source,
+        year: route.year,
+        fallbackAvatar,
+      });
+      const item =
+        route.type === 'speaker'
+          ? indexes.speakerBySlug.get(name)
+          : indexes.presentationBySlug.get(name);
+
+      if (!item) {
+        showMessage({
+          eyebrow,
+          title: 'Details not found',
+          message: `No ${route.type} matched "${name}" for PNSQC ${route.year}.`,
+        });
+        return;
+      }
+
+      const hydratedItem = await hydrateDetailItem(route, item);
+      renderDetail({ route, item: hydratedItem });
+    } catch {
+      showMessage({
+        eyebrow,
+        title: 'Details unavailable',
+        message: 'Program details are not available right now. Please try again later.',
+      });
+    }
+  };
+
+  load();
+})();

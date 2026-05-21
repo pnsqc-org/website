@@ -10,9 +10,13 @@ import {
   statSync,
   writeFileSync,
 } from 'fs';
+import { createRequire } from 'module';
 import path, { join, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import { marked } from 'marked';
+
+const require = createRequire(import.meta.url);
+const programData = require('./src/js/program-data.js');
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
@@ -294,12 +298,42 @@ function optionalString(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function optionalNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
 function readOptionalObject(value, filePath, label) {
   if (value === undefined) return {};
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error(`Expected "${label}" to be an object in ${relative(ROOT, filePath)}`);
   }
   return value;
+}
+
+function readStringArray(value, filePath, label) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new Error(`Expected at least one "${label}" entry in ${relative(ROOT, filePath)}`);
+  }
+  return value.map((item, index) => requireString(item, filePath, `${label}[${index}]`));
+}
+
+function readPresentationRefs(value, filePath) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) {
+    throw new Error(`Expected "presentationRefs" to be an array in ${relative(ROOT, filePath)}`);
+  }
+  return value.map((ref, index) => {
+    if (!ref || typeof ref !== 'object' || Array.isArray(ref)) {
+      throw new Error(
+        `Expected "presentationRefs[${index}]" to be an object in ${relative(ROOT, filePath)}`,
+      );
+    }
+    return {
+      slug: requireString(ref.slug, filePath, `presentationRefs[${index}].slug`),
+      year: requireString(String(ref.year ?? ''), filePath, `presentationRefs[${index}].year`),
+    };
+  });
 }
 
 function loadSharedAuthorBios() {
@@ -318,6 +352,7 @@ function loadSharedAuthorBios() {
     }
 
     const data = readContentJsonFile(filePath);
+    const slug = optionalString(data.slug) || entry.name;
     const name = requireString(data.name, filePath, 'name');
     const profession =
       data.profession === undefined
@@ -328,16 +363,16 @@ function loadSharedAuthorBios() {
     const homepage = optionalString(data.homepage);
     const email = optionalString(data.email);
     const organization = optionalString(data.organization);
-    const description =
-      data.description === undefined
-        ? ''
-        : requireString(data.description, filePath, 'description', { allowEmpty: true });
+    const bio =
+      data.bio === undefined ? '' : requireString(data.bio, filePath, 'bio', { allowEmpty: true });
+    const presentationRefs = readPresentationRefs(data.presentationRefs, filePath);
     const source = readOptionalObject(data.source, filePath, 'source');
 
     assertSourceAssetExists(avatar, filePath, 'avatar');
 
-    profiles.set(entry.name, {
-      id: entry.name,
+    profiles.set(slug, {
+      id: slug,
+      slug,
       name,
       profession,
       avatar,
@@ -346,20 +381,35 @@ function loadSharedAuthorBios() {
       email,
       organization,
       source,
-      description,
-      bioHtml: markdownToHtml(description),
+      bio,
+      bioHtml: markdownToHtml(bio),
+      presentationRefs,
     });
   }
 
   return profiles;
 }
 
-function loadArchiveSpeakersForYear(year, sharedProfiles) {
+function formatCategoryName(slug) {
+  const known = {
+    'paper-presenters': 'Paper Presenters',
+  };
+  if (known[slug]) return known[slug];
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part[0].toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function loadArchiveProgramDataForYear(year, sharedProfiles) {
   const yearDir = join(CONTENT, year);
   const presentationDirs = readdirSync(yearDir, { withFileTypes: true }).filter((entry) =>
     entry.isDirectory(),
   );
-  const speakersBySlug = new Map();
+  const speakerSlugsForYear = new Set();
+  const presentations = [];
+  const categorySlugs = new Set();
 
   for (const entry of presentationDirs) {
     const filePath = join(yearDir, entry.name, 'about.json');
@@ -368,63 +418,91 @@ function loadArchiveSpeakersForYear(year, sharedProfiles) {
     }
 
     const data = readContentJsonFile(filePath);
+    const slug = optionalString(data.slug) || entry.name;
     const title = requireString(data.title, filePath, 'title');
-    const description = requireString(data.description, filePath, 'description');
-    const label =
-      data.label === undefined
-        ? ''
-        : requireString(data.label, filePath, 'label', { allowEmpty: true });
+    const abstract = requireString(data.abstract, filePath, 'abstract');
+    const presentationType = requireString(data.presentationType, filePath, 'presentationType');
+    const categorySlug = requireString(data.categorySlug, filePath, 'categorySlug');
     const date =
       data.date === undefined
         ? ''
         : requireString(data.date, filePath, 'date', { allowEmpty: true });
+    const start =
+      data.start === undefined
+        ? ''
+        : requireString(data.start, filePath, 'start', { allowEmpty: true });
+    const end =
+      data.end === undefined ? '' : requireString(data.end, filePath, 'end', { allowEmpty: true });
+    const location =
+      data.location === undefined
+        ? ''
+        : requireString(data.location, filePath, 'location', { allowEmpty: true });
+    const order = optionalNumber(data.order);
     const source = readOptionalObject(data.source, filePath, 'source');
+    const speakerSlugs = readStringArray(data.speakerSlugs, filePath, 'speakerSlugs');
 
-    if (!Array.isArray(data.authors) || data.authors.length === 0) {
-      throw new Error(`Expected at least one author in ${relative(ROOT, filePath)}`);
-    }
-
-    const authors = data.authors.map((author, index) =>
-      requireString(author, filePath, `authors[${index}]`),
-    );
-
-    const presentation = {
-      title,
-      description,
-      descriptionHtml: markdownToHtml(description),
-      date,
-      label,
-      authors,
-      source,
-    };
-
-    authors.forEach((authorSlug) => {
-      const sharedProfile = sharedProfiles.get(authorSlug);
-      if (!sharedProfile) {
+    speakerSlugs.forEach((speakerSlug) => {
+      if (!sharedProfiles.has(speakerSlug)) {
         throw new Error(
-          `Missing shared author bio for "${authorSlug}" referenced by ${relative(
+          `Missing shared author bio for "${speakerSlug}" referenced by ${relative(
             ROOT,
             filePath,
           )}`,
         );
       }
-
-      if (!speakersBySlug.has(authorSlug)) {
-        speakersBySlug.set(authorSlug, {
-          ...sharedProfile,
-          presentations: [],
-        });
-      }
-      speakersBySlug.get(authorSlug).presentations.push(presentation);
+      speakerSlugsForYear.add(speakerSlug);
     });
+    categorySlugs.add(categorySlug);
+
+    const presentation = {
+      id: slug,
+      slug,
+      title,
+      abstract,
+      abstractHtml: markdownToHtml(abstract),
+      descriptionHtml: markdownToHtml(abstract),
+      presentationType,
+      categorySlug,
+      date,
+      start,
+      end,
+      location,
+      source,
+      speakerSlugs,
+    };
+    if (order !== null) presentation.order = order;
+    presentations.push(presentation);
   }
 
-  return Array.from(speakersBySlug.values()).sort((left, right) =>
-    left.name.localeCompare(right.name),
-  );
+  const speakers = Array.from(speakerSlugsForYear)
+    .sort()
+    .map((speakerSlug) => {
+      const sharedProfile = sharedProfiles.get(speakerSlug);
+      return {
+        ...sharedProfile,
+        presentationRefs: sharedProfile.presentationRefs.filter(
+          (ref) => String(ref.year) === String(year),
+        ),
+      };
+    });
+  const rawProgram = {
+    year,
+    source: 'archive',
+    categories: Array.from(categorySlugs)
+      .sort()
+      .map((slug) => ({
+        id: null,
+        slug,
+        name: formatCategoryName(slug),
+      })),
+    speakers,
+    presentations,
+  };
+
+  return programData.serializeProgram(programData.normalizeArchiveProgram(rawProgram, { year }));
 }
 
-function buildArchiveSpeakerData() {
+function buildArchiveProgramData() {
   if (!existsSync(CONTENT)) return;
 
   const sharedProfiles = loadSharedAuthorBios();
@@ -435,32 +513,28 @@ function buildArchiveSpeakerData() {
   );
 
   for (const entry of yearDirs) {
-    const speakers = loadArchiveSpeakersForYear(entry.name, sharedProfiles);
-    if (!speakers.length) continue;
+    const program = loadArchiveProgramDataForYear(entry.name, sharedProfiles);
+    const { speakers, presentations } = program;
+    if (!speakers.length && !presentations.length) continue;
 
     const targetDir = join(DIST, 'data', 'archive', entry.name);
     mkdirSync(targetDir, { recursive: true });
 
-    writeFileSync(
-      join(targetDir, 'speakers.json'),
-      JSON.stringify(
-        {
-          year: entry.name,
-          speakers,
-        },
-        null,
-        2,
-      ) + '\n',
-    );
+    writeFileSync(join(targetDir, 'program.json'), JSON.stringify(program, null, 2) + '\n');
 
-    console.log(`  data/archive/${entry.name}/speakers.json  (${speakers.length} speakers)`);
+    console.log(
+      `  data/archive/${entry.name}/program.json  (${presentations.length} presentations)`,
+    );
   }
 }
 
 // ── Generate sitemap.xml ────────────────────────────────────────────
 
 function generateSitemap(files, config, targetDir) {
-  const sitemapFiles = files.filter((file) => relative(targetDir, file) !== '404.html');
+  const sitemapFiles = files.filter((file) => {
+    const rel = relative(targetDir, file).split(path.sep).join('/');
+    return rel !== '404.html' && !rel.split('/').some((segment) => segment.startsWith('_'));
+  });
   const urls = sitemapFiles.map((file) => {
     const rel = relative(targetDir, file);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
@@ -515,8 +589,8 @@ function main() {
   console.log('\nbuild.mjs -> assembling dist/\n');
   assembleDist();
 
-  console.log('build.mjs -> generating archive speaker data\n');
-  buildArchiveSpeakerData();
+  console.log('build.mjs -> generating archive program data\n');
+  buildArchiveProgramData();
 
   // Step 2: Process HTML files in dist/ (NOT src/)
   const config = loadConfig();
@@ -546,4 +620,8 @@ function main() {
   console.log('\ndone.\n');
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}
+
+export { buildArchiveProgramData, loadArchiveProgramDataForYear, loadSharedAuthorBios };

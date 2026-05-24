@@ -53,7 +53,11 @@ function assertSource(value, filePath) {
     'pnsqc2025.pdf',
     `${relativePath(filePath)} source.proceedings must be pnsqc2025.pdf`,
   );
-  assert.equal(typeof value.page, 'number', `${relativePath(filePath)} source.page must be a number`);
+  assert.equal(
+    typeof value.page,
+    'number',
+    `${relativePath(filePath)} source.page must be a number`,
+  );
 }
 
 test('archive source content uses only about.json files', () => {
@@ -81,11 +85,15 @@ test('author bios use the common speaker schema and presentation references', ()
     assert.equal(profile.slug, slug, `${relativePath(filePath)} slug must match its folder`);
     assertString(profile.profession, 'profession', filePath);
     assertString(profile.organization, 'organization', filePath);
-    assertNonEmptyString(profile.avatar, 'avatar', filePath);
-    assert.ok(
-      profile.avatar.startsWith('/'),
-      `${relativePath(filePath)} avatar must be an absolute site path`,
-    );
+    if (Object.hasOwn(profile, 'avatar')) {
+      assertNonEmptyString(profile.avatar, 'avatar', filePath);
+      assert.ok(
+        profile.avatar.startsWith('/'),
+        `${relativePath(filePath)} avatar must be an absolute site path`,
+      );
+      const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
+      assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
+    }
     assertString(profile.linkedin, 'linkedin', filePath);
     assertString(profile.homepage, 'homepage', filePath);
     assertString(profile.email, 'email', filePath);
@@ -125,13 +133,11 @@ test('author bios use the common speaker schema and presentation references', ()
       const presentationPath = join(ARCHIVE_2025, presentation.slug, 'about.json');
       const presentationData = readJson(presentationPath);
       assert.ok(
-        Array.isArray(presentationData.speakerSlugs) && presentationData.speakerSlugs.includes(slug),
+        Array.isArray(presentationData.speakerSlugs) &&
+          presentationData.speakerSlugs.includes(slug),
         `${relativePath(presentationPath)} must reference ${slug}`,
       );
     });
-
-    const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
-    assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
   }
 });
 

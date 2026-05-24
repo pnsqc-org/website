@@ -29,6 +29,10 @@
       })));
 
   const FALLBACK_AVATAR = '/images/brand/pnsqc-logo.jpg';
+  const YEAR_FALLBACK_AVATARS = {
+    2025: '/images/brand/pnsqc-logo-2025.jpg',
+    2026: '/images/brand/pnsqc-logo-2026.jpg',
+  };
   const WORKSHOP_DATES = {
     2026: '2026-10-14',
   };
@@ -93,7 +97,7 @@
       defaultLabel: 'Paper Presenter',
       loadingText: 'Loading paper presenters...',
       errorText: 'Paper presenters are not available right now.',
-      emptyText: 'Paper presenters will appear here once program data is available.',
+      emptyText: 'Check back soon for our accepted paper presenters!',
       filters: {
         includePresentationTypes: ['paper'],
         excludeCategoryIds: [111, 104],
@@ -171,6 +175,12 @@
     const parsed = new Date(value);
     if (Number.isNaN(parsed.getTime())) return '';
     return parsed.toISOString().slice(0, 10);
+  }
+
+  function getProgramFallbackAvatar({ year, fallbackAvatar } = {}) {
+    const explicitFallback = normalizeSpace(fallbackAvatar);
+    if (explicitFallback && explicitFallback !== FALLBACK_AVATAR) return explicitFallback;
+    return YEAR_FALLBACK_AVATARS[String(year)] || FALLBACK_AVATAR;
   }
 
   function getWorkshopDate(year) {
@@ -477,7 +487,10 @@
 
   function normalizeMeetingHandProgram(payload, options = {}) {
     const year = String(options.year || '');
-    const fallbackAvatar = options.fallbackAvatar || FALLBACK_AVATAR;
+    const fallbackAvatar = getProgramFallbackAvatar({
+      year,
+      fallbackAvatar: options.fallbackAvatar,
+    });
     const eventData = payload?.data || payload || {};
     const categories = asArray(eventData.speaker_categories).map(normalizeCategory).filter(Boolean);
     const categoryById = new Map(categories.map((category) => [category.id, category]));
@@ -712,7 +725,10 @@
   }
 
   function normalizeArchiveSpeaker(speaker, index, options = {}) {
-    const fallbackAvatar = options.fallbackAvatar || FALLBACK_AVATAR;
+    const fallbackAvatar = getProgramFallbackAvatar({
+      year: options.year,
+      fallbackAvatar: options.fallbackAvatar,
+    });
     const slug = normalizeSpace(speaker?.slug || speaker?.id || '') || `speaker-${index + 1}`;
     const bio = speaker?.bio || '';
     return {
@@ -1258,6 +1274,7 @@
     getMeetingHandSpeakerName,
     getPersonName: getMeetingHandPersonName,
     getPresentationSubmissionId,
+    getProgramFallbackAvatar,
     getPresenterDetails,
     getProgramCategoryConfig,
     getProgramEndpoint,

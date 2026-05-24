@@ -21,7 +21,6 @@ except ImportError as error:  # pragma: no cover - runtime environment guard
     ) from error
 
 
-DEFAULT_AVATAR = "/images/brand/pnsqc-logo.jpg"
 DEFAULT_TITLE_SLUG_MAX_LENGTH = 50
 
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
@@ -753,7 +752,6 @@ def build_extraction(
                     "section": biography_section,
                 }
 
-            avatar = DEFAULT_AVATAR
             linkedin = author.get("linkedin", "")
             homepage = author.get("homepage", "")
             profession = extract_profession(
@@ -771,7 +769,6 @@ def build_extraction(
                 "name": author["name"],
                 "profession": profession,
                 "organization": organization,
-                "avatar": avatar,
                 "linkedin": linkedin,
                 "homepage": homepage,
                 "email": author.get("email", ""),
@@ -830,6 +827,46 @@ def assert_safe_content_path(root: Path, path: Path) -> None:
         raise RuntimeError(f"Refusing to mutate outside content directory: {resolved_path}")
 
 
+def clean_current_year_refs(bio: dict, year: str) -> dict | None:
+    refs = [
+        ref
+        for ref in bio.get("presentationRefs", [])
+        if isinstance(ref, dict) and str(ref.get("year")) != year
+    ]
+    if not refs:
+        return None
+    cleaned = {key: value for key, value in bio.items() if key != "matchStatus"}
+    cleaned["presentationRefs"] = refs
+    return cleaned
+
+
+def rewrite_bios(root: Path, source: ProceedingsSource, bios: dict[str, dict]) -> None:
+    bios_dir = root / "content" / "bios"
+    assert_safe_content_path(root, bios_dir)
+    bios_dir.mkdir(parents=True, exist_ok=True)
+
+    existing_bios, _ = read_existing_json_files(root, source.year)
+    merged_bios: dict[str, dict] = {}
+    for slug, bio in existing_bios.items():
+        cleaned = clean_current_year_refs(bio, source.year)
+        if cleaned:
+            merged_bios[slug] = cleaned
+
+    for slug, bio in bios.items():
+        merged_bios[slug] = {key: value for key, value in bio.items() if key != "matchStatus"}
+
+    for legacy_index in bios_dir.glob("*/index.json"):
+        legacy_index.unlink()
+
+    existing_dirs = {path.name: path for path in bios_dir.iterdir() if path.is_dir()}
+    for slug, path in existing_dirs.items():
+        if slug not in merged_bios:
+            shutil.rmtree(path)
+
+    for slug, bio in sorted(merged_bios.items()):
+        write_json(bios_dir / slug / "about.json", bio)
+
+
 def write_content(
     root: Path,
     source: ProceedingsSource,
@@ -837,7 +874,6 @@ def write_content(
     presentations: dict[str, dict],
 ) -> None:
     content_dir = root / "content"
-    bios_dir = content_dir / "bios"
     speakers_dir = content_dir / "speakers"
     year_dir = content_dir / source.year
 
@@ -846,14 +882,7 @@ def write_content(
         if target.exists():
             shutil.rmtree(target)
 
-    assert_safe_content_path(root, bios_dir)
-    bios_dir.mkdir(parents=True, exist_ok=True)
-    for legacy_index in bios_dir.glob("*/index.json"):
-        legacy_index.unlink()
-
-    for slug, bio in sorted(bios.items()):
-        content = {key: value for key, value in bio.items() if key != "matchStatus"}
-        write_json(bios_dir / slug / "about.json", content)
+    rewrite_bios(root, source, bios)
 
     for slug, presentation in sorted(presentations.items()):
         write_json(year_dir / slug / "about.json", presentation)

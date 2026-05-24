@@ -358,7 +358,10 @@ function loadSharedAuthorBios() {
       data.profession === undefined
         ? ''
         : requireString(data.profession, filePath, 'profession', { allowEmpty: true });
-    const avatar = requireString(data.avatar, filePath, 'avatar');
+    const avatar =
+      data.avatar === undefined
+        ? ''
+        : requireString(data.avatar, filePath, 'avatar', { allowEmpty: true });
     const linkedin = optionalString(data.linkedin);
     const homepage = optionalString(data.homepage);
     const email = optionalString(data.email);
@@ -368,7 +371,7 @@ function loadSharedAuthorBios() {
     const presentationRefs = readPresentationRefs(data.presentationRefs, filePath);
     const source = readOptionalObject(data.source, filePath, 'source');
 
-    assertSourceAssetExists(avatar, filePath, 'avatar');
+    if (avatar) assertSourceAssetExists(avatar, filePath, 'avatar');
 
     profiles.set(slug, {
       id: slug,

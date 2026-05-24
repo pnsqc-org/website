@@ -27,7 +27,10 @@
           normalizeSpace(left?.name).localeCompare(normalizeSpace(right?.name)),
         ));
 
-  function createRenderer({ fallbackAvatar = '/images/brand/pnsqc-logo.jpg' } = {}) {
+  function createRenderer({
+    fallbackAvatar = '/images/brand/pnsqc-logo.jpg',
+    bioFallbackText = 'Bio coming soon.',
+  } = {}) {
     const createEl = (tag, className, text) => {
       const el = document.createElement(tag);
       if (className) el.className = className;
@@ -282,6 +285,7 @@
           parent: section,
           html: getPresentationHtml(presentations[0]),
           fallbackText: 'Abstract details are coming soon.',
+          className: 'rich-content rich-content--compact',
         });
         return section;
       }
@@ -307,6 +311,7 @@
           parent: item,
           html: getPresentationHtml(presentation),
           fallbackText: 'Abstract details are coming soon.',
+          className: 'rich-content rich-content--compact',
         });
         list.appendChild(item);
       });
@@ -364,7 +369,7 @@
       appendHtmlOrFallback({
         parent: bioSection,
         html: speaker?.bioHtml || textToHtml(speaker?.bio || ''),
-        fallbackText: 'Bio coming soon.',
+        fallbackText: bioFallbackText,
         className: 'rich-content rich-content--compact',
       });
       wrapper.appendChild(bioSection);
@@ -462,12 +467,12 @@
           appendHtmlOrFallback({
             parent: bioSection,
             html: speaker.bioHtml || textToHtml(speaker.bio || ''),
-            fallbackText: 'Bio coming soon.',
+            fallbackText: bioFallbackText,
             className: 'rich-content rich-content--compact',
           });
         });
       } else {
-        bioSection.appendChild(createDetailsText('Bio coming soon.'));
+        bioSection.appendChild(createDetailsText(bioFallbackText));
       }
       wrapper.appendChild(bioSection);
       return wrapper;

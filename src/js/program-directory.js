@@ -11,8 +11,17 @@
   if (!route) return;
 
   const fallbackAvatar =
-    root.getAttribute('data-program-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
-  const renderer = window.PNSQCProgramRenderer.createRenderer({ fallbackAvatar });
+    data.getProgramFallbackAvatar?.({
+      source: route.source,
+      year: route.year,
+      fallbackAvatar: root.getAttribute('data-program-fallback-avatar'),
+    }) ||
+    root.getAttribute('data-program-fallback-avatar') ||
+    '/images/brand/pnsqc-logo.jpg';
+  const renderer = window.PNSQCProgramRenderer.createRenderer({
+    fallbackAvatar,
+    bioFallbackText: route.source === 'archive' ? 'No bio was provided.' : undefined,
+  });
   const statusEl = root.querySelector('[data-program-status]');
   const sectionsEl = root.querySelector('[data-program-sections]');
   const templateRoot = root.querySelector('[data-program-templates]') || root;
@@ -33,10 +42,10 @@
   };
 
   const createSection = (sectionConfig) => {
-    const section = createEl('section', 'space-y-6');
+    const section = createEl('section', 'flex flex-col gap-8');
     const title = createEl(
       'h2',
-      `mb-2 text-center text-xs font-semibold uppercase tracking-widest ${
+      `text-center text-xs font-semibold uppercase tracking-widest ${
         sectionConfig.headingClass || 'text-pnsqc-gold'
       }`,
       sectionConfig.title || config.title,
@@ -56,6 +65,68 @@
 
   const getTemplateId = (type, item, index) =>
     `details-modal-template-${type}-${item.slug || item.id || index}`;
+
+  const getSpeakerSummary = (speaker) => ({
+    id: speaker?.id,
+    slug: speaker?.slug,
+    name: speaker?.name || 'Presenter',
+    profession: speaker?.profession || '',
+    organization: speaker?.organization || '',
+    avatar: speaker?.avatar || fallbackAvatar,
+    linkedin: speaker?.linkedin || '',
+    homepage: speaker?.homepage || '',
+    bio: speaker?.bio || '',
+    bioHtml: speaker?.bioHtml || '',
+  });
+
+  const shouldUsePresentationModalForSpeaker = (speaker) =>
+    route.source === 'conference' &&
+    config.slug === 'paper-presenters' &&
+    data.asArray(speaker?.presentations).length === 1;
+
+  const getSpeakerPresentationDetail = (speaker) => {
+    const presentation = data.asArray(speaker?.presentations)[0] || null;
+    if (!presentation) return null;
+    return {
+      ...presentation,
+      speakers: [getSpeakerSummary(speaker)],
+    };
+  };
+
+  const getModalConfig = ({ item, templateId, categoryLabel }) => {
+    if (config.cardType === 'speaker' && shouldUsePresentationModalForSpeaker(item)) {
+      const presentation = getSpeakerPresentationDetail(item);
+      if (presentation) {
+        return {
+          modal: renderer.buildPresentationModalTemplate({
+            presentation,
+            templateId,
+            categoryLabel: 'Presentation',
+          }),
+          title: presentation.title || item.name || 'Presentation',
+          label: 'Presentation',
+        };
+      }
+    }
+
+    if (config.cardType === 'speaker') {
+      return {
+        modal: renderer.buildSpeakerModalTemplate({ speaker: item, templateId, categoryLabel }),
+        title: item.name || 'Presenter',
+        label: categoryLabel,
+      };
+    }
+
+    return {
+      modal: renderer.buildPresentationModalTemplate({
+        presentation: item,
+        templateId,
+        categoryLabel,
+      }),
+      title: item.title || 'Presentation TBA',
+      label: categoryLabel,
+    };
+  };
 
   const hasPresentationDetail = (presentation) =>
     !!(
@@ -96,14 +167,7 @@
   };
 
   const replaceTemplate = ({ templateId, item, categoryLabel }) => {
-    const modal =
-      config.cardType === 'speaker'
-        ? renderer.buildSpeakerModalTemplate({ speaker: item, templateId, categoryLabel })
-        : renderer.buildPresentationModalTemplate({
-            presentation: item,
-            templateId,
-            categoryLabel,
-          });
+    const { modal } = getModalConfig({ item, templateId, categoryLabel });
     document.getElementById(templateId)?.replaceWith(modal.template);
   };
 
@@ -157,27 +221,24 @@
     const categoryLabel = sectionConfig.label || config.defaultLabel;
     if (config.cardType === 'speaker') {
       const templateId = getTemplateId('speaker', item, index);
-      const modal = renderer.buildSpeakerModalTemplate({
-        speaker: item,
-        templateId,
-        categoryLabel,
-      });
+      const { label, modal, title } = getModalConfig({ item, templateId, categoryLabel });
       const card = renderer.buildSpeakerCard({
         speaker: item,
         templateId: modal.templateId,
         categoryLabel,
       });
+      const trigger = card.querySelector(`[data-details-modal-open="${modal.templateId}"]`);
+      if (trigger) {
+        trigger.setAttribute('data-details-modal-title', title);
+        trigger.setAttribute('data-details-modal-label', label);
+      }
       modalRecords.set(modal.templateId, { categoryLabel, item, templateId: modal.templateId });
       markSubmissionTrigger({ card, templateId: modal.templateId });
       return { card, template: modal.template };
     }
 
     const templateId = getTemplateId('presentation', item, index);
-    const modal = renderer.buildPresentationModalTemplate({
-      presentation: item,
-      templateId,
-      categoryLabel,
-    });
+    const { modal } = getModalConfig({ item, templateId, categoryLabel });
     const card = renderer.buildPresentationCard({
       presentation: item,
       templateId: modal.templateId,

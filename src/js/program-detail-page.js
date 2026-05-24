@@ -2,10 +2,13 @@
   const root = document.querySelector('[data-program-detail]');
   if (!root || !window.PNSQCProgramData || !window.PNSQCProgramRenderer) return;
 
-  const fallbackAvatar =
-    root.getAttribute('data-program-detail-fallback-avatar') || '/images/brand/pnsqc-logo.jpg';
   const data = window.PNSQCProgramData;
-  const renderer = window.PNSQCProgramRenderer.createRenderer({ fallbackAvatar });
+  const configuredFallbackAvatar = root.getAttribute('data-program-detail-fallback-avatar') || '';
+  let fallbackAvatar =
+    data.getProgramFallbackAvatar?.({ fallbackAvatar: configuredFallbackAvatar }) ||
+    configuredFallbackAvatar ||
+    '/images/brand/pnsqc-logo.jpg';
+  let renderer = window.PNSQCProgramRenderer.createRenderer({ fallbackAvatar });
   const statusEl = root.querySelector('[data-program-detail-status]');
   const contentEl = root.querySelector('[data-program-detail-content]');
   const eyebrowEl = root.querySelector('[data-program-detail-eyebrow]');
@@ -133,6 +136,21 @@
       : hydratePresentation({ ...item, year: route.year });
   };
 
+  const configureFallbackAvatar = (route) => {
+    fallbackAvatar =
+      data.getProgramFallbackAvatar?.({
+        source: route.source,
+        year: route.year,
+        fallbackAvatar: configuredFallbackAvatar,
+      }) ||
+      configuredFallbackAvatar ||
+      fallbackAvatar;
+    renderer = window.PNSQCProgramRenderer.createRenderer({
+      fallbackAvatar,
+      bioFallbackText: route.source === 'archive' ? 'No bio was provided.' : undefined,
+    });
+  };
+
   const renderDetail = ({ route, item }) => {
     const isSpeaker = route.type === 'speaker';
     const title = isSpeaker ? item.name : item.title;
@@ -158,6 +176,7 @@
       });
       return;
     }
+    configureFallbackAvatar(route);
 
     const name = new URLSearchParams(window.location.search).get('name')?.trim();
     const eyebrow = getEyebrow(route);

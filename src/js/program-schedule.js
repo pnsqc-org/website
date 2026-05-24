@@ -951,10 +951,18 @@
         this.container = container;
         this.source = options.source || container?.dataset.programSource || 'conference';
         this.year = options.year || container?.dataset.programYear || '2026';
-        this.fallbackAvatar =
+        const configuredFallbackAvatar =
           options.fallbackAvatar ||
           container?.dataset.programFallbackAvatar ||
           container?.dataset.scheduleFallbackAvatar ||
+          '';
+        this.fallbackAvatar =
+          programData.getProgramFallbackAvatar?.({
+            source: this.source,
+            year: this.year,
+            fallbackAvatar: configuredFallbackAvatar,
+          }) ||
+          configuredFallbackAvatar ||
           FALLBACK_AVATAR;
         this.renderer = new ScheduleRenderer({
           root: container?.querySelector('[data-schedule-root]'),

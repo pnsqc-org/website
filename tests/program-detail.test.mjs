@@ -142,6 +142,58 @@ test('shared program helpers sort people by last name and serialize plain output
   assert.deepEqual(serialized.presentations[0].speakerSlugs, ['alpha-person']);
 });
 
+test('program fallback avatars use year-specific conference logos', () => {
+  assert.equal(
+    programData.getProgramFallbackAvatar({ source: 'conference', year: '2026' }),
+    '/images/brand/pnsqc-logo-2026.jpg',
+  );
+  assert.equal(
+    programData.getProgramFallbackAvatar({
+      source: 'conference',
+      year: '2026',
+      fallbackAvatar: '/images/brand/pnsqc-logo.jpg',
+    }),
+    '/images/brand/pnsqc-logo-2026.jpg',
+  );
+  assert.equal(
+    programData.getProgramFallbackAvatar({ source: 'archive', year: '2025' }),
+    '/images/brand/pnsqc-logo-2025.jpg',
+  );
+});
+
+test('archive normalization falls back to the archive year logo for missing avatars', () => {
+  const normalized = programData.normalizeArchiveProgram(
+    {
+      year: '2025',
+      speakers: [{ slug: 'archive-speaker', name: 'Archive Speaker', presentationRefs: [] }],
+      presentations: [],
+    },
+    { year: '2025' },
+  );
+
+  assert.equal(normalized.speakers[0].avatar, '/images/brand/pnsqc-logo-2025.jpg');
+});
+
+test('archive normalization preserves explicit speaker avatar overrides', () => {
+  const normalized = programData.normalizeArchiveProgram(
+    {
+      year: '2025',
+      speakers: [
+        {
+          slug: 'archive-speaker',
+          name: 'Archive Speaker',
+          avatar: '/images/speakers/archive-speaker.jpg',
+          presentationRefs: [],
+        },
+      ],
+      presentations: [],
+    },
+    { year: '2025' },
+  );
+
+  assert.equal(normalized.speakers[0].avatar, '/images/speakers/archive-speaker.jpg');
+});
+
 test('Meetinghand normalization creates shared speakers and presentations', () => {
   const normalized = programData.normalizeMeetingHandProgram(
     {
@@ -194,11 +246,35 @@ test('Meetinghand normalization creates shared speakers and presentations', () =
   assert.equal(normalized.speakers.length, 1);
   assert.equal(normalized.presentations.length, 1);
   assert.equal(normalized.speakers[0].slug, 'jonathon-wright');
+  assert.equal(normalized.speakers[0].avatar, 'https://example.com/jonathon.png');
   assert.equal(normalized.presentations[0].slug, 'the-ai-assurance-imperative');
   assert.equal(normalized.presentations[0].presentationType, 'keynote');
   assert.equal(normalized.presentations[0].speakers[0].slug, 'jonathon-wright');
   assert.equal(normalized.speakers[0].presentations[0].title, 'The AI Assurance Imperative');
   assert.match(normalized.presentations[0].descriptionHtml, /Keynote abstract/);
+});
+
+test('Meetinghand normalization falls back to the 2026 conference logo for missing avatars', () => {
+  const normalized = programData.normalizeMeetingHandProgram(
+    {
+      data: {
+        speaker_categories: [{ id: 111, name: 'Keynote Speakers', order: 0 }],
+        speakers: [
+          {
+            id: 101,
+            firstname: 'Missing',
+            lastname: 'Avatar',
+            avatar: '',
+            event_speaker_category_id: 111,
+            publish: true,
+          },
+        ],
+      },
+    },
+    { year: '2026' },
+  );
+
+  assert.equal(normalized.speakers[0].avatar, '/images/brand/pnsqc-logo-2026.jpg');
 });
 
 test('Meetinghand normalization includes schedule-only paper presenters', () => {

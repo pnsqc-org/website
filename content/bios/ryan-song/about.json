@@ -1,0 +1,21 @@
+{
+  "slug": "ryan-song",
+  "name": "Ryan Song",
+  "profession": "Staff Test Engineer at Iterable",
+  "organization": "Iterable with over 10 years of experience in the quality engineering field",
+  "linkedin": "",
+  "homepage": "",
+  "email": "ryan.song@iterable.com",
+  "bio": "Ryan Song is a Staff Test Engineer at Iterable with over 10 years of experience in the quality engineering field. He has contributed to projects across a wide range of environments—from startups and federal/defense sectors to Fortune 50 enterprises. Ryan is passionate about automation testing and continuous integration/continuous deployment (CI/CD), with a strong focus on system optimization and operations research. He holds a degree in Industrial and Systems Engineering from Texas A&M University and is currently based in Los Angeles.",
+  "presentationRefs": [
+    {
+      "slug": "cypress-to-playwright-migration-guide",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 339,
+    "section": "Biography"
+  }
+}

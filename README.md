@@ -33,9 +33,10 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
-   2. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
-   3. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
-   4. Generates `dist/sitemap.xml` and `dist/robots.txt`
+   2. Generates archive program data in `dist/data/archive/<year>/program.json` from JSON files in `content/`
+   3. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
+   4. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
+   5. Generates `dist/sitemap.xml` and `dist/robots.txt`
 2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
 - These files in the `dist/` folder are what will be deployed to our production website.
@@ -152,8 +153,7 @@ website/
 ├── package.json
 ├── site.config.json
 ├── .agents/                  # local agent skills + scripts
-├── content/                  # markdown source material
-├── design/                   # design references
+├── content/                  # JSON archive source material
 ├── src/                      # editable site source
 │   ├── _partials/            # shared header/footer snippets
 │   └── ...
@@ -211,3 +211,24 @@ npm run audit:a11y -- --skip-build
 # Write the report to a different path
 npm run audit:a11y -- --report reports/axe-contact.json
 ```
+
+## Archives Content
+
+All "archival content" for previous conferences lives under the "content" folder at the root of this project. Author biographies are under `content/bios/<author-slug>/about.json`, while conference presentations are under `content/<year>/<presentation-slug>/about.json`. The two pieces then get linked together appropriately when showing details, depending on the detail modal's need.
+
+Archive content can be audited or regenerated from a proceedings PDF by year. The extractor discovers
+the PDF link from `src/archive/proceedings/index.html`, parses the PDF table of contents for paper
+titles, author names, and start pages, then pulls abstracts, bios, emails, links, and organization text
+from the paper pages when that data is present in the PDF.
+
+```bash
+python scripts/extract-proceedings.py --year 2025 --write
+```
+
+The extractor uses Python `pdfplumber` and writes a temporary review report to
+`pdf-report/<year>-extraction.json`. To process another year, run the same command with that year.
+Author bio `avatar` fields are optional. Omit the property to let the year-specific archive page use
+its default conference logo, or add an absolute site path in an individual JSON file as an override.
+
+During `npm run build`, the files under `content/` remain the source of truth. The canonical
+browser-facing archive payload is `dist/data/archive/<year>/program.json`.

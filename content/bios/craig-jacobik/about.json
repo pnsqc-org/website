@@ -1,0 +1,21 @@
+{
+  "slug": "craig-jacobik",
+  "name": "Craig Jacobik",
+  "profession": "experienced Data Scientist and Manager at Equinix",
+  "organization": "Equinix",
+  "linkedin": "",
+  "homepage": "",
+  "email": "cjacobik@equinix.com",
+  "bio": "Craig Jacobik is an experienced Data Scientist and Manager at Equinix, with a demonstrated history of working Information Security problems in the online advertising, financial, and healthcare industries. Craig currently leads an Information Security team at Equinix, focused on solving automation, analytics, and AI related problems. Craig has received numerous cybersecurity certifications including CISSP; SANS certificates including GSEC, GRID, and GSTRT; Security+; and CEH. Craig is a strong entrepreneurial professional with an M.S. from Georgia Tech and a B.S. from the University of Virginia. Copyright Kartikeya Sharma, Craig Jacobik 2025",
+  "presentationRefs": [
+    {
+      "slug": "graph-neural-network-based-ddos-protection-for-dat",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 293,
+    "section": "Biography"
+  }
+}

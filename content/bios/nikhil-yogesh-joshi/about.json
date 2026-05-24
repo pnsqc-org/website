@@ -1,0 +1,21 @@
+{
+  "slug": "nikhil-yogesh-joshi",
+  "name": "Nikhil Yogesh Joshi",
+  "profession": "",
+  "organization": "",
+  "linkedin": "",
+  "homepage": "",
+  "email": "nikhilyogesh.joshi@fiserv.com",
+  "bio": "Nikhil Yogesh Joshi, Director of Software Engineering based in Cumming, Georgia, brings in over 18 years of experience leading high-performing teams and delivering complex projects. His career spans multiple industries, demonstrating his expertise in automation, cloud migration, and strategic leadership.",
+  "presentationRefs": [
+    {
+      "slug": "rag-to-the-rescue-reimagining-enterprise-unit-test",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 269,
+    "section": "Biography"
+  }
+}

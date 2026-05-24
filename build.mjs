@@ -1,12 +1,27 @@
 #!/usr/bin/env node
 
-import { readFileSync, writeFileSync, statSync, readdirSync, cpSync, rmSync, existsSync } from 'fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'fs';
+import { createRequire } from 'module';
 import path, { join, relative } from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
+import { marked } from 'marked';
+
+const require = createRequire(import.meta.url);
+const programData = require('./src/js/program-data.js');
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
+const CONTENT = join(ROOT, 'content');
 
 // ── Config ──────────────────────────────────────────────────────────
 
@@ -37,8 +52,8 @@ function parseMeta(html) {
   if (!match) return {};
   const meta = {};
   for (const line of match[1].split('\n')) {
-    const m = line.match(/^\s*(\w[\w_]*)\s*:\s*(.+?)\s*$/);
-    if (m) meta[m[1]] = m[2];
+    const metaMatch = line.match(/^\s*(\w[\w_]*)\s*:\s*(.+?)\s*$/);
+    if (metaMatch) meta[metaMatch[1]] = metaMatch[2];
   }
   return meta;
 }
@@ -228,14 +243,305 @@ function wrapPrimaryContentInMain(html) {
   );
 }
 
+function markdownToHtml(markdown) {
+  const normalized = String(markdown || '')
+    .replace(/\r\n/g, '\n')
+    .trim();
+  if (!normalized) return '';
+  return String(marked.parse(normalized, { gfm: true, breaks: true })).trim();
+}
+
+function readContentJsonFile(filePath) {
+  let data;
+  try {
+    data = JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch (error) {
+    throw new Error(`Malformed JSON in ${relative(ROOT, filePath)}: ${error.message}`, {
+      cause: error,
+    });
+  }
+
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error(`Expected a JSON object in ${relative(ROOT, filePath)}`);
+  }
+
+  return data;
+}
+
+function requireString(value, filePath, label, options = {}) {
+  if (typeof value !== 'string') {
+    throw new Error(`Expected "${label}" to be a string in ${relative(ROOT, filePath)}`);
+  }
+
+  const trimmed = value.trim();
+  if (!options.allowEmpty && !trimmed) {
+    throw new Error(`Expected "${label}" to be non-empty in ${relative(ROOT, filePath)}`);
+  }
+
+  return options.allowEmpty ? trimmed : trimmed;
+}
+
+function assertSourceAssetExists(assetPath, filePath, label) {
+  if (!assetPath.startsWith('/')) {
+    throw new Error(
+      `Expected "${label}" to be an absolute site path in ${relative(ROOT, filePath)}`,
+    );
+  }
+
+  const sourcePath = join(SRC, assetPath.slice(1).replace(/\//g, path.sep));
+  if (!existsSync(sourcePath)) {
+    throw new Error(`Missing asset "${assetPath}" referenced in ${relative(ROOT, filePath)}`);
+  }
+}
+
+function optionalString(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function optionalNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+function readOptionalObject(value, filePath, label) {
+  if (value === undefined) return {};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    throw new Error(`Expected "${label}" to be an object in ${relative(ROOT, filePath)}`);
+  }
+  return value;
+}
+
+function readStringArray(value, filePath, label) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new Error(`Expected at least one "${label}" entry in ${relative(ROOT, filePath)}`);
+  }
+  return value.map((item, index) => requireString(item, filePath, `${label}[${index}]`));
+}
+
+function readPresentationRefs(value, filePath) {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) {
+    throw new Error(`Expected "presentationRefs" to be an array in ${relative(ROOT, filePath)}`);
+  }
+  return value.map((ref, index) => {
+    if (!ref || typeof ref !== 'object' || Array.isArray(ref)) {
+      throw new Error(
+        `Expected "presentationRefs[${index}]" to be an object in ${relative(ROOT, filePath)}`,
+      );
+    }
+    return {
+      slug: requireString(ref.slug, filePath, `presentationRefs[${index}].slug`),
+      year: requireString(String(ref.year ?? ''), filePath, `presentationRefs[${index}].year`),
+    };
+  });
+}
+
+function loadSharedAuthorBios() {
+  const profiles = new Map();
+  const profilesDir = join(CONTENT, 'bios');
+  if (!existsSync(profilesDir)) return profiles;
+
+  const speakerDirs = readdirSync(profilesDir, { withFileTypes: true }).filter((entry) =>
+    entry.isDirectory(),
+  );
+
+  for (const entry of speakerDirs) {
+    const filePath = join(profilesDir, entry.name, 'about.json');
+    if (!existsSync(filePath)) {
+      throw new Error(`Missing shared author bio file: ${relative(ROOT, filePath)}`);
+    }
+
+    const data = readContentJsonFile(filePath);
+    const slug = optionalString(data.slug) || entry.name;
+    const name = requireString(data.name, filePath, 'name');
+    const profession =
+      data.profession === undefined
+        ? ''
+        : requireString(data.profession, filePath, 'profession', { allowEmpty: true });
+    const avatar =
+      data.avatar === undefined
+        ? ''
+        : requireString(data.avatar, filePath, 'avatar', { allowEmpty: true });
+    const linkedin = optionalString(data.linkedin);
+    const homepage = optionalString(data.homepage);
+    const email = optionalString(data.email);
+    const organization = optionalString(data.organization);
+    const bio =
+      data.bio === undefined ? '' : requireString(data.bio, filePath, 'bio', { allowEmpty: true });
+    const presentationRefs = readPresentationRefs(data.presentationRefs, filePath);
+    const source = readOptionalObject(data.source, filePath, 'source');
+
+    if (avatar) assertSourceAssetExists(avatar, filePath, 'avatar');
+
+    profiles.set(slug, {
+      id: slug,
+      slug,
+      name,
+      profession,
+      avatar,
+      linkedin,
+      homepage,
+      email,
+      organization,
+      source,
+      bio,
+      bioHtml: markdownToHtml(bio),
+      presentationRefs,
+    });
+  }
+
+  return profiles;
+}
+
+function formatCategoryName(slug) {
+  const known = {
+    'paper-presenters': 'Paper Presenters',
+  };
+  if (known[slug]) return known[slug];
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((part) => part[0].toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function loadArchiveProgramDataForYear(year, sharedProfiles) {
+  const yearDir = join(CONTENT, year);
+  const presentationDirs = readdirSync(yearDir, { withFileTypes: true }).filter((entry) =>
+    entry.isDirectory(),
+  );
+  const speakerSlugsForYear = new Set();
+  const presentations = [];
+  const categorySlugs = new Set();
+
+  for (const entry of presentationDirs) {
+    const filePath = join(yearDir, entry.name, 'about.json');
+    if (!existsSync(filePath)) {
+      throw new Error(`Missing year presentation file: ${relative(ROOT, filePath)}`);
+    }
+
+    const data = readContentJsonFile(filePath);
+    const slug = optionalString(data.slug) || entry.name;
+    const title = requireString(data.title, filePath, 'title');
+    const abstract = requireString(data.abstract, filePath, 'abstract');
+    const presentationType = requireString(data.presentationType, filePath, 'presentationType');
+    const categorySlug = requireString(data.categorySlug, filePath, 'categorySlug');
+    const date =
+      data.date === undefined
+        ? ''
+        : requireString(data.date, filePath, 'date', { allowEmpty: true });
+    const start =
+      data.start === undefined
+        ? ''
+        : requireString(data.start, filePath, 'start', { allowEmpty: true });
+    const end =
+      data.end === undefined ? '' : requireString(data.end, filePath, 'end', { allowEmpty: true });
+    const location =
+      data.location === undefined
+        ? ''
+        : requireString(data.location, filePath, 'location', { allowEmpty: true });
+    const order = optionalNumber(data.order);
+    const source = readOptionalObject(data.source, filePath, 'source');
+    const speakerSlugs = readStringArray(data.speakerSlugs, filePath, 'speakerSlugs');
+
+    speakerSlugs.forEach((speakerSlug) => {
+      if (!sharedProfiles.has(speakerSlug)) {
+        throw new Error(
+          `Missing shared author bio for "${speakerSlug}" referenced by ${relative(
+            ROOT,
+            filePath,
+          )}`,
+        );
+      }
+      speakerSlugsForYear.add(speakerSlug);
+    });
+    categorySlugs.add(categorySlug);
+
+    const presentation = {
+      id: slug,
+      slug,
+      title,
+      abstract,
+      abstractHtml: markdownToHtml(abstract),
+      descriptionHtml: markdownToHtml(abstract),
+      presentationType,
+      categorySlug,
+      date,
+      start,
+      end,
+      location,
+      source,
+      speakerSlugs,
+    };
+    if (order !== null) presentation.order = order;
+    presentations.push(presentation);
+  }
+
+  const speakers = Array.from(speakerSlugsForYear)
+    .sort()
+    .map((speakerSlug) => {
+      const sharedProfile = sharedProfiles.get(speakerSlug);
+      return {
+        ...sharedProfile,
+        presentationRefs: sharedProfile.presentationRefs.filter(
+          (ref) => String(ref.year) === String(year),
+        ),
+      };
+    });
+  const rawProgram = {
+    year,
+    source: 'archive',
+    categories: Array.from(categorySlugs)
+      .sort()
+      .map((slug) => ({
+        id: null,
+        slug,
+        name: formatCategoryName(slug),
+      })),
+    speakers,
+    presentations,
+  };
+
+  return programData.serializeProgram(programData.normalizeArchiveProgram(rawProgram, { year }));
+}
+
+function buildArchiveProgramData() {
+  if (!existsSync(CONTENT)) return;
+
+  const sharedProfiles = loadSharedAuthorBios();
+  if (!sharedProfiles.size) return;
+
+  const yearDirs = readdirSync(CONTENT, { withFileTypes: true }).filter(
+    (entry) => entry.isDirectory() && entry.name !== 'bios' && entry.name !== 'speakers',
+  );
+
+  for (const entry of yearDirs) {
+    const program = loadArchiveProgramDataForYear(entry.name, sharedProfiles);
+    const { speakers, presentations } = program;
+    if (!speakers.length && !presentations.length) continue;
+
+    const targetDir = join(DIST, 'data', 'archive', entry.name);
+    mkdirSync(targetDir, { recursive: true });
+
+    writeFileSync(join(targetDir, 'program.json'), JSON.stringify(program, null, 2) + '\n');
+
+    console.log(
+      `  data/archive/${entry.name}/program.json  (${presentations.length} presentations)`,
+    );
+  }
+}
+
 // ── Generate sitemap.xml ────────────────────────────────────────────
 
 function generateSitemap(files, config, targetDir) {
-  const sitemapFiles = files.filter((f) => relative(targetDir, f) !== '404.html');
-  const urls = sitemapFiles.map((f) => {
-    const rel = relative(targetDir, f).split(path.sep).join('/');
+  const sitemapFiles = files.filter((file) => {
+    const rel = relative(targetDir, file).split(path.sep).join('/');
+    return rel !== '404.html' && !rel.split('/').some((segment) => segment.startsWith('_'));
+  });
+  const urls = sitemapFiles.map((file) => {
+    const rel = relative(targetDir, file);
     const urlPath = '/' + rel.replace(/index\.html$/, '').replace(/\.html$/, '');
-    const lastmod = statSync(f).mtime.toISOString().split('T')[0];
+    const lastmod = statSync(file).mtime.toISOString().split('T')[0];
     return `  <url>\n    <loc>${config.baseUrl}${urlPath}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`;
   });
 
@@ -253,7 +559,7 @@ function generateSitemap(files, config, targetDir) {
 // ── Generate robots.txt ─────────────────────────────────────────────
 
 function generateRobotsTxt(config, targetDir) {
-  const content = `User-agent: *\n` + `Allow: /\n\n` + `Sitemap: ${config.baseUrl}/sitemap.xml\n`;
+  const content = `User-agent: *\nAllow: /\n\nSitemap: ${config.baseUrl}/sitemap.xml\n`;
   writeFileSync(join(targetDir, 'robots.txt'), content);
   console.log('  robots.txt');
 }
@@ -283,14 +589,17 @@ function assembleDist() {
 
 function main() {
   // Step 1: Copy src/ to dist/
-  console.log('\nbuild.mjs — assembling dist/\n');
+  console.log('\nbuild.mjs -> assembling dist/\n');
   assembleDist();
+
+  console.log('build.mjs -> generating archive program data\n');
+  buildArchiveProgramData();
 
   // Step 2: Process HTML files in dist/ (NOT src/)
   const config = loadConfig();
   const files = findHtmlFiles(DIST); // Find HTML in dist/, not src/
 
-  console.log(`\nbuild.mjs — processing ${files.length} HTML file(s) in dist/\n`);
+  console.log(`\nbuild.mjs -> processing ${files.length} HTML file(s) in dist/\n`);
 
   for (const file of files) {
     let html = readFileSync(file, 'utf8');
@@ -314,4 +623,8 @@ function main() {
   console.log('\ndone.\n');
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main();
+}
+
+export { buildArchiveProgramData, loadArchiveProgramDataForYear, loadSharedAuthorBios };

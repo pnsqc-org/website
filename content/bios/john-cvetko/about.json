@@ -1,0 +1,21 @@
+{
+  "slug": "john-cvetko",
+  "name": "John Cvetko",
+  "profession": "",
+  "organization": "PNSQC",
+  "linkedin": "",
+  "homepage": "",
+  "email": "john.cvetko@pnsqc.org",
+  "bio": "John Cvetko works with companies and government agencies to improve their organizations by helping them manage the IT challenges they face. He focuses on applying state of the art solutions that support business goals and objectives. For the last 12 years he has primarily worked with state governments assessing and modernizing large enterprise software systems. He has worked with the state governments of Washington, Oregon, Colorado, North Carolina, North Dakota, and Utah. He has consulted for firms such as Gartner, Boeing, and MAXIMUS, and earlier in his career he has held program and systems engineering management positions at Tektronix, PGE/Enron and ASCOM.",
+  "presentationRefs": [
+    {
+      "slug": "from-technical-roles-to-enterprise-impact-professi",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 145,
+    "section": "Biography"
+  }
+}

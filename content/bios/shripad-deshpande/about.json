@@ -1,0 +1,21 @@
+{
+  "slug": "shripad-deshpande",
+  "name": "Shripad Deshpande",
+  "profession": "Senior QA Engineering Manager at a large social media company, leading GenAI QA efforts",
+  "organization": "",
+  "linkedin": "",
+  "homepage": "",
+  "email": "Shripad.Deshpande18@gmail.com",
+  "bio": "Shripad Deshpande is a Senior QA Engineering Manager at a large social media company, leading GenAI QA efforts. He is an AI for QA enthusiast, with a strong focus on efficiency.",
+  "presentationRefs": [
+    {
+      "slug": "layout-validation-using-generative-ai-a-new-approa",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 37,
+    "section": "Biography"
+  }
+}

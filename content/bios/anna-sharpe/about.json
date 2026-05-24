@@ -1,0 +1,21 @@
+{
+  "slug": "anna-sharpe",
+  "name": "Anna Sharpe",
+  "profession": "",
+  "organization": "Agile principles",
+  "linkedin": "",
+  "homepage": "",
+  "email": "asharpe213@gmail.com",
+  "bio": "I graduated with a BS in computer science from Whitworth University in 2014 and started my career as an intern test engineer in 2012. I am now a full time software test engineer with a part-time passion for writing websites for non-profits. This is my second paper for PNSQC and along with attending the conference six times over the years, I have also presented a poster for PNSQC. I am thoroughly invested in continuing to add new tools to my testing toolbox and sharing my experiences with my teammates. I am currently employed remotely out of Sacramento, Ca working with healthcare software.",
+  "presentationRefs": [
+    {
+      "slug": "a-deep-dive-into-exploratory-testing",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 324,
+    "section": "Biography"
+  }
+}

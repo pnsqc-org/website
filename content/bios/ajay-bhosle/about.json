@@ -1,0 +1,21 @@
+{
+  "slug": "ajay-bhosle",
+  "name": "Ajay Bhosle",
+  "profession": "Technical Account Manager at Accenture",
+  "organization": "Accenture",
+  "linkedin": "",
+  "homepage": "",
+  "email": "ajaybhosle.sre.data1@gmail.com",
+  "bio": "Ajay Bhosle is a Technical Account Manager at Accenture, based in Houston, Texas, with over 20 years of IT experience across technology, consulting, management & operations supporting innovative cloud & AI-based product development & operations for health care, Oil & Gas, BFSI clients, with strong roots in software architecture, data & AI engineering.",
+  "presentationRefs": [
+    {
+      "slug": "rag-to-the-rescue-reimagining-enterprise-unit-test",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 269,
+    "section": "Biography"
+  }
+}

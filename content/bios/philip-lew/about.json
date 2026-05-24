@@ -1,0 +1,21 @@
+{
+  "slug": "philip-lew",
+  "name": "Philip Lew",
+  "profession": "",
+  "organization": "PNSQC",
+  "linkedin": "",
+  "homepage": "",
+  "email": "philip.lew@xbosoft.com",
+  "bio": "Philip Lew is CEO of XBOSoft, a software quality assurance and testing services company. With over 25 years of experience, he has advised organizations worldwide on improving software quality through better processes, metrics, and leadership. Philip is a frequent keynote speaker and workshop leader at PNSQC, SOFTEC, STAREAST, STARWEST, and the QA&Test Conference, as well as other international quality forums. His current focus is on integrating AI into testing practices and helping teams balance speed, cost, and quality without compromising customer trust.",
+  "presentationRefs": [
+    {
+      "slug": "is-the-iron-triangle-dead-in-software-development",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 155,
+    "section": "Biographies"
+  }
+}

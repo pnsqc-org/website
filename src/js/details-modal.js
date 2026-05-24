@@ -56,14 +56,62 @@
   const createModalControllerFromRoot = (modal, prefix) =>
     createModalController(buildModalRefs(modal, prefix));
 
+  const createDetailsModalShell = () => {
+    if (!document.body) return null;
+
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 hidden';
+    modal.setAttribute('data-details-modal', '');
+    modal.innerHTML = `
+      <div class="modal-backdrop" data-details-modal-backdrop></div>
+      <div class="modal-shell">
+        <div
+          class="modal-panel modal-panel--solid"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="details-modal-title"
+          data-details-modal-panel
+        >
+          <div class="modal-header">
+            <div>
+              <p class="modal-label" data-details-modal-label>Details</p>
+              <h3 id="details-modal-title" class="modal-title" data-details-modal-title>
+                Details
+              </h3>
+            </div>
+            <button
+              type="button"
+              class="modal-close"
+              aria-label="Close details"
+              data-details-modal-close
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M6 6l12 12M18 6 6 18"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="modal-body" data-details-modal-body></div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    return modal;
+  };
+
   window.PNSQCModal = {
     ...(window.PNSQCModal || {}),
     buildModalRefs,
     createModalController,
     createModalControllerFromRoot,
+    createDetailsModalShell,
   };
 
-  const detailsModal = document.querySelector('[data-details-modal]');
+  const detailsModal = document.querySelector('[data-details-modal]') || createDetailsModalShell();
   const modalController = createModalControllerFromRoot(detailsModal, 'details-modal');
   if (!modalController) return;
 

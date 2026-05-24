@@ -1,0 +1,21 @@
+{
+  "slug": "kartikeya-sharma",
+  "name": "Kartikeya Sharma",
+  "profession": "Senior Associate Information Security Engineer at Equinix",
+  "organization": "Equinix",
+  "linkedin": "",
+  "homepage": "",
+  "email": "karsharma@equinix.com",
+  "bio": "Kartikeya Sharma is a Senior Associate Information Security Engineer at Equinix, based in Seattle. He holds an M.S. in Computer Science from the University of Oregon, where he researched Graph Neural Networks for spam detection. His interests include scalable security analytics and adversarial ML, and he frequently speaks at leading cybersecurity conferences.",
+  "presentationRefs": [
+    {
+      "slug": "graph-neural-network-based-ddos-protection-for-dat",
+      "year": "2025"
+    }
+  ],
+  "source": {
+    "proceedings": "pnsqc2025.pdf",
+    "page": 293,
+    "section": "Biography"
+  }
+}

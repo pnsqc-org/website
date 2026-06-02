@@ -151,6 +151,12 @@
     statusEl.hidden = !text;
   };
 
+  const setTierSectionsVisible = (isVisible) => {
+    tierSections.forEach(({ section }) => {
+      section.hidden = !isVisible;
+    });
+  };
+
   const getSponsorName = (sponsor) =>
     normalizeSpace(sponsor?.title) || normalizeSpace(sponsor?.name) || 'Sponsor';
 
@@ -338,6 +344,7 @@
     if (tier.emptyState) tier.emptyState.hidden = false;
   };
 
+  setTierSectionsVisible(false);
   setStatus('Loading sponsors...');
 
   fetch(endpoint)
@@ -385,6 +392,7 @@
         if (tier.emptyState) tier.emptyState.hidden = sponsors.length > 0;
       });
 
+      setTierSectionsVisible(true);
       setStatus('');
     })
     .catch(() => {

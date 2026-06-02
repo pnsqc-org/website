@@ -312,7 +312,8 @@
 
         <!-- About Dropdown -->
         <div class="relative group" data-dropdown-root>
-          <button
+          <a
+            href="/about/"
             class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg flex items-center gap-1"
           >
             About
@@ -324,7 +325,7 @@
                 d="M19 9l-7 7-7-7"
               />
             </svg>
-          </button>
+          </a>
           <!-- Dropdown Menu -->
           <div
             class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
@@ -339,9 +340,9 @@
 
               <!-- Governance with nested submenu -->
               <div class="relative group/governance" data-submenu-root>
-                <a
-                  href="/about/governance/"
-                  class="flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
+                <button
+                  type="button"
+                  class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
                 >
                   Governance
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,7 +353,7 @@
                       d="M9 5l7 7-7 7"
                     />
                   </svg>
-                </a>
+                </button>
                 <!-- Nested Submenu -->
                 <div
                   class="absolute left-full top-0 ml-1 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/governance:opacity-100 group-hover/governance:visible transition-all duration-200"
@@ -413,7 +414,7 @@
               <a
                 href="/about/contact/"
                 class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                >Contact</a
+                >Contact Us</a
               >
             </div>
           </div>
@@ -791,26 +792,38 @@
 
         <!-- About Section (Expandable) -->
         <div>
-          <button
-            id="mobile-about-toggle"
-            class="header-nav-item-mobile w-full flex items-center justify-between px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg"
+          <div
+            class="header-nav-item-mobile w-full flex items-center justify-between rounded-lg text-pnsqc-slate transition-colors"
           >
-            <span>About</span>
-            <svg
-              id="mobile-about-chevron"
-              class="w-4 h-4 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+            <a
+              href="/about/"
+              class="flex-1 px-3 py-2 hover:text-white transition-colors rounded-l-lg hover:bg-white/5"
+              >About</a
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
+            <button
+              id="mobile-about-toggle"
+              class="px-3 py-2 hover:text-white transition-colors rounded-r-lg hover:bg-white/5"
+              type="button"
+              aria-label="Toggle About menu"
+              aria-controls="mobile-about-submenu"
+              aria-expanded="false"
+            >
+              <svg
+                id="mobile-about-chevron"
+                class="w-4 h-4 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
           <div id="mobile-about-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
             <a
               href="/about/board_organization/"
@@ -841,11 +854,6 @@
                 </svg>
               </button>
               <div id="mobile-governance-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-                <a
-                  href="/about/governance/"
-                  class="px-3 py-2 text-sm text-pnsqc-cyan hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                  >Overview</a
-                >
                 <a
                   href="/about/governance/code-of-conduct/"
                   class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
@@ -899,7 +907,7 @@
             <a
               href="/about/contact/"
               class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-              >Contact</a
+              >Contact Us</a
             >
           </div>
         </div>
@@ -1075,8 +1083,9 @@
 
       if (mobileAboutToggle && mobileAboutSubmenu && mobileAboutChevron) {
         mobileAboutToggle.addEventListener('click', () => {
-          mobileAboutSubmenu.classList.toggle('hidden');
-          mobileAboutChevron.classList.toggle('rotate-180');
+          const isOpen = mobileAboutSubmenu.classList.toggle('hidden') === false;
+          mobileAboutChevron.classList.toggle('rotate-180', isOpen);
+          mobileAboutToggle.setAttribute('aria-expanded', String(isOpen));
         });
       }
 

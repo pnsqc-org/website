@@ -1,16 +1,16 @@
-import test from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import { readdirSync } from 'node:fs';
 import path, { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 
-import { loadArchiveProgramDataForYear, loadSharedAuthorBios } from '../build.mjs';
+import { loadArchiveProgramDataForYear, loadSharedAuthorBios } from '../../build.mjs';
 
 const require = createRequire(import.meta.url);
-const { assignGeneratedSlugs, slugify } = require('../src/js/program-slugs.js');
-const programData = require('../src/js/program-data.js');
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const { assignGeneratedSlugs, slugify } = require('../../src/js/program-slugs.js');
+const programData = require('../../src/js/program-data.js');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CONTENT = join(ROOT, 'content');
 
 test('slugify creates readable speaker and presentation slugs', () => {
@@ -252,6 +252,64 @@ test('Meetinghand normalization creates shared speakers and presentations', () =
   assert.equal(normalized.presentations[0].speakers[0].slug, 'jonathon-wright');
   assert.equal(normalized.speakers[0].presentations[0].title, 'The AI Assurance Imperative');
   assert.match(normalized.presentations[0].descriptionHtml, /Keynote abstract/);
+});
+
+test('Meetinghand normalization supports top-level speaker details and presentations', () => {
+  const normalized = programData.normalizeMeetingHandProgram(
+    {
+      data: {
+        speaker_categories: [
+          { id: 111, name: 'Keynote Speakers', order: 0 },
+          { id: 104, name: 'Invited Speakers / Special Guests', order: 1 },
+        ],
+        speakers: [
+          {
+            id: 5259,
+            firstname: 'Jonathon',
+            lastname: 'Wright',
+            avatar: 'https://example.com/jonathon.png',
+            event_speaker_category_id: 111,
+            order: 0,
+            profession: 'Chief AI Officer',
+            publish: true,
+            homepage: 'https://jonathon.example',
+            linkedin: 'https://linkedin.example/jonathon',
+            short_bio: 'Jonathon top-level bio.',
+            presentations: [
+              {
+                id: 5342,
+                title: 'The AI Assurance Imperative',
+                session: {
+                  order: 1,
+                  session: {
+                    id: 13531,
+                    day: { date: '2026-10-12T00:00:00.000000Z' },
+                    start: '08:00',
+                    end: '09:00',
+                    title: 'Opening Keynote',
+                    description:
+                      '<p>The AI Assurance Imperative:</p><blockquote><p>Keynote abstract.</p></blockquote>',
+                    location: 'Ballroom',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+    { year: '2026' },
+  );
+  const keynotes = programData.getProgramCategoryConfig('keynotes-invited-speakers', '2026');
+
+  assert.equal(normalized.speakers[0].bio, 'Jonathon top-level bio.');
+  assert.equal(normalized.speakers[0].homepage, 'https://jonathon.example');
+  assert.equal(normalized.presentations.length, 1);
+  assert.equal(normalized.presentations[0].presentationType, 'keynote');
+  assert.deepEqual(
+    programData.selectPresentations(normalized, keynotes).map((item) => item.slug),
+    ['the-ai-assurance-imperative'],
+  );
 });
 
 test('Meetinghand normalization falls back to the 2026 conference logo for missing avatars', () => {

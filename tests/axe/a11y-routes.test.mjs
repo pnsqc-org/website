@@ -1,7 +1,7 @@
-import test from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 
-import { normalizeRoutes } from '../axe/axe-audit.mjs';
+import { normalizeRoutes } from '../../axe/axe-audit.mjs';
 
 test('normalizeRoutes preserves standard site routes', () => {
   assert.deepEqual(normalizeRoutes('/about/contact/'), ['/about/contact/']);

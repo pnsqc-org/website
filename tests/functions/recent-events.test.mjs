@@ -1,9 +1,9 @@
-import test from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
 
-import { parseLumaMap } from '../functions/_lib/luma-map.mjs';
-import { buildMeetupJwt, fetchMeetupRecentEvents } from '../functions/_lib/meetup-api.mjs';
+import { parseLumaMap } from '../../functions/_lib/luma-map.mjs';
+import { buildMeetupJwt, fetchMeetupRecentEvents } from '../../functions/_lib/meetup-api.mjs';
 import {
   formatEventDateLine,
   normalizeMeetupEvent,
@@ -13,7 +13,7 @@ import {
   renderRecentEventsMarkup,
   sanitizeDescriptionHtml,
   selectRecentEvents,
-} from '../functions/_lib/recent-events.mjs';
+} from '../../functions/_lib/recent-events.mjs';
 
 function createEvent(id, dateTime, map = {}) {
   return {

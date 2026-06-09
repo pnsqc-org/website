@@ -237,11 +237,20 @@
   function getPresenterDetails(presenter) {
     if (!presenter || typeof presenter !== 'object') return {};
     const numericKey = Object.keys(presenter).find((key) => /^\d+$/.test(key));
-    if (numericKey && presenter[numericKey] && typeof presenter[numericKey] === 'object') {
-      return presenter[numericKey];
-    }
-    if (presenter.details && typeof presenter.details === 'object') return presenter.details;
-    return {};
+    const presenterFields = Object.fromEntries(
+      Object.entries(presenter).filter(([key]) => key !== 'details' && !/^\d+$/.test(key)),
+    );
+    const details =
+      presenter.details && typeof presenter.details === 'object' ? presenter.details : {};
+    const numericDetails =
+      numericKey && presenter[numericKey] && typeof presenter[numericKey] === 'object'
+        ? presenter[numericKey]
+        : {};
+    return {
+      ...presenterFields,
+      ...details,
+      ...numericDetails,
+    };
   }
 
   function getMeetingHandSpeakerName(speaker) {

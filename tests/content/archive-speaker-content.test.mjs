@@ -1,10 +1,10 @@
-import test from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path, { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const CONTENT = join(ROOT, 'content');
 const BIOS = join(CONTENT, 'bios');
 const ARCHIVE_2025 = join(CONTENT, '2025');

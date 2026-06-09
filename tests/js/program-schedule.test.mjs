@@ -1,10 +1,10 @@
-import test from 'node:test';
+import { test } from 'vitest';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const programData = require('../src/js/program-data.js');
-const schedule = require('../src/js/program-schedule.js');
+const programData = require('../../src/js/program-data.js');
+const schedule = require('../../src/js/program-schedule.js');
 
 test('schedule utilities parse times and format day labels', () => {
   assert.equal(schedule.TimeUtils.parseTimeToMinutes('09:30'), 570);

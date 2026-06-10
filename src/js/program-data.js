@@ -36,6 +36,8 @@
   const WORKSHOP_DATES = {
     2026: '2026-10-14',
   };
+  const PANELS_SESSION_TITLE = 'Panels';
+  const PANELS_CATEGORY_SLUG = 'panels';
 
   const CATEGORY_CONFIGS = {
     'keynotes-invited-speakers': {
@@ -48,8 +50,15 @@
       errorText: 'Speakers will be announced soon.',
       emptyText: 'More speakers to be announced.',
       filters: {
-        includeCategoryIds: [111, 104],
-        excludeWorkshopDate: true,
+        anyOf: [
+          {
+            includeCategoryIds: [111, 104],
+            excludeWorkshopDate: true,
+          },
+          {
+            includeScheduleSessionTitles: [PANELS_SESSION_TITLE],
+          },
+        ],
       },
       sections: [
         {
@@ -66,6 +75,15 @@
           categoryIds: [104],
           headingClass: 'text-pnsqc-cyan',
         },
+        {
+          key: 'panels',
+          title: 'Panels',
+          label: 'Panel',
+          categorySlugs: [PANELS_CATEGORY_SLUG],
+          scheduleSessionTitles: [PANELS_SESSION_TITLE],
+          emptyText: 'Panels will be announced soon.',
+          headingClass: 'text-pnsqc-gold',
+        },
       ],
     },
     workshops: {
@@ -79,6 +97,8 @@
       emptyText: 'Workshop speakers will be announced soon.',
       filters: {
         includeWorkshopDate: true,
+        excludePresentationTypes: ['panel'],
+        excludeScheduleSessionTitles: [PANELS_SESSION_TITLE],
       },
       sections: [
         {
@@ -648,6 +668,8 @@
         const sessionEnd = normalizeSpace(session?.end || '');
         const sessionLocation = normalizeSpace(session?.location || '');
         const sessionTitle = normalizeSpace(session?.title || '');
+        const isPanelSession = titleMatches(sessionTitle, [PANELS_SESSION_TITLE]);
+        const sessionAbstractMap = extractAbstractMap(session?.description || '');
 
         asArray(session?.items).forEach((item) => {
           const rawPresentation = item?.presentation;
@@ -664,8 +686,20 @@
             categorySlug: explicitType === 'paper' ? 'paper-presenters' : '',
             explicitType,
           });
-          const categorySlug = presentationType === 'paper' ? 'paper-presenters' : '';
+          const normalizedPresentationType = isPanelSession ? 'panel' : presentationType;
+          const categorySlug =
+            normalizedPresentationType === 'panel'
+              ? PANELS_CATEGORY_SLUG
+              : normalizedPresentationType === 'paper'
+                ? 'paper-presenters'
+                : '';
           const submissionId = getScheduleItemSubmissionId(item);
+          const fallbackAbstractHtml = sessionAbstractMap.get(normalizeCompareText(title)) || '';
+          const source = compactRecord({
+            eventSpeakerPresentationId: normalizeSpace(item?.event_speaker_presentation_id || ''),
+            scheduleItemId: normalizeSpace(item?.id ?? ''),
+            scheduleSessionTitle: sessionTitle,
+          });
           const existingGroup = getSchedulePresentationGroupMatch(presentationsWithSlugs, {
             title,
             date,
@@ -677,14 +711,15 @@
               id: String(rawPresentation?.id ?? item?.id ?? title),
               slug: getUniqueSlug(title, usedPresentationSlugs, 'presentation'),
               title,
-              abstract: '',
-              abstractHtml: '',
-              descriptionHtml: '',
-              presentationType,
+              abstract: stripHtml(fallbackAbstractHtml),
+              abstractHtml: fallbackAbstractHtml,
+              descriptionHtml: fallbackAbstractHtml,
+              presentationType: normalizedPresentationType,
               categoryId: null,
               categorySlug,
               label: sessionTitle,
               submissionId,
+              scheduleSessionTitle: sessionTitle,
               date,
               start: sessionStart,
               end: sessionEnd,
@@ -693,18 +728,37 @@
               sortOrder: Number(item?.order ?? Number.MAX_SAFE_INTEGER),
               speakerSlugs: [],
               speakers: [],
+              source,
             });
 
           if (!existingGroup) presentationsWithSlugs.push(group);
+          if (!group.abstract && fallbackAbstractHtml)
+            group.abstract = stripHtml(fallbackAbstractHtml);
+          if (!group.abstractHtml && fallbackAbstractHtml)
+            group.abstractHtml = fallbackAbstractHtml;
+          if (!group.descriptionHtml && fallbackAbstractHtml)
+            group.descriptionHtml = fallbackAbstractHtml;
           if (!group.date && date) group.date = date;
           if (!group.start && sessionStart) group.start = sessionStart;
           if (!group.end && sessionEnd) group.end = sessionEnd;
           if (!group.location && sessionLocation) group.location = sessionLocation;
           if (!group.label && sessionTitle) group.label = sessionTitle;
-          if (!group.categorySlug && categorySlug) group.categorySlug = categorySlug;
+          if (!group.scheduleSessionTitle && sessionTitle)
+            group.scheduleSessionTitle = sessionTitle;
+          if (isPanelSession) {
+            group.categorySlug = PANELS_CATEGORY_SLUG;
+            group.presentationType = 'panel';
+            group.scheduleSessionTitle = sessionTitle;
+          } else if (!group.categorySlug && categorySlug) {
+            group.categorySlug = categorySlug;
+          }
           if (!group.submissionId && submissionId) group.submissionId = submissionId;
-          if (!group.presentationType && presentationType)
-            group.presentationType = presentationType;
+          if (!group.presentationType && normalizedPresentationType)
+            group.presentationType = normalizedPresentationType;
+          if (!group.source || typeof group.source !== 'object') group.source = {};
+          Object.entries(source).forEach(([key, value]) => {
+            if (!group.source[key]) group.source[key] = value;
+          });
 
           getSchedulePresentationSpeakerCandidates(rawPresentation).forEach((rawSpeaker) => {
             const speaker = ensureScheduleSpeaker(rawSpeaker);
@@ -864,6 +918,7 @@
       categorySlug: presentation.categorySlug,
       label: presentation.label,
       submissionId: presentation.submissionId,
+      scheduleSessionTitle: presentation.scheduleSessionTitle,
       date: presentation.date,
       start: presentation.start,
       end: presentation.end,
@@ -958,6 +1013,7 @@
       categorySlug: presentation?.categorySlug,
       label: presentation?.label,
       submissionId: presentation?.submissionId,
+      scheduleSessionTitle: presentation?.scheduleSessionTitle,
       date: presentation?.date,
       start: presentation?.start,
       end: presentation?.end,
@@ -1034,6 +1090,18 @@
     return slugsToExclude.includes(normalizeSpace(value));
   }
 
+  function titleMatches(value, titlesToMatch) {
+    if (!titlesToMatch || !titlesToMatch.length) return true;
+    const normalized = normalizeSpace(value);
+    return titlesToMatch.some((title) => normalizeSpace(title) === normalized);
+  }
+
+  function titleExcluded(value, titlesToExclude) {
+    if (!titlesToExclude || !titlesToExclude.length) return false;
+    const normalized = normalizeSpace(value);
+    return titlesToExclude.some((title) => normalizeSpace(title) === normalized);
+  }
+
   function resolveDateFilters(filters, year) {
     const workshopDate = getWorkshopDate(year);
     const includeDates = asArray(filters.includeDates).map(extractDateKey).filter(Boolean);
@@ -1043,14 +1111,19 @@
     return { includeDates, excludeDates };
   }
 
-  function presentationMatchesFilters(presentation, filters = {}, year = '') {
+  function presentationMatchesBaseFilters(presentation, filters = {}, year = '') {
     const { includeDates, excludeDates } = resolveDateFilters(filters, year);
     const date = extractDateKey(presentation.date || '');
+    const scheduleSessionTitle =
+      normalizeSpace(presentation.scheduleSessionTitle || '') ||
+      normalizeSpace(presentation.source?.scheduleSessionTitle || '');
 
     if (!idsMatch(presentation.categoryId, filters.includeCategoryIds)) return false;
     if (idsExcluded(presentation.categoryId, filters.excludeCategoryIds)) return false;
     if (!slugsMatch(presentation.categorySlug, filters.includeCategorySlugs)) return false;
     if (slugsExcluded(presentation.categorySlug, filters.excludeCategorySlugs)) return false;
+    if (!titleMatches(scheduleSessionTitle, filters.includeScheduleSessionTitles)) return false;
+    if (titleExcluded(scheduleSessionTitle, filters.excludeScheduleSessionTitles)) return false;
     if (
       filters.includePresentationTypes?.length &&
       !filters.includePresentationTypes.includes(presentation.presentationType)
@@ -1066,6 +1139,18 @@
     if (includeDates.length && !includeDates.includes(date)) return false;
     if (excludeDates.length && excludeDates.includes(date)) return false;
     return true;
+  }
+
+  function presentationMatchesFilters(presentation, filters = {}, year = '') {
+    const anyOf = asArray(filters.anyOf);
+    if (!anyOf.length) return presentationMatchesBaseFilters(presentation, filters, year);
+
+    const baseFilters = { ...filters };
+    delete baseFilters.anyOf;
+    return (
+      presentationMatchesBaseFilters(presentation, baseFilters, year) &&
+      anyOf.some((filterOption) => presentationMatchesBaseFilters(presentation, filterOption, year))
+    );
   }
 
   function selectPresentations(program, config) {
@@ -1095,6 +1180,9 @@
   }
 
   function sectionMatchesPresentation(section, presentation) {
+    const scheduleSessionTitle =
+      normalizeSpace(presentation.scheduleSessionTitle || '') ||
+      normalizeSpace(presentation.source?.scheduleSessionTitle || '');
     if (
       section.categoryIds?.length &&
       !section.categoryIds.includes(toNullableNumber(presentation.categoryId))
@@ -1105,6 +1193,9 @@
       section.categorySlugs?.length &&
       !section.categorySlugs.includes(presentation.categorySlug)
     ) {
+      return false;
+    }
+    if (!titleMatches(scheduleSessionTitle, section.scheduleSessionTitles)) {
       return false;
     }
     return true;

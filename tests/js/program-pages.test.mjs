@@ -212,6 +212,64 @@ test('program directory renders speaker sections and hydrates lazy submission de
   );
 });
 
+test('program directory hydrates non-paper presentations with submission details', async () => {
+  const config = {
+    cardType: 'presentation',
+    defaultLabel: 'Panel',
+    emptyText: 'Empty default',
+    errorText: 'Program unavailable.',
+    loadingText: 'Loading speakers...',
+    sections: [{ key: 'panels', title: 'Panels', label: 'Panel' }],
+    slug: 'keynotes-invited-speakers',
+  };
+  const presentation = {
+    id: 'panel-1',
+    slug: 'panel-1',
+    title: 'Lazy Panel',
+    presentationType: 'panel',
+    submissionId: 'panel-sub-1',
+    abstractHtml: '',
+    speakers: [{ name: 'Panel Speaker', bio: '', bioHtml: '' }],
+  };
+  const { data } = installProgramGlobals({
+    loadProgram: vi.fn(() => Promise.resolve({ presentations: [presentation] })),
+    parseProgramListRoute: vi.fn(() => ({
+      config,
+      source: 'conference',
+      year: '2026',
+    })),
+    selectProgramItems: vi.fn(() => [presentation]),
+  });
+  resetDom(
+    `
+      <div data-program-directory>
+        <p data-program-status></p>
+        <div data-program-sections></div>
+        <div data-program-templates></div>
+      </div>
+    `,
+    'https://www.pnsqc.org/conference/2026/keynotes-invited-speakers/',
+  );
+
+  await importFreshSrcModule('program-directory.js');
+  await flushPromises();
+
+  const root = document.querySelector('[data-program-directory]');
+  const trigger = root.querySelector('[data-program-submission-trigger="true"]');
+  assert.ok(trigger);
+
+  trigger.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  await flushPromises();
+  await flushPromises();
+
+  assert.equal(data.loadMeetingHandSubmission.mock.calls[0][0].id, 'panel-sub-1');
+  assert.equal(data.mergeMeetingHandSubmissionDetail.mock.calls.length, 1);
+  assert.match(
+    document.getElementById(trigger.getAttribute('data-details-modal-open')).innerHTML,
+    /Hydrated abstract/,
+  );
+});
+
 test('program directory renders presentation cards, empty states, and load errors', async () => {
   const config = {
     cardType: 'presentation',
@@ -427,17 +485,17 @@ test('program detail page renders and hydrates conference speakers and presentat
   );
 
   const presentation = {
-    slug: 'paper',
-    title: 'Paper Title',
-    presentationType: 'paper',
-    submissionId: 'sub-2',
+    slug: 'panel',
+    title: 'Panel Title',
+    presentationType: 'panel',
+    submissionId: 'panel-sub-2',
     abstractHtml: '',
     speakers: [{ name: 'Speaker One', bio: '', bioHtml: '' }],
   };
-  installProgramGlobals({
+  const { data: panelDetailData } = installProgramGlobals({
     loadProgram: vi.fn(() =>
       Promise.resolve({
-        presentationBySlug: new Map([['paper', presentation]]),
+        presentationBySlug: new Map([['panel', presentation]]),
         speakerBySlug: new Map(),
       }),
     ),
@@ -457,7 +515,7 @@ test('program detail page renders and hydrates conference speakers and presentat
         <div data-program-detail-content></div>
       </div>
     `,
-    'https://www.pnsqc.org/conference/2026/presentation?name=paper',
+    'https://www.pnsqc.org/conference/2026/presentation?name=panel',
   );
   document.title = 'PNSQC';
 
@@ -465,7 +523,8 @@ test('program detail page renders and hydrates conference speakers and presentat
   await flushPromises();
   await flushPromises();
 
-  assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Paper Title');
+  assert.equal(panelDetailData.loadMeetingHandSubmission.mock.calls[0][0].id, 'panel-sub-2');
+  assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Panel Title');
   assert.equal(document.querySelector('[data-program-detail-subtitle]').textContent, 'Speaker One');
 });
 

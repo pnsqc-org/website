@@ -87,7 +87,6 @@
         );
 
   const presentationNeedsSubmissionDetail = (presentation, speaker) =>
-    presentation?.presentationType === 'paper' &&
     !!getSubmissionId(presentation) &&
     (!hasPresentationDetail(presentation) ||
       (speaker

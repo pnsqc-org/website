@@ -402,6 +402,97 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   );
 });
 
+test('Meetinghand normalization includes only schedule Panels as panel presentations', () => {
+  const normalized = programData.normalizeMeetingHandProgram(
+    {
+      data: {
+        speaker_categories: [],
+        speakers: [],
+        schedule: [
+          {
+            date: '2026-10-14T00:00:00.000000Z',
+            sessions: [
+              {
+                title: 'Panels',
+                start: '08:30',
+                end: '12:00',
+                description:
+                  '<p>AI in the Testing Room: Real Results, Real Limits:</p>' +
+                  '<blockquote><p>Real implementation experience.</p></blockquote>',
+                items: [
+                  {
+                    id: 9605,
+                    type: 'speaker_presentation',
+                    event_speaker_presentation_id: 5539,
+                    order: 1,
+                    presentation: {
+                      id: 5539,
+                      title: 'AI in the Testing Room: Real Results, Real Limits',
+                      speaker: {
+                        firstname: 'Panel',
+                        lastname: 'Moderator',
+                        avatar: 'https://example.com/panel.jpg',
+                        short_bio: 'Panel moderator bio.',
+                      },
+                    },
+                  },
+                ],
+              },
+              {
+                title: 'Not Panels',
+                start: '13:00',
+                end: '14:00',
+                items: [
+                  {
+                    id: 9606,
+                    type: 'speaker_presentation',
+                    event_speaker_presentation_id: 5540,
+                    presentation: {
+                      id: 5540,
+                      title: 'Do Not Include',
+                      speaker: {
+                        firstname: 'Other',
+                        lastname: 'Speaker',
+                      },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    },
+    { year: '2026' },
+  );
+
+  const panel = normalized.presentations.find(
+    (presentation) => presentation.title === 'AI in the Testing Room: Real Results, Real Limits',
+  );
+  const keynotes = programData.getProgramCategoryConfig('keynotes-invited-speakers', '2026');
+  const selectedPanels = programData
+    .selectPresentations(normalized, keynotes)
+    .filter((presentation) => presentation.categorySlug === 'panels');
+
+  assert.ok(panel);
+  assert.equal(panel.presentationType, 'panel');
+  assert.equal(panel.categorySlug, 'panels');
+  assert.equal(panel.scheduleSessionTitle, 'Panels');
+  assert.equal(panel.source.eventSpeakerPresentationId, '5539');
+  assert.equal(programData.getPresentationSubmissionId(panel), '');
+  assert.match(panel.abstractHtml, /Real implementation experience/);
+  assert.deepEqual(
+    panel.speakers.map((speaker) => speaker.name),
+    ['Panel Moderator'],
+  );
+  assert.match(panel.speakers[0].bioHtml, /Panel moderator bio/);
+  assert.deepEqual(
+    selectedPanels.map((presentation) => presentation.title),
+    ['AI in the Testing Room: Real Results, Real Limits'],
+  );
+  assert.equal(programData.getSectionForItem(panel, keynotes).key, 'panels');
+});
+
 test('submission detail helpers merge lazy Meetinghand fields into program items', () => {
   const presentation = {
     id: '29535',
@@ -441,7 +532,7 @@ test('submission detail helpers merge lazy Meetinghand fields into program items
   assert.equal(mergedSpeaker.presentations[0].descriptionHtml, '<p>Full abstract.</p>');
 });
 
-test('category filters select workshops, keynotes, and paper presenters', () => {
+test('category filters select workshops, keynotes, panels, and paper presenters', () => {
   const program = programData.createProgramIndexes({
     source: 'conference',
     year: '2026',
@@ -492,6 +583,34 @@ test('category filters select workshops, keynotes, and paper presenters', () => 
         presentationType: 'keynote',
         categoryId: 111,
         date: '2026-10-12',
+        start: '08:00',
+        speakerSlugs: [],
+      },
+      {
+        slug: 'invited-talk',
+        title: 'Invited Talk',
+        presentationType: 'invited',
+        categoryId: 104,
+        date: '2026-10-12',
+        start: '09:00',
+        speakerSlugs: [],
+      },
+      {
+        slug: 'panel-talk',
+        title: 'Panel Talk',
+        presentationType: 'panel',
+        categorySlug: 'panels',
+        scheduleSessionTitle: 'Panels',
+        date: '2026-10-14',
+        speakerSlugs: [],
+      },
+      {
+        slug: 'wrong-panel-talk',
+        title: 'Wrong Panel Talk',
+        presentationType: 'panel',
+        categorySlug: 'panels',
+        scheduleSessionTitle: 'Panel Discussion',
+        date: '2026-10-14',
         speakerSlugs: [],
       },
     ],
@@ -507,7 +626,13 @@ test('category filters select workshops, keynotes, and paper presenters', () => 
   );
   assert.deepEqual(
     programData.selectPresentations(program, keynotes).map((item) => item.slug),
-    ['keynote-talk'],
+    ['keynote-talk', 'invited-talk', 'panel-talk'],
+  );
+  assert.deepEqual(
+    programData
+      .selectPresentations(program, keynotes)
+      .map((item) => programData.getSectionForItem(item, keynotes).key),
+    ['keynotes', 'invited', 'panels'],
   );
   assert.deepEqual(
     programData.selectSpeakers(program, paperPresenters).map((item) => item.slug),

@@ -150,7 +150,6 @@
 
   const presentationNeedsSubmissionDetail = (presentation, speaker) =>
     route.source === 'conference' &&
-    presentation?.presentationType === 'paper' &&
     !!getSubmissionId(presentation) &&
     (!hasPresentationDetail(presentation) ||
       (speaker

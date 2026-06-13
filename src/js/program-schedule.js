@@ -911,19 +911,19 @@
         days.forEach((day, dayIndex) => {
           const daySection = Dom.el('section');
           daySection.id = `day-${dayIndex + 1}`;
-          const dayHeader = Dom.el('div', 'mb-6 flex items-center gap-4');
+          const dayHeader = Dom.el('div', 'mb-6 flex flex-wrap items-center gap-x-4 gap-y-2');
           dayHeader.appendChild(
             Dom.el(
               'h2',
-              'whitespace-nowrap text-2xl font-bold text-white sm:text-3xl',
+              'min-w-0 text-2xl font-bold text-white sm:text-3xl',
               TimeUtils.formatDayHeading(day.date),
             ),
           );
-          dayHeader.appendChild(Dom.el('div', 'hr-gradient mt-1 flex-1'));
+          dayHeader.appendChild(Dom.el('div', 'hr-gradient mt-1 hidden min-w-8 flex-1 sm:block'));
           dayHeader.appendChild(
             Dom.el(
               'span',
-              'gold-readable whitespace-nowrap text-xs font-semibold uppercase tracking-widest text-pnsqc-gold',
+              'gold-readable text-xs font-semibold uppercase tracking-widest text-pnsqc-gold',
               this.formatDayBadgeLabel(dayIndex, day.date),
             ),
           );

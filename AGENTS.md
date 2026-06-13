@@ -181,13 +181,33 @@ Every HTML page under `src/` needs a source-only metadata block before
 
 ```html
 <!-- meta
-title: Page title
+title: Page Title - Parent Section - PNSQC
 description: Page description
 og_image: /images/events/conference/2025/group_photo.jpg
 og_image_alt: Describe the social preview image.
 -->
 <!doctype html>
 ```
+
+Page titles must follow the site title convention:
+
+- Most pages: `<H1 text> - <nearest parent folder label> - <next parent folder label> - PNSQC`.
+- Top-level pages with no parent folder use `<H1 text> - PNSQC`.
+- The top-level homepage `src/index.html` is the exception and must use
+  `Pacific Northwest Software Quality Conference - PNSQC`, regardless of its
+  hero `<h1>`.
+
+Parent folder labels are included from nearest to farthest and should be
+human-readable, preserving established names and acronyms. For example,
+`src/conference/2026/at-a-glance/index.html` with `<h1>Conference At-A-Glance</h1>`
+uses:
+
+```yaml
+title: Conference At-A-Glance - 2026 - Conference - PNSQC
+```
+
+`tests/content/page-title-metadata.test.mjs` enforces this convention for source
+HTML pages.
 
 Defaults come from `site.config.json`. Supported per-page fields include
 `title`, `description`, `og_image`, `og_image_alt`, `og_type`, `robots`,

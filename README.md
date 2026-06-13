@@ -55,7 +55,7 @@ When ready to upload your changes:
    git commit -m "Helpful commit message of my change"
    ```
 
-2. Formatting and linting checks will be automatically run against your code; if any problems are encountered, it will not finish making the commit by design until the issue(s) are addressed.
+2. Formatting, linting, build, test, and accessibility checks will be automatically run against your code; if any problems are encountered, it will not finish making the commit by design until the issue(s) are addressed.
 
 3. Once the commit is made, push it: `git push`
 
@@ -86,7 +86,7 @@ Place a `meta` comment before `<!DOCTYPE html>`:
 
 ```html
 <!-- meta
-title: Page title
+title: Page Title - Parent Section - PNSQC
 description: Page description
 og_image: /images/events/conference/2025/group_photo.jpg
 -->
@@ -95,6 +95,23 @@ og_image: /images/events/conference/2025/group_photo.jpg
 
 Defaults come from `site.config.json`.
 The `meta` comment is source-only and is stripped from the generated files in `dist/`.
+
+Page titles must follow the site title convention:
+
+- Most pages: `<H1 text> - <nearest parent folder label> - <next parent folder label> - PNSQC`.
+- Top-level pages with no parent folder use `<H1 text> - PNSQC`.
+- The top-level homepage `src/index.html` is the exception and must use
+  `Pacific Northwest Software Quality Conference - PNSQC`, regardless of its hero `<h1>`.
+
+Parent folder labels are included from nearest to farthest and should be human-readable,
+preserving established names and acronyms. For example,
+`src/conference/2026/at-a-glance/index.html` with `<h1>Conference At-A-Glance</h1>` uses:
+
+```yaml
+title: Conference At-A-Glance - 2026 - Conference - PNSQC
+```
+
+`tests/content/page-title-metadata.test.mjs` enforces this convention for source HTML pages.
 
 Optional per-page fields:
 

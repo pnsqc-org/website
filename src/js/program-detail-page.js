@@ -14,7 +14,26 @@
   const eyebrowEl = root.querySelector('[data-program-detail-eyebrow]');
   const titleEl = root.querySelector('[data-program-detail-title]');
   const subtitleEl = root.querySelector('[data-program-detail-subtitle]');
-  const originalDocumentTitle = document.title;
+  const pageTitleSuffix = 'PNSQC';
+  let pageTitleHierarchy = [];
+
+  const getRouteTitleHierarchy = (route) => {
+    if (!route) return [];
+
+    const sourceLabel =
+      {
+        archive: 'Archive',
+        conference: 'Conference',
+      }[route.source] || route.source;
+
+    return [route.year, sourceLabel].map((part) => data.normalizeSpace(part || '')).filter(Boolean);
+  };
+
+  const setDocumentTitle = (title) => {
+    const normalizedTitle = data.normalizeSpace(title || '');
+    const titleParts = [normalizedTitle, ...pageTitleHierarchy, pageTitleSuffix].filter(Boolean);
+    document.title = titleParts.join(' - ');
+  };
 
   const setStatus = (text) => {
     if (!statusEl) return;
@@ -25,6 +44,7 @@
   const setHeader = ({ eyebrow, title, subtitle }) => {
     if (eyebrowEl) eyebrowEl.textContent = eyebrow;
     if (titleEl) titleEl.textContent = title;
+    setDocumentTitle(title);
     if (subtitleEl) {
       subtitleEl.textContent = subtitle || '';
       subtitleEl.hidden = !subtitle;
@@ -162,12 +182,12 @@
     setHeader({ eyebrow, title, subtitle });
     setStatus('');
     if (contentEl) contentEl.replaceChildren(content);
-    document.title = `${title} - ${originalDocumentTitle}`;
   };
 
   const load = async () => {
     const route = data.parseProgramDetailRoute(window.location.pathname);
     if (!route) {
+      pageTitleHierarchy = [];
       showMessage({
         eyebrow: 'Program Details',
         title: 'Page not found',
@@ -175,6 +195,7 @@
       });
       return;
     }
+    pageTitleHierarchy = getRouteTitleHierarchy(route);
     configureFallbackAvatar(route);
 
     const name = new URLSearchParams(window.location.search).get('name')?.trim();

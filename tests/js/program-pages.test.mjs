@@ -468,7 +468,7 @@ test('program detail page renders and hydrates conference speakers and presentat
     `,
     'https://www.pnsqc.org/conference/2026/speaker?name=paper-speaker',
   );
-  document.title = 'PNSQC';
+  document.title = 'Program Details - PNSQC';
 
   await importFreshSrcModule('program-detail-page.js');
   await flushPromises();
@@ -478,7 +478,7 @@ test('program detail page renders and hydrates conference speakers and presentat
   assert.equal(data.mergeMeetingHandSubmissionDetailIntoSpeaker.mock.calls.length, 1);
   assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Paper Speaker');
   assert.equal(document.querySelector('[data-program-detail-subtitle]').textContent, 'Lazy Paper');
-  assert.equal(document.title, 'Paper Speaker - PNSQC');
+  assert.equal(document.title, 'Paper Speaker - 2026 - Conference - PNSQC');
   assert.match(
     document.querySelector('[data-program-detail-content]').textContent,
     /Speaker details/,
@@ -517,7 +517,7 @@ test('program detail page renders and hydrates conference speakers and presentat
     `,
     'https://www.pnsqc.org/conference/2026/presentation?name=panel',
   );
-  document.title = 'PNSQC';
+  document.title = 'Program Details - PNSQC';
 
   await importFreshSrcModule('program-detail-page.js');
   await flushPromises();
@@ -526,6 +526,7 @@ test('program detail page renders and hydrates conference speakers and presentat
   assert.equal(panelDetailData.loadMeetingHandSubmission.mock.calls[0][0].id, 'panel-sub-2');
   assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Panel Title');
   assert.equal(document.querySelector('[data-program-detail-subtitle]').textContent, 'Speaker One');
+  assert.equal(document.title, 'Panel Title - 2026 - Conference - PNSQC');
 });
 
 test('program detail page leaves archive details unhydrated and hides empty subtitles', async () => {
@@ -569,4 +570,5 @@ test('program detail page leaves archive details unhydrated and hides empty subt
     document.querySelector('[data-program-detail-subtitle]').textContent,
     'Archived Role',
   );
+  assert.equal(document.title, 'Archive Speaker - 2025 - Archive - PNSQC');
 });

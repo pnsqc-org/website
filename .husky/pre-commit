@@ -1,3 +1,5 @@
+set -e
+
 backup_stash=''
 stash_name="husky-pre-commit-$(date +%s)"
 stash_paths_file=$(mktemp)
@@ -114,6 +116,9 @@ fi
 
 printf '\n> Running build\n'
 npm run build
+
+printf '\n> Running tests\n'
+npm test
 
 printf '\n> Running audit:a11y for staged HTML routes\n'
 npm run audit:a11y -- --skip-build --staged

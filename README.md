@@ -34,13 +34,15 @@ This repository is a static site built from plain HTML + Tailwind CSS, with a sm
 1. `npm run build:dist` -> `node build.mjs`
    1. Recreates `dist/` from `src/`
    2. Generates archive program data in `dist/data/archive/<year>/program.json` from JSON files in `content/`
+      and copies any fetched remote author avatars into `dist/images/people/`
    3. Injects shared header/footer partials from `src/_partials/` into each HTML page in `dist/`
    4. Reads each page's `<!-- meta ... -->` block and writes the page `<title>`, description, canonical, Open Graph, robots, and X/Twitter card tags into `<head>`
    5. Generates `dist/sitemap.xml` and `dist/robots.txt`
 2. `npm run build:css` -> compiles `src/css/input.css` to `dist/css/site.css`
 
 - These files in the `dist/` folder are what will be deployed to our production website.
-- Source files in `src/` are not modified when the build is run.
+- Source files in `src/` are not modified when the build is run, except that author bio
+  `avatar` URLs may download missing images into `src/images/people/`.
 - You should not edit files directly in `dist/`; rebuild each time from `src/` instead.
 
 ### Deployment
@@ -245,7 +247,11 @@ python scripts/extract-proceedings.py --year 2025 --write
 The extractor uses Python `pdfplumber` and writes a temporary review report to
 `pdf-report/<year>-extraction.json`. To process another year, run the same command with that year.
 Author bio `avatar` fields are optional. Omit the property to let the year-specific archive page use
-its default conference logo, or add an absolute site path in an individual JSON file as an override.
+its default conference logo, add an absolute site path in an individual JSON file as an override, or
+use an `http`/`https` image URL. Before downloading a URL avatar, the build checks
+`src/images/people/` for an existing image named from the author slug or name. Existing images are
+used as-is. Missing URL avatars are downloaded into `src/images/people/` using the author slug as
+the filename, then copied into `dist/images/people/` during `npm run build`.
 
 During `npm run build`, the files under `content/` remain the source of truth. The canonical
 browser-facing archive payload is `dist/data/archive/<year>/program.json`.

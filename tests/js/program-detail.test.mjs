@@ -402,6 +402,177 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   );
 });
 
+test('loadProgram enriches 2026 paper presenters with local profile supplements', async () => {
+  programData.clearProgramCache();
+  const payload = {
+    data: {
+      speaker_categories: [],
+      speakers: [],
+      schedule: [
+        {
+          date: '2026-10-12T00:00:00.000000Z',
+          sessions: [
+            {
+              title: 'Papers',
+              start: '09:10',
+              end: '10:30',
+              items: [
+                {
+                  id: 29535,
+                  type: 'submission',
+                  participant_submission_id: 29535,
+                  order: 1,
+                  presentation: {
+                    id: 29535,
+                    title: 'The Living Test Repository',
+                    presentation_type: 'Paper',
+                    authors: [{ firstname: 'Austin', lastname: 'Peck' }],
+                  },
+                },
+                {
+                  id: 29536,
+                  type: 'submission',
+                  participant_submission_id: 29536,
+                  order: 2,
+                  presentation: {
+                    id: 29536,
+                    title: 'Already Provided',
+                    presentation_type: 'Paper',
+                    authors: [
+                      {
+                        firstname: 'Future',
+                        lastname: 'Presenter',
+                        avatar: 'https://meetinghand.example/future.jpg',
+                        linkedin: 'https://meetinghand.example/future-linkedin',
+                        homepage: 'https://meetinghand.example/future-home',
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  };
+  const profilePayload = [
+    {
+      slug: 'austin-peck',
+      name: 'Austin Peck',
+      avatar: '/images/people/austin-peck.png',
+      linkedin: 'https://www.linkedin.com/in/austin-peck-861393234',
+      homepage: 'https://austin.example',
+    },
+    {
+      slug: 'future-presenter',
+      name: 'Future Presenter',
+      avatar: '/images/people/future-presenter.png',
+      linkedin: 'https://local.example/future-linkedin',
+      homepage: 'https://local.example/future-home',
+    },
+  ];
+  const requests = [];
+  const fetchImpl = async (url) => {
+    requests.push(String(url));
+    if (String(url).includes('/data/conference/2026/paper-presenter-profiles.json')) {
+      return {
+        ok: true,
+        status: 200,
+        json: async () => profilePayload,
+      };
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => payload,
+    };
+  };
+
+  const normalized = await programData.loadProgram({
+    source: 'conference',
+    year: '2026',
+    categorySlug: 'paper-presenters',
+    fallbackAvatar: '/images/brand/pnsqc-logo-2026.jpg',
+    fetchImpl,
+  });
+  const paperPresenters = programData.getProgramCategoryConfig('paper-presenters', '2026');
+  const selectedSpeakers = programData.selectSpeakers(normalized, paperPresenters);
+  const austin = selectedSpeakers.find((speaker) => speaker.name === 'Austin Peck');
+  const future = selectedSpeakers.find((speaker) => speaker.name === 'Future Presenter');
+  const austinPresentation = normalized.presentations.find(
+    (presentation) => presentation.title === 'The Living Test Repository',
+  );
+
+  assert.deepEqual(requests, [
+    'https://api.meetinghand.com/api/events/pnsqc-2026',
+    '/data/conference/2026/paper-presenter-profiles.json',
+  ]);
+  assert.equal(austin.avatar, '/images/people/austin-peck.png');
+  assert.equal(austin.linkedin, 'https://www.linkedin.com/in/austin-peck-861393234');
+  assert.equal(austin.homepage, 'https://austin.example');
+  assert.equal(austinPresentation.speakers[0].avatar, '/images/people/austin-peck.png');
+  assert.equal(future.avatar, 'https://meetinghand.example/future.jpg');
+  assert.equal(future.linkedin, 'https://meetinghand.example/future-linkedin');
+  assert.equal(future.homepage, 'https://meetinghand.example/future-home');
+});
+
+test('paper presenter profile supplements are route-scoped, cached, and optional', async () => {
+  programData.clearProgramCache();
+  const payload = {
+    data: {
+      speaker_categories: [],
+      speakers: [],
+      schedule: [],
+    },
+  };
+  let eventRequests = 0;
+  let profileRequests = 0;
+  const fetchImpl = async (url) => {
+    if (String(url).includes('/data/conference/2026/paper-presenter-profiles.json')) {
+      profileRequests += 1;
+      return {
+        ok: false,
+        status: 500,
+        json: async () => {
+          throw new Error('profile manifest should be ignored');
+        },
+      };
+    }
+
+    eventRequests += 1;
+    return {
+      ok: true,
+      status: 200,
+      json: async () => payload,
+    };
+  };
+
+  await programData.loadProgram({ source: 'conference', year: '2026', fetchImpl });
+  await programData.loadProgram({
+    source: 'conference',
+    year: '2026',
+    categorySlug: 'workshops',
+    fetchImpl,
+  });
+  const paperProgram = await programData.loadProgram({
+    source: 'conference',
+    year: '2026',
+    categorySlug: 'paper-presenters',
+    fetchImpl,
+  });
+  await programData.loadProgram({
+    source: 'conference',
+    year: '2026',
+    categorySlug: 'paper-presenters',
+    fetchImpl,
+  });
+
+  assert.equal(paperProgram.source, 'conference');
+  assert.equal(eventRequests, 1);
+  assert.equal(profileRequests, 1);
+});
+
 test('Meetinghand normalization includes only schedule Panels as panel presentations', () => {
   const normalized = programData.normalizeMeetingHandProgram(
     {

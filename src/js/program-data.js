@@ -38,6 +38,8 @@
   };
   const PANELS_SESSION_TITLE = 'Panels';
   const PANELS_CATEGORY_SLUG = 'panels';
+  const CONFERENCE_PAPER_PROFILE_YEAR = '2026';
+  const CONFERENCE_PAPER_PROFILE_CATEGORY = 'paper-presenters';
 
   const CATEGORY_CONFIGS = {
     'keynotes-invited-speakers': {
@@ -252,6 +254,10 @@
     return `${getProgramEndpoint({ source: 'conference', year })}/submissions/${encodeURIComponent(
       String(id || ''),
     )}`;
+  }
+
+  function getConferencePaperPresenterProfilesEndpoint({ year } = {}) {
+    return `/data/conference/${year}/paper-presenter-profiles.json`;
   }
 
   function getPresenterDetails(presenter) {
@@ -1232,6 +1238,126 @@
     return requestCache.get(cacheKey);
   }
 
+  function shouldLoadConferencePaperPresenterProfiles({ source, year, categorySlug } = {}) {
+    return (
+      source === 'conference' &&
+      String(year) === CONFERENCE_PAPER_PROFILE_YEAR &&
+      categorySlug === CONFERENCE_PAPER_PROFILE_CATEGORY
+    );
+  }
+
+  function normalizeConferencePaperPresenterProfile(profile) {
+    if (!profile || typeof profile !== 'object') return null;
+    const normalized = {
+      slug: normalizeSpace(profile.slug || profile.id || ''),
+      name: normalizeSpace(profile.name || ''),
+      avatar: normalizeSpace(profile.avatar || ''),
+      linkedin: normalizeSpace(profile.linkedin || ''),
+      homepage: normalizeSpace(profile.homepage || ''),
+    };
+    if (!normalized.name) return null;
+    if (!normalized.avatar && !normalized.linkedin && !normalized.homepage) return null;
+    return normalized;
+  }
+
+  function normalizeConferencePaperPresenterProfiles(payload) {
+    const profiles = Array.isArray(payload) ? payload : asArray(payload?.profiles);
+    return profiles.map(normalizeConferencePaperPresenterProfile).filter(Boolean);
+  }
+
+  async function loadConferencePaperPresenterProfiles({
+    source,
+    year,
+    categorySlug,
+    fetchImpl,
+  } = {}) {
+    if (!shouldLoadConferencePaperPresenterProfiles({ source, year, categorySlug })) return [];
+    const fetcher = fetchImpl || (typeof fetch === 'function' ? fetch : null);
+    if (!fetcher) return [];
+
+    const cacheKey = `profiles:conference:${year}:${categorySlug}`;
+    if (!requestCache.has(cacheKey)) {
+      requestCache.set(
+        cacheKey,
+        fetcher(getConferencePaperPresenterProfilesEndpoint({ year }))
+          .then((response) => {
+            if (response.status === 404 || !response.ok) return [];
+            return response.json().then(normalizeConferencePaperPresenterProfiles);
+          })
+          .catch(() => []),
+      );
+    }
+    return requestCache.get(cacheKey);
+  }
+
+  function isFallbackAvatar(value, { year, fallbackAvatar } = {}) {
+    const avatar = normalizeSpace(value);
+    if (!avatar) return true;
+    const fallbackValues = [
+      FALLBACK_AVATAR,
+      YEAR_FALLBACK_AVATARS[String(year)] || '',
+      getProgramFallbackAvatar({ year, fallbackAvatar }),
+    ].filter(Boolean);
+    return fallbackValues.includes(avatar);
+  }
+
+  function mergeSpeakerProfile(speaker, profile, options = {}) {
+    if (!speaker || !profile) return speaker;
+    let changed = false;
+    const merged = { ...speaker };
+
+    if (profile.avatar && isFallbackAvatar(merged.avatar, options)) {
+      merged.avatar = profile.avatar;
+      changed = true;
+    }
+    if (profile.linkedin && !normalizeSpace(merged.linkedin)) {
+      merged.linkedin = profile.linkedin;
+      changed = true;
+    }
+    if (profile.homepage && !normalizeSpace(merged.homepage)) {
+      merged.homepage = profile.homepage;
+      changed = true;
+    }
+
+    return changed ? merged : speaker;
+  }
+
+  function enrichProgramWithSpeakerProfiles(program, profiles, options = {}) {
+    const profileByName = new Map();
+    asArray(profiles).forEach((profile) => {
+      const normalized = normalizeConferencePaperPresenterProfile(profile);
+      if (!normalized) return;
+      const key = normalizeCompareText(normalized.name);
+      if (key && !profileByName.has(key)) profileByName.set(key, normalized);
+    });
+    if (!profileByName.size) return program;
+
+    const speakers = asArray(program?.speakers).map((speaker) =>
+      mergeSpeakerProfile(speaker, profileByName.get(normalizeCompareText(speaker?.name)), options),
+    );
+    const speakerBySlug = new Map(speakers.map((speaker) => [speaker.slug, speaker]));
+    const presentations = asArray(program?.presentations).map((presentation) => ({
+      ...presentation,
+      speakers: sortPeopleByLastName(
+        asArray(presentation?.speakers).map((speaker) => {
+          const enrichedSpeaker = speakerBySlug.get(speaker?.slug);
+          if (enrichedSpeaker) return toSpeakerSummary(enrichedSpeaker);
+          return mergeSpeakerProfile(
+            speaker,
+            profileByName.get(normalizeCompareText(speaker?.name)),
+            options,
+          );
+        }),
+      ),
+    }));
+
+    return createProgramIndexes({
+      ...program,
+      speakers,
+      presentations,
+    });
+  }
+
   function normalizeSubmissionValue(value) {
     return String(value || '')
       .replace(/\\r\\n/g, '\n')
@@ -1298,9 +1424,16 @@
     return requestCache.get(cacheKey);
   }
 
-  async function loadProgram({ source, year, fetchImpl, fallbackAvatar } = {}) {
+  async function loadProgram({ source, year, fetchImpl, fallbackAvatar, categorySlug } = {}) {
     const payload = await loadProgramPayload({ source, year, fetchImpl });
-    return normalizeProgramPayload(payload, { source, year, fallbackAvatar });
+    const program = normalizeProgramPayload(payload, { source, year, fallbackAvatar });
+    const profiles = await loadConferencePaperPresenterProfiles({
+      source,
+      year,
+      categorySlug,
+      fetchImpl,
+    });
+    return enrichProgramWithSpeakerProfiles(program, profiles, { year, fallbackAvatar });
   }
 
   function clearProgramCache() {
@@ -1378,6 +1511,7 @@
     getPresenterDetails,
     getProgramCategoryConfig,
     getProgramEndpoint,
+    getConferencePaperPresenterProfilesEndpoint,
     getMeetingHandSubmissionEndpoint,
     getSectionForItem,
     getLastNameKey,
@@ -1385,11 +1519,13 @@
     getSchedulePresentationSpeakerCandidates,
     getWorkshopDate,
     loadMeetingHandSubmission,
+    loadConferencePaperPresenterProfiles,
     loadProgram,
     loadProgramPayload,
     mergeMeetingHandSubmissionDetail,
     mergeMeetingHandSubmissionDetailIntoSpeaker,
     normalizeArchiveProgram,
+    normalizeConferencePaperPresenterProfiles,
     normalizeCompareText,
     normalizeMeetingHandProgram,
     normalizeMeetingHandSubmission,

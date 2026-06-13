@@ -37,6 +37,7 @@ const paperPresentation = {
   slug: 'quality-paper',
   id: 'p1',
   title: 'Quality Paper',
+  topic: 'Quality Engineering & Systems Reliability',
   abstract: 'Plain abstract.',
   abstractHtml: '<p>Paper abstract.</p>',
   descriptionHtml: '',
@@ -84,6 +85,7 @@ test('program renderer builds speaker cards, details, templates, and compatibili
     presentations: [
       {
         title: 'First Talk',
+        topic: 'Emerging Technologies & AI Systems',
         descriptionHtml: '<p>First details.</p>',
       },
       {
@@ -100,6 +102,17 @@ test('program renderer builds speaker cards, details, templates, and compatibili
   });
   assert.equal(card.querySelector('h3').textContent, 'Alpha Speaker');
   assert.equal(
+    card.querySelector('[data-details-modal-open="speaker-template"]').getAttribute(
+      'data-details-modal-subtitle',
+    ),
+    'Emerging Technologies & AI Systems',
+  );
+  assert.equal(
+    card.textContent.indexOf('Emerging Technologies & AI Systems') <
+      card.textContent.indexOf('First Talk'),
+    true,
+  );
+  assert.equal(
     card.querySelector('[data-details-modal-open="speaker-template"]').textContent.trim(),
     'Read More',
   );
@@ -107,6 +120,12 @@ test('program renderer builds speaker cards, details, templates, and compatibili
 
   const details = renderer.buildSpeakerDetailsContent(speaker);
   assert.match(details.textContent, /First Talk/);
+  assert.match(details.textContent, /Emerging Technologies & AI Systems/);
+  assert.equal(
+    details.textContent.indexOf('First Talk') <
+      details.textContent.indexOf('Emerging Technologies & AI Systems'),
+    true,
+  );
   assert.match(details.textContent, /Second Talk/);
   assert.match(details.textContent, /Alpha Co/);
   assert.equal(details.querySelector('img').getAttribute('src'), '/alpha.jpg');
@@ -160,6 +179,12 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.equal(card.querySelector('h3').textContent, 'Quality Paper');
   assert.equal(card.querySelectorAll('img').length, 2);
   assert.equal(
+    card.querySelector('[data-details-modal-open="presentation-template"]').getAttribute(
+      'data-details-modal-subtitle',
+    ),
+    'Quality Engineering & Systems Reliability',
+  );
+  assert.equal(
     card.querySelector('[data-details-modal-open="presentation-template"]').textContent.trim(),
     'Read More',
   );
@@ -170,6 +195,15 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.match(details.textContent, /Learning Objectives/);
   assert.match(details.textContent, /Alpha bio/);
   assert.match(details.textContent, /No bio yet/);
+
+  const primaryBioDetails = renderer.buildPresentationDetailsContent({
+    ...paperPresentation,
+    bioSpeakers: [speakerAlpha],
+  });
+  assert.match(primaryBioDetails.textContent, /Alpha Speaker/);
+  assert.match(primaryBioDetails.textContent, /Beta Speaker/);
+  assert.match(primaryBioDetails.textContent, /Alpha bio/);
+  assert.doesNotMatch(primaryBioDetails.textContent, /No bio yet/);
 
   const workshopDetails = renderer.buildPresentationDetailsContent({
     title: 'Workshop',

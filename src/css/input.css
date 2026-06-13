@@ -83,7 +83,9 @@ html {
 }
 
 .page-shell,
-.page-shell--narrow {
+.page-shell--narrow,
+.page-shell--wide {
+  width: 100%;
   margin-inline: auto;
   padding-inline: 1rem;
 }
@@ -96,9 +98,14 @@ html {
   max-width: 56rem;
 }
 
+.page-shell--wide {
+  max-width: 112rem;
+}
+
 @media (min-width: 40rem) {
   .page-shell,
-  .page-shell--narrow {
+  .page-shell--narrow,
+  .page-shell--wide {
     padding-inline: 1.5rem;
   }
 }
@@ -111,7 +118,8 @@ html {
 
 @media (min-width: 64rem) {
   .page-shell,
-  .page-shell--narrow {
+  .page-shell--narrow,
+  .page-shell--wide {
     padding-inline: 2rem;
   }
 }
@@ -505,6 +513,10 @@ html {
   padding: 1rem 1.25rem;
 }
 
+.modal-header > div {
+  min-width: 0;
+}
+
 .modal-label {
   font-size: 0.75rem;
   font-weight: 600;
@@ -519,6 +531,15 @@ html {
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--color-white);
+  overflow-wrap: anywhere;
+}
+
+.modal-subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-pnsqc-cyan);
+  overflow-wrap: anywhere;
 }
 
 .modal-close {
@@ -1253,7 +1274,7 @@ a.gold-readable--tinted:focus-visible {
 
 .schedule-sessions-grid {
   display: grid;
-  grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
   gap: 1.5rem;
 }
 

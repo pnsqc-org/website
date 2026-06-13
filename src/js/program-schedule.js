@@ -65,14 +65,18 @@
       });
     const getSchedulePresentationSpeakerCandidates =
       programData.getSchedulePresentationSpeakerCandidates ||
-      ((presentation) => {
-        const candidates = []
-          .concat(asArray(presentation?.speakers))
-          .concat(presentation?.speaker ? [presentation.speaker] : [])
-          .concat(asArray(presentation?.authors))
-          .concat(presentation?.presenterAuthor ? [presentation.presenterAuthor] : [])
-          .concat(presentation?.presenter_author ? [presentation.presenter_author] : [])
-          .concat(presentation?.participant ? [presentation.participant] : []);
+      ((presentation, options = {}) => {
+        const type = normalizeSpace(presentation?.presentation_type || options.type).toLowerCase();
+        const candidates =
+          type.includes('paper') || type.includes('submission')
+            ? asArray(presentation?.authors)
+            : []
+                .concat(asArray(presentation?.speakers))
+                .concat(presentation?.speaker ? [presentation.speaker] : [])
+                .concat(asArray(presentation?.authors))
+                .concat(presentation?.presenterAuthor ? [presentation.presenterAuthor] : [])
+                .concat(presentation?.presenter_author ? [presentation.presenter_author] : [])
+                .concat(presentation?.participant ? [presentation.participant] : []);
         const seen = new Set();
         return candidates.filter((candidate) => {
           const key = normalizeCompareText(formatPersonName(candidate));
@@ -344,7 +348,55 @@
         });
       }
 
-      return getSchedulePresentationSpeakerCandidates(item?.presentation || {});
+      return getSchedulePresentationSpeakerCandidates(item?.presentation || {}, {
+        type: item?.type,
+      });
+    }
+
+    function getPrimarySubmissionAuthorNames(detail) {
+      const authors = asArray(detail?.authors);
+      const presenters = authors.filter((author) => author?.isPresenter);
+      const selected = presenters.length ? presenters : authors.slice(0, 1);
+      return new Set(
+        selected.map((author) => TextUtils.normalizeCompareText(author?.name)).filter(Boolean),
+      );
+    }
+
+    function mergeScheduleSubmissionDetail(presentation, detail) {
+      if (!detail) return presentation;
+      const primaryAuthorNames = getPrimarySubmissionAuthorNames(detail);
+      const speakers = asArray(presentation?.speakers);
+      const shouldLimitBio =
+        presentation?.presentationType === 'paper' &&
+        speakers.length > 1 &&
+        primaryAuthorNames.size;
+
+      if (!shouldLimitBio) return mergeMeetingHandSubmissionDetail(presentation, detail);
+
+      const merged = mergeMeetingHandSubmissionDetail(presentation, {
+        ...detail,
+        bio: '',
+        bioHtml: '',
+      });
+
+      const mergedSpeakers = asArray(merged.speakers).map((speaker) => {
+        if (!primaryAuthorNames.has(TextUtils.normalizeCompareText(speaker?.name))) return speaker;
+        if (!detail.bioHtml) return speaker;
+        if (normalizeSpace(speaker?.bio) || normalizeSpace(speaker?.bioHtml)) return speaker;
+        return {
+          ...speaker,
+          bio: detail.bio || '',
+          bioHtml: detail.bioHtml,
+        };
+      });
+      const bioSpeakers = mergedSpeakers.filter((speaker) =>
+        primaryAuthorNames.has(TextUtils.normalizeCompareText(speaker?.name)),
+      );
+      return {
+        ...merged,
+        speakers: mergedSpeakers,
+        bioSpeakers: bioSpeakers.length ? bioSpeakers : asArray(merged.bioSpeakers),
+      };
     }
 
     function groupSessionsByTime(sessions) {
@@ -561,12 +613,12 @@
         }
 
         if (submissionDetail) {
-          presentation = mergeMeetingHandSubmissionDetail(presentation, submissionDetail);
+          presentation = mergeScheduleSubmissionDetail(presentation, submissionDetail);
         }
 
         presentation.speakers = sortPeopleByLastName(this.resolveSpeakers(item, presentation));
         if (submissionDetail) {
-          presentation = mergeMeetingHandSubmissionDetail(presentation, submissionDetail);
+          presentation = mergeScheduleSubmissionDetail(presentation, submissionDetail);
           presentation.speakers = sortPeopleByLastName(presentation.speakers);
         }
         return presentation;
@@ -859,19 +911,19 @@
         days.forEach((day, dayIndex) => {
           const daySection = Dom.el('section');
           daySection.id = `day-${dayIndex + 1}`;
-          const dayHeader = Dom.el('div', 'mb-6 flex items-center gap-4');
+          const dayHeader = Dom.el('div', 'mb-6 flex flex-wrap items-center gap-x-4 gap-y-2');
           dayHeader.appendChild(
             Dom.el(
               'h2',
-              'whitespace-nowrap text-2xl font-bold text-white sm:text-3xl',
+              'min-w-0 text-2xl font-bold text-white sm:text-3xl',
               TimeUtils.formatDayHeading(day.date),
             ),
           );
-          dayHeader.appendChild(Dom.el('div', 'hr-gradient mt-1 flex-1'));
+          dayHeader.appendChild(Dom.el('div', 'hr-gradient mt-1 hidden min-w-8 flex-1 sm:block'));
           dayHeader.appendChild(
             Dom.el(
               'span',
-              'gold-readable whitespace-nowrap text-xs font-semibold uppercase tracking-widest text-pnsqc-gold',
+              'gold-readable text-xs font-semibold uppercase tracking-widest text-pnsqc-gold',
               this.formatDayBadgeLabel(dayIndex, day.date),
             ),
           );
@@ -1071,12 +1123,25 @@
             year: this.year,
           });
           const eventData = payload?.data || payload || {};
+          const program = programData.loadProgram
+            ? await programData.loadProgram({
+                source: this.source,
+                year: this.year,
+                fallbackAvatar: this.fallbackAvatar,
+                categorySlug: 'paper-presenters',
+              })
+            : programData.normalizeProgramPayload(payload, {
+                source: this.source,
+                year: this.year,
+                fallbackAvatar: this.fallbackAvatar,
+              });
           this.renderer.setProgram(
-            programData.normalizeProgramPayload(payload, {
-              source: this.source,
-              year: this.year,
-              fallbackAvatar: this.fallbackAvatar,
-            }),
+            program ||
+              programData.normalizeProgramPayload(payload, {
+                source: this.source,
+                year: this.year,
+                fallbackAvatar: this.fallbackAvatar,
+              }),
           );
           this.renderer.render(eventData);
         } catch (error) {

@@ -1,7 +1,9 @@
 (() => {
   const createModalController = (refs) => {
-    if (Object.values(refs).some((element) => !element)) return null;
-    const { modal, panel, body, titleEl, labelEl, closeButton, backdrop } = refs;
+    const { modal, panel, body, titleEl, labelEl, subtitleEl, closeButton, backdrop } = refs;
+    if ([modal, panel, body, titleEl, labelEl, closeButton, backdrop].some((element) => !element)) {
+      return null;
+    }
 
     let lastFocused = null;
 
@@ -18,10 +20,20 @@
       lastFocused = null;
     };
 
-    const openModal = ({ content, title = 'Details', label = 'Overview', trigger } = {}) => {
+    const openModal = ({
+      content,
+      title = 'Details',
+      label = 'Overview',
+      subtitle = '',
+      trigger,
+    } = {}) => {
       body.replaceChildren(...(content ? [content] : []));
       titleEl.textContent = title;
       labelEl.textContent = label;
+      if (subtitleEl) {
+        subtitleEl.textContent = subtitle;
+        subtitleEl.hidden = !subtitle;
+      }
       lastFocused = trigger instanceof HTMLElement ? trigger : document.activeElement;
 
       modal.classList.remove('hidden');
@@ -49,6 +61,7 @@
     body: modal?.querySelector(`[data-${prefix}-body]`),
     titleEl: modal?.querySelector(`[data-${prefix}-title]`),
     labelEl: modal?.querySelector(`[data-${prefix}-label]`),
+    subtitleEl: modal?.querySelector(`[data-${prefix}-subtitle]`),
     closeButton: modal?.querySelector(`[data-${prefix}-close]`),
     backdrop: modal?.querySelector(`[data-${prefix}-backdrop]`),
   });
@@ -78,6 +91,7 @@
               <h3 id="details-modal-title" class="modal-title" data-details-modal-title>
                 Details
               </h3>
+              <p class="modal-subtitle" data-details-modal-subtitle hidden></p>
             </div>
             <button
               type="button"
@@ -128,6 +142,7 @@
       content: template.content.cloneNode(true),
       title: trigger.getAttribute('data-details-modal-title') || 'Details',
       label: trigger.getAttribute('data-details-modal-label') || 'Overview',
+      subtitle: trigger.getAttribute('data-details-modal-subtitle') || '',
       trigger,
     });
   });

@@ -205,7 +205,7 @@
       return header;
     };
 
-    const createReadMoreButton = ({ templateId, title, label }) => {
+    const createReadMoreButton = ({ templateId, title, label, subtitle }) => {
       const button = createEl(
         'button',
         'inline-flex items-center gap-1.5 rounded bg-pnsqc-gold/10 px-2.5 py-1.5 text-xs font-semibold text-pnsqc-gold transition-colors hover:bg-pnsqc-gold/15 hover:text-pnsqc-gold-light',
@@ -215,6 +215,7 @@
       button.setAttribute('data-details-modal-open', templateId);
       button.setAttribute('data-details-modal-title', title);
       button.setAttribute('data-details-modal-label', label);
+      if (subtitle) button.setAttribute('data-details-modal-subtitle', subtitle);
       button.appendChild(
         createSvgIcon({
           className: 'h-3.5 w-3.5',
@@ -226,9 +227,9 @@
       return button;
     };
 
-    const appendReadMore = ({ content, templateId, title, label }) => {
+    const appendReadMore = ({ content, templateId, title, label, subtitle }) => {
       const buttonWrap = createEl('div', 'mt-4');
-      buttonWrap.appendChild(createReadMoreButton({ templateId, title, label }));
+      buttonWrap.appendChild(createReadMoreButton({ templateId, title, label, subtitle }));
       content.appendChild(buttonWrap);
     };
 
@@ -267,6 +268,13 @@
       presentation?.descriptionHtml ||
       presentation?.abstractHtml ||
       textToHtml(presentation?.abstract || '');
+
+    const getPresentationTopic = (presentation) => normalizeSpace(presentation?.topic || '');
+
+    const createPresentationTopic = (presentation, className = 'text-xs text-pnsqc-cyan/90') => {
+      const topic = getPresentationTopic(presentation);
+      return topic ? createEl('p', className, topic) : null;
+    };
 
     const getObjectivesHtml = (presentation) =>
       presentation?.objectivesHtml || textToHtml(presentation?.objectives || '');
@@ -345,6 +353,8 @@
       }
       if (displayPresentation) {
         topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', displayPresentation.title));
+        const topic = createPresentationTopic(displayPresentation, 'text-sm text-pnsqc-cyan/90');
+        if (topic) topContent.appendChild(topic);
       }
       /*
       if (eligiblePresentations.length > 1) {
@@ -379,6 +389,11 @@
 
     const buildPresentationDetailsContent = (presentation) => {
       const speakers = getSortedSpeakers(presentation?.speakers);
+      const bioSpeakers = getSortedSpeakers(
+        Array.isArray(presentation?.bioSpeakers) && presentation.bioSpeakers.length
+          ? presentation.bioSpeakers
+          : speakers,
+      );
       const wrapper = createEl('div', 'space-y-6');
       const speakersSection = createEl('div', 'space-y-3');
       appendSectionHeading(speakersSection, speakers.length === 1 ? 'Speaker' : 'Speakers');
@@ -456,10 +471,10 @@
       }
 
       const bioSection = createEl('div', 'space-y-3');
-      appendSectionHeading(bioSection, speakers.length === 1 ? 'Bio' : 'Bios');
-      if (speakers.length) {
-        speakers.forEach((speaker) => {
-          if (speakers.length > 1) {
+      appendSectionHeading(bioSection, bioSpeakers.length === 1 ? 'Bio' : 'Bios');
+      if (bioSpeakers.length) {
+        bioSpeakers.forEach((speaker) => {
+          if (bioSpeakers.length > 1) {
             bioSection.appendChild(
               createEl('h4', 'text-sm font-semibold text-white', speaker.name || 'Presenter'),
             );
@@ -500,6 +515,11 @@
         content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', speaker.organization));
       }
       if (displayPresentation) {
+        const topic = createPresentationTopic(
+          displayPresentation,
+          'mt-3 text-xs text-pnsqc-cyan/90',
+        );
+        if (topic) content.appendChild(topic);
         content.appendChild(
           createEl('p', 'mt-2 text-sm text-pnsqc-gold', displayPresentation.title),
         );
@@ -516,7 +536,13 @@
       }
       */
 
-      appendReadMore({ content, templateId, title: speakerName, label: categoryLabel });
+      appendReadMore({
+        content,
+        templateId,
+        title: speakerName,
+        label: categoryLabel,
+        subtitle: getPresentationTopic(displayPresentation),
+      });
       layout.appendChild(avatarWrap);
       layout.appendChild(content);
       return card;
@@ -593,7 +619,13 @@
       });
       content.appendChild(speakerList);
 
-      appendReadMore({ content, templateId, title: presentationTitle, label: categoryLabel });
+      appendReadMore({
+        content,
+        templateId,
+        title: presentationTitle,
+        label: categoryLabel,
+        subtitle: getPresentationTopic(presentation),
+      });
       layout.appendChild(avatarWrap);
       layout.appendChild(content);
       return card;

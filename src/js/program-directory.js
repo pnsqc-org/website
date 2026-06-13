@@ -93,6 +93,8 @@
     };
   };
 
+  const getPresentationTopic = (presentation) => normalizeSpace(presentation?.topic || '');
+
   const getModalConfig = ({ item, templateId, categoryLabel }) => {
     if (config.cardType === 'speaker' && shouldUsePresentationModalForSpeaker(item)) {
       const presentation = getSpeakerPresentationDetail(item);
@@ -105,6 +107,7 @@
           }),
           title: presentation.title || item.name || 'Presentation',
           label: 'Presentation',
+          subtitle: getPresentationTopic(presentation),
         };
       }
     }
@@ -114,6 +117,7 @@
         modal: renderer.buildSpeakerModalTemplate({ speaker: item, templateId, categoryLabel }),
         title: item.name || 'Presenter',
         label: categoryLabel,
+        subtitle: '',
       };
     }
 
@@ -125,6 +129,7 @@
       }),
       title: item.title || 'Presentation TBA',
       label: categoryLabel,
+      subtitle: getPresentationTopic(item),
     };
   };
 
@@ -220,7 +225,7 @@
     const categoryLabel = sectionConfig.label || config.defaultLabel;
     if (config.cardType === 'speaker') {
       const templateId = getTemplateId('speaker', item, index);
-      const { label, modal, title } = getModalConfig({ item, templateId, categoryLabel });
+      const { label, modal, subtitle, title } = getModalConfig({ item, templateId, categoryLabel });
       const card = renderer.buildSpeakerCard({
         speaker: item,
         templateId: modal.templateId,
@@ -230,6 +235,8 @@
       if (trigger) {
         trigger.setAttribute('data-details-modal-title', title);
         trigger.setAttribute('data-details-modal-label', label);
+        if (subtitle) trigger.setAttribute('data-details-modal-subtitle', subtitle);
+        else trigger.removeAttribute('data-details-modal-subtitle');
       }
       modalRecords.set(modal.templateId, { categoryLabel, item, templateId: modal.templateId });
       markSubmissionTrigger({ card, templateId: modal.templateId });
@@ -237,12 +244,17 @@
     }
 
     const templateId = getTemplateId('presentation', item, index);
-    const { modal } = getModalConfig({ item, templateId, categoryLabel });
+    const { modal, subtitle } = getModalConfig({ item, templateId, categoryLabel });
     const card = renderer.buildPresentationCard({
       presentation: item,
       templateId: modal.templateId,
       categoryLabel,
     });
+    const trigger = card.querySelector(`[data-details-modal-open="${modal.templateId}"]`);
+    if (trigger) {
+      if (subtitle) trigger.setAttribute('data-details-modal-subtitle', subtitle);
+      else trigger.removeAttribute('data-details-modal-subtitle');
+    }
     modalRecords.set(modal.templateId, { categoryLabel, item, templateId: modal.templateId });
     markSubmissionTrigger({ card, templateId: modal.templateId });
     return { card, template: modal.template };

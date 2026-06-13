@@ -51,10 +51,12 @@ class FakeElement {
       const panel = elementWithAttribute('div', 'data-details-modal-panel');
       const label = elementWithAttribute('p', 'data-details-modal-label');
       const title = elementWithAttribute('h3', 'data-details-modal-title');
+      const subtitle = elementWithAttribute('p', 'data-details-modal-subtitle');
       const close = elementWithAttribute('button', 'data-details-modal-close');
       const body = elementWithAttribute('div', 'data-details-modal-body');
       panel.appendChild(label);
       panel.appendChild(title);
+      panel.appendChild(subtitle);
       panel.appendChild(close);
       panel.appendChild(body);
       this.appendChild(panel);
@@ -204,6 +206,7 @@ test('details modal creates a shared shell and opens template triggers', () => {
   trigger.setAttribute('data-details-modal-open', template.id);
   trigger.setAttribute('data-details-modal-title', 'Presentation Title');
   trigger.setAttribute('data-details-modal-label', 'Presentation');
+  trigger.setAttribute('data-details-modal-subtitle', 'Quality Engineering & Systems Reliability');
 
   document.listeners.get('click')({ target: trigger });
 
@@ -211,5 +214,10 @@ test('details modal creates a shared shell and opens template triggers', () => {
   assert.equal(document.body.classList.contains('overflow-hidden'), true);
   assert.equal(modal.querySelector('[data-details-modal-title]').textContent, 'Presentation Title');
   assert.equal(modal.querySelector('[data-details-modal-label]').textContent, 'Presentation');
+  assert.equal(
+    modal.querySelector('[data-details-modal-subtitle]').textContent,
+    'Quality Engineering & Systems Reliability',
+  );
+  assert.equal(modal.querySelector('[data-details-modal-subtitle]').hidden, false);
   assert.equal(modal.querySelector('[data-details-modal-body]').children.length, 1);
 });

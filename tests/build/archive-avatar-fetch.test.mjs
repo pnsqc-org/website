@@ -42,14 +42,14 @@ test('remote author avatar URLs reuse existing people images by slug or name', (
   const sourceUrl = 'https://example.com/people/avatar.png';
 
   try {
-    writeFileSync(join(peopleDir, 'remote_speaker.jpg'), Buffer.from([0xff, 0xd8]));
+    writeFileSync(join(peopleDir, 'remote-speaker.jpg'), Buffer.from([0xff, 0xd8]));
 
     const resolved = resolveAuthorAvatar(sourceUrl, filePath, 'missing-slug', 'Remote Speaker', {
       peopleDir,
     });
 
     assert.deepEqual(resolved, {
-      avatar: '/images/people/remote_speaker.jpg',
+      avatar: '/images/people/remote-speaker.jpg',
       avatarSourceUrl: '',
     });
   } finally {

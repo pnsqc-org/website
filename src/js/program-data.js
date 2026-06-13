@@ -458,14 +458,18 @@
     );
   }
 
-  function getSchedulePresentationSpeakerCandidates(presentation) {
-    const candidates = []
-      .concat(asArray(presentation?.speakers))
-      .concat(presentation?.speaker ? [presentation.speaker] : [])
-      .concat(asArray(presentation?.authors))
-      .concat(presentation?.presenterAuthor ? [presentation.presenterAuthor] : [])
-      .concat(presentation?.presenter_author ? [presentation.presenter_author] : [])
-      .concat(presentation?.participant ? [presentation.participant] : []);
+  function getSchedulePresentationSpeakerCandidates(presentation, options = {}) {
+    const explicitType = normalizePresentationType(presentation?.presentation_type || options.type);
+    const candidates =
+      explicitType === 'paper'
+        ? asArray(presentation?.authors)
+        : []
+            .concat(asArray(presentation?.speakers))
+            .concat(presentation?.speaker ? [presentation.speaker] : [])
+            .concat(asArray(presentation?.authors))
+            .concat(presentation?.presenterAuthor ? [presentation.presenterAuthor] : [])
+            .concat(presentation?.presenter_author ? [presentation.presenter_author] : [])
+            .concat(presentation?.participant ? [presentation.participant] : []);
     const seen = new Set();
     return candidates.filter((candidate) => {
       const name = getMeetingHandPersonName(candidate);
@@ -578,12 +582,14 @@
         const date = getMeetingHandPresentationDate(rawPresentation);
         const key = getPresentationGroupKey(rawPresentation, rawSpeaker);
         const category = categoryById.get(speaker.categoryId) || null;
+        const topic = normalizeSpace(rawPresentation?.topic || '');
         let group = groupsByKey.get(key);
 
         if (!group) {
           group = {
             id: String(rawPresentation?.id ?? session?.id ?? key),
             title: normalizeSpace(rawPresentation?.title || '') || 'Presentation TBA',
+            topic,
             abstract: stripHtml(extractMeetingHandAbstractHtml(rawPresentation)),
             abstractHtml: extractMeetingHandAbstractHtml(rawPresentation),
             descriptionHtml: extractMeetingHandAbstractHtml(rawPresentation),
@@ -612,6 +618,7 @@
           groups.push(group);
         }
 
+        if (!group.topic && topic) group.topic = topic;
         group.sortOrder = Math.min(
           group.sortOrder,
           Number(rawSpeaker.order ?? Number.MAX_SAFE_INTEGER),
@@ -701,6 +708,7 @@
                 : '';
           const submissionId = getScheduleItemSubmissionId(item);
           const fallbackAbstractHtml = sessionAbstractMap.get(normalizeCompareText(title)) || '';
+          const topic = normalizeSpace(rawPresentation?.topic || item?.topic || '');
           const source = compactRecord({
             eventSpeakerPresentationId: normalizeSpace(item?.event_speaker_presentation_id || ''),
             scheduleItemId: normalizeSpace(item?.id ?? ''),
@@ -717,6 +725,7 @@
               id: String(rawPresentation?.id ?? item?.id ?? title),
               slug: getUniqueSlug(title, usedPresentationSlugs, 'presentation'),
               title,
+              topic,
               abstract: stripHtml(fallbackAbstractHtml),
               abstractHtml: fallbackAbstractHtml,
               descriptionHtml: fallbackAbstractHtml,
@@ -751,6 +760,7 @@
           if (!group.label && sessionTitle) group.label = sessionTitle;
           if (!group.scheduleSessionTitle && sessionTitle)
             group.scheduleSessionTitle = sessionTitle;
+          if (!group.topic && topic) group.topic = topic;
           if (isPanelSession) {
             group.categorySlug = PANELS_CATEGORY_SLUG;
             group.presentationType = 'panel';
@@ -766,12 +776,14 @@
             if (!group.source[key]) group.source[key] = value;
           });
 
-          getSchedulePresentationSpeakerCandidates(rawPresentation).forEach((rawSpeaker) => {
-            const speaker = ensureScheduleSpeaker(rawSpeaker);
-            if (speaker && !group.speakerSlugs.includes(speaker.slug)) {
-              group.speakerSlugs.push(speaker.slug);
-            }
-          });
+          getSchedulePresentationSpeakerCandidates(rawPresentation, { type: item?.type }).forEach(
+            (rawSpeaker) => {
+              const speaker = ensureScheduleSpeaker(rawSpeaker);
+              if (speaker && !group.speakerSlugs.includes(speaker.slug)) {
+                group.speakerSlugs.push(speaker.slug);
+              }
+            },
+          );
         });
       });
     });
@@ -833,6 +845,7 @@
       id: normalizeSpace(String(presentation?.id ?? slug)),
       slug,
       title: normalizeSpace(presentation?.title || '') || 'Presentation TBA',
+      topic: normalizeSpace(presentation?.topic || ''),
       abstract: normalizeSpace(abstract),
       abstractHtml:
         presentation?.abstractHtml || presentation?.descriptionHtml || textToHtml(abstract),
@@ -916,6 +929,7 @@
       id: presentation.id,
       slug: presentation.slug,
       title: presentation.title,
+      topic: presentation.topic,
       abstract: presentation.abstract,
       abstractHtml: presentation.abstractHtml,
       descriptionHtml: presentation.descriptionHtml,
@@ -1011,6 +1025,7 @@
       id: presentation?.id,
       slug: presentation?.slug,
       title: presentation?.title,
+      topic: presentation?.topic,
       abstract: presentation?.abstract,
       abstractHtml: presentation?.abstractHtml,
       descriptionHtml: presentation?.descriptionHtml,
@@ -1381,6 +1396,23 @@
         ? payload.fields
         : [];
     const result = {};
+    const authors = asArray(payload?.data?.authors || payload?.authors)
+      .map((author) => ({
+        name: getMeetingHandPersonName(author),
+        isPresenter: author?.is_presenter === true,
+        order: toNullableNumber(author?.order),
+      }))
+      .filter((author) => author.name);
+
+    if (authors.length) {
+      result.authors = authors.sort((left, right) => {
+        if (left.order !== null && right.order !== null && left.order !== right.order) {
+          return left.order - right.order;
+        }
+        if (left.order !== right.order) return left.order === null ? 1 : -1;
+        return normalizeSpace(left.name).localeCompare(normalizeSpace(right.name));
+      });
+    }
 
     fields.forEach((field) => {
       const fieldId = String(field?.event_submission_field_id || field?.id || '');

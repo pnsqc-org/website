@@ -199,7 +199,7 @@ test('pricing-period hides badges when Date construction is invalid', async () =
 test('details modal exposes helpers, creates shells, opens templates, and closes through each control', async () => {
   resetDom(`
     <template id="details-template"><p>Template body</p></template>
-    <button id="trigger" data-details-modal-open="details-template" data-details-modal-title="Presentation Title" data-details-modal-label="Presentation">Open</button>
+    <button id="trigger" data-details-modal-open="details-template" data-details-modal-title="Presentation Title" data-details-modal-label="Presentation" data-details-modal-subtitle="Quality Engineering & Systems Reliability">Open</button>
   `);
 
   await importFreshSrcModule('details-modal.js');
@@ -216,6 +216,11 @@ test('details modal exposes helpers, creates shells, opens templates, and closes
   assert.equal(modal.classList.contains('hidden'), false);
   assert.equal(document.body.classList.contains('overflow-hidden'), true);
   assert.equal(modal.querySelector('[data-details-modal-title]').textContent, 'Presentation Title');
+  assert.equal(
+    modal.querySelector('[data-details-modal-subtitle]').textContent,
+    'Quality Engineering & Systems Reliability',
+  );
+  assert.equal(modal.querySelector('[data-details-modal-subtitle]').hidden, false);
   assert.equal(modal.querySelector('[data-details-modal-body]').textContent, 'Template body');
 
   modal.querySelector('[data-details-modal-close]').click();

@@ -89,20 +89,29 @@ test('author bios use the common speaker schema and presentation references', ()
   for (const slug of bioSlugs) {
     const filePath = join(BIOS, slug, 'about.json');
     const profile = readJson(filePath);
+    const hasArchivePresentationRefs =
+      Array.isArray(profile.presentationRefs) && profile.presentationRefs.length > 0;
 
     assertNonEmptyString(profile.name, 'name', filePath);
     assert.equal(profile.slug, slug, `${relativePath(filePath)} slug must match its folder`);
     assertString(profile.profession, 'profession', filePath);
     assertString(profile.organization, 'organization', filePath);
     if (Object.hasOwn(profile, 'avatar')) {
-      assertNonEmptyString(profile.avatar, 'avatar', filePath);
-      if (!isHttpUrl(profile.avatar)) {
+      assertString(profile.avatar, 'avatar', filePath);
+      if (profile.avatar.trim()) {
+        if (!isHttpUrl(profile.avatar)) {
+          assert.ok(
+            profile.avatar.startsWith('/'),
+            `${relativePath(filePath)} avatar must be an absolute site path or http(s) URL`,
+          );
+          const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
+          assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
+        }
+      } else {
         assert.ok(
-          profile.avatar.startsWith('/'),
-          `${relativePath(filePath)} avatar must be an absolute site path or http(s) URL`,
+          !hasArchivePresentationRefs,
+          `${relativePath(filePath)} avatar must not be empty for archived author bios`,
         );
-        const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
-        assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
       }
     }
     assertString(profile.linkedin, 'linkedin', filePath);
@@ -123,7 +132,7 @@ test('author bios use the common speaker schema and presentation references', ()
       profile.source && typeof profile.source === 'object' && !Array.isArray(profile.source),
       `${relativePath(filePath)} source must be an object`,
     );
-    if (profile.presentationRefs.length > 0) {
+    if (hasArchivePresentationRefs) {
       assertSource(profile.source, filePath);
     }
 

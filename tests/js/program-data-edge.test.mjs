@@ -94,6 +94,32 @@ test('program data sorting and schedule helpers cover missing dates, starts, ord
       .map((person) => data.getMeetingHandPersonName(person)),
     ['Duplicate Person', 'Unique Author', 'Presenter Author', 'Participant Person'],
   );
+  assert.deepEqual(
+    data
+      .getSchedulePresentationSpeakerCandidates(
+        {
+          presentation_type: 'Paper',
+          speaker: { firstname: 'Ignored', lastname: 'Speaker' },
+          speakers: [{ name: 'Ignored Speaker Two' }],
+          authors: [{ full_name: 'Paper Author' }],
+        },
+        { type: 'speaker_presentation' },
+      )
+      .map((person) => data.getMeetingHandPersonName(person)),
+    ['Paper Author'],
+  );
+  assert.deepEqual(
+    data
+      .getSchedulePresentationSpeakerCandidates(
+        {
+          speaker: { firstname: 'Ignored', lastname: 'Speaker' },
+          authors: [{ full_name: 'Submission Author' }],
+        },
+        { type: 'submission' },
+      )
+      .map((person) => data.getMeetingHandPersonName(person)),
+    ['Submission Author'],
+  );
 
   assert.equal(
     data.getScheduleItemSubmissionId({
@@ -256,6 +282,12 @@ test('program data loaders cover failed responses, missing fetchers, empty submi
   assert.equal(data.normalizeMeetingHandSubmission({ fields: [] }), null);
   assert.equal(
     data.normalizeMeetingHandSubmission({
+      data: {
+        authors: [
+          { firstname: 'Primary', lastname: 'Author', is_presenter: true, order: 2 },
+          { firstname: 'Secondary', lastname: 'Author', is_presenter: false, order: 1 },
+        ],
+      },
       fields: [
         { id: 'unknown', value: 'Ignored' },
         { id: '1469', value: '<p>HTML abstract</p>' },
@@ -264,5 +296,20 @@ test('program data loaders cover failed responses, missing fetchers, empty submi
       ],
     }).bio,
     'Bio Line Tabbed',
+  );
+  assert.deepEqual(
+    data.normalizeMeetingHandSubmission({
+      data: {
+        authors: [
+          { firstname: 'Primary', lastname: 'Author', is_presenter: true, order: 2 },
+          { firstname: 'Secondary', lastname: 'Author', is_presenter: false, order: 1 },
+        ],
+      },
+      fields: [],
+    }).authors,
+    [
+      { name: 'Secondary Author', isPresenter: false, order: 1 },
+      { name: 'Primary Author', isPresenter: true, order: 2 },
+    ],
   );
 });

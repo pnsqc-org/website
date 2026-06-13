@@ -359,7 +359,12 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
                     presentation: {
                       id: 29535,
                       title: 'Agentic DataCards to Data Quality Gates',
+                      topic: 'Emerging Technologies & AI Systems',
                       presentation_type: 'Paper',
+                      speaker: {
+                        firstname: 'Ignored',
+                        lastname: 'Speaker',
+                      },
                       authors: [
                         {
                           firstname: 'Jeyasekar',
@@ -388,6 +393,7 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   assert.ok(paper);
   assert.equal(paper.presentationType, 'paper');
   assert.equal(paper.categorySlug, 'paper-presenters');
+  assert.equal(paper.topic, 'Emerging Technologies & AI Systems');
   assert.equal(paper.submissionId, '29535');
   assert.equal(programData.getPresentationSubmissionId(paper), '29535');
   assert.equal(paper.date, '2026-10-12');
@@ -399,6 +405,10 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   assert.deepEqual(
     selectedSpeakers.map((speaker) => speaker.name),
     ['Jeyasekar Marimuthu'],
+  );
+  assert.equal(
+    selectedSpeakers[0].presentations[0].topic,
+    'Emerging Technologies & AI Systems',
   );
 });
 

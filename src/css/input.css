@@ -505,6 +505,10 @@ html {
   padding: 1rem 1.25rem;
 }
 
+.modal-header > div {
+  min-width: 0;
+}
+
 .modal-label {
   font-size: 0.75rem;
   font-weight: 600;
@@ -519,6 +523,15 @@ html {
   font-size: 1.125rem;
   font-weight: 700;
   color: var(--color-white);
+  overflow-wrap: anywhere;
+}
+
+.modal-subtitle {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-pnsqc-cyan);
+  overflow-wrap: anywhere;
 }
 
 .modal-close {

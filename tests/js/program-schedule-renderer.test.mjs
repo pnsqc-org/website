@@ -48,16 +48,25 @@ function installScheduleGlobals(dataOverrides = {}) {
       }
       return '';
     },
-    getSchedulePresentationSpeakerCandidates: (presentation) =>
-      [
+    getSchedulePresentationSpeakerCandidates: (presentation, options = {}) => {
+      const type = normalizeSpace(presentation?.presentation_type || options.type).toLowerCase();
+      if (type.includes('paper') || type.includes('submission')) {
+        return [...(presentation?.authors || [])].filter(Boolean);
+      }
+      return [
         presentation?.speaker,
         ...(presentation?.speakers || []),
         ...(presentation?.authors || []),
-      ].filter(Boolean),
+      ].filter(Boolean);
+    },
     getWorkshopDate: () => '2026-10-14',
     loadMeetingHandSubmission: vi.fn(() =>
       Promise.resolve({
         abstractHtml: '<p>Loaded abstract.</p>',
+        authors: [
+          { name: 'New Speaker', isPresenter: true, order: 1 },
+          { name: 'Existing Speaker', isPresenter: false, order: 2 },
+        ],
         bioHtml: '<p>Loaded bio.</p>',
       }),
     ),
@@ -112,7 +121,13 @@ function installScheduleGlobals(dataOverrides = {}) {
         return {
           template: createScheduleTemplate(
             templateId,
-            `Details for ${presentation.title} ${presentation.abstractHtml || ''}`,
+            `Details for ${presentation.title} ${presentation.abstractHtml || ''} Speakers ${(
+              presentation.speakers || []
+            )
+              .map((speaker) => speaker.name)
+              .join(',')} Bios ${(presentation.bioSpeakers || presentation.speakers || [])
+              .map((speaker) => `${speaker.name}:${speaker.bioHtml || ''}`)
+              .join('|')}`,
           ),
           templateId,
         };
@@ -153,24 +168,29 @@ function createSchedulePayload() {
                   duration: 30,
                   id: 'item-1',
                   order: 2,
+                  type: 'submission',
                   participant_submission_id: 'sub-1',
                   presentation: {
                     id: 'paper-1',
                     title: 'Paper Talk',
+                    presentation_type: 'Paper',
                     speaker: {
-                      firstname: 'Existing',
+                      firstname: 'Ignored',
                       lastname: 'Speaker',
                     },
+                    authors: [{ firstname: 'Existing', lastname: 'Speaker' }],
                   },
                 },
                 {
                   duration: 30,
                   id: 'item-2',
                   order: 1,
+                  type: 'submission',
                   participant_submission_id: 'sub-2',
                   presentation: {
                     id: 'paper-2',
                     title: 'Paper Talk',
+                    presentation_type: 'Paper',
                     authors: [
                       {
                         firstname: 'New',
@@ -185,6 +205,7 @@ function createSchedulePayload() {
                   duration: 30,
                   id: 'item-4',
                   order: 3,
+                  type: 'submission',
                   participant_submission_id: 'sub-3',
                   presentation: {
                     id: 'paper-3',
@@ -313,6 +334,31 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
   assert.equal(app.renderer.displayTimeZone, 'event');
 });
 
+test('schedule app loads the paper presenter enriched program for at-a-glance speakers', async () => {
+  const loadProgram = vi.fn(() =>
+    Promise.resolve({
+      presentations: [],
+      speakers: [{ name: 'New Speaker', avatar: '/images/people/new-speaker.jpg' }],
+    }),
+  );
+  const data = installScheduleGlobals({ loadProgram });
+  document.body.innerHTML = '';
+  await importFreshSrcModule('program-schedule.js');
+  document.body.innerHTML = scheduleContainerHtml();
+  const app = globalThis.PNSQCProgramSchedule.createScheduleApp(
+    document.querySelector('[data-program-schedule]'),
+  );
+  await app.init();
+
+  assert.equal(data.loadProgramPayload.mock.calls.length, 1);
+  assert.deepEqual(loadProgram.mock.calls[0][0], {
+    source: 'conference',
+    year: '2026',
+    fallbackAvatar: '/configured.jpg',
+    categorySlug: 'paper-presenters',
+  });
+});
+
 test('schedule app lazy-loads submission details, re-renders, and handles submission failures', async () => {
   const data = installScheduleGlobals();
   document.body.innerHTML = '';
@@ -335,6 +381,21 @@ test('schedule app lazy-loads submission details, re-renders, and handles submis
   assert.equal(trigger.disabled, false);
   assert.equal(app.renderer.submissionDetails.size > 0, true);
   assert.equal(document.querySelector('[data-schedule-templates]').children.length > 0, true);
+  app.renderer.submissionDetails.set('sub-2', {
+    abstractHtml: '<p>Loaded abstract.</p>',
+    authors: [
+      { name: 'New Speaker', isPresenter: true, order: 1 },
+      { name: 'Existing Speaker', isPresenter: false, order: 2 },
+    ],
+    bioHtml: '<p>Loaded bio.</p>',
+  });
+  app.renderer.render(app.renderer.scheduleCache);
+  const templateText = Array.from(document.querySelectorAll('[data-schedule-templates] template'))
+    .map((template) => template.content.textContent)
+    .join('\n');
+  assert.match(templateText, /Speakers Existing Speaker,New Speaker/);
+  assert.match(templateText, /New Speaker:<p>Loaded bio\.<\/p>/);
+  assert.doesNotMatch(templateText, /Bios .*Existing Speaker/);
 
   const failingData = installScheduleGlobals({
     loadMeetingHandSubmission: vi.fn(() => Promise.reject(new Error('offline'))),

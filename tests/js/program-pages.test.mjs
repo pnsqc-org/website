@@ -159,6 +159,7 @@ test('program directory renders speaker sections and hydrates lazy submission de
       {
         id: 'sub-1',
         title: 'Lazy Paper',
+        topic: 'Emerging Technologies & AI Systems',
         presentationType: 'paper',
         submissionId: 'sub-1',
         abstractHtml: '',
@@ -197,6 +198,10 @@ test('program directory renders speaker sections and hydrates lazy submission de
   assert.equal(root.querySelector('[data-program-templates]').children.length, 1);
   assert.ok(trigger);
   assert.equal(trigger.getAttribute('data-details-modal-label'), 'Presentation');
+  assert.equal(
+    trigger.getAttribute('data-details-modal-subtitle'),
+    'Emerging Technologies & AI Systems',
+  );
 
   trigger.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
   await flushPromises();

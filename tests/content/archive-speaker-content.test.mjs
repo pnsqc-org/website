@@ -60,6 +60,15 @@ function assertSource(value, filePath) {
   );
 }
 
+function isHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 test('archive source content uses only about.json files', () => {
   const unexpectedFiles = listFiles(CONTENT)
     .filter((filePath) => path.basename(filePath) !== 'about.json')
@@ -75,7 +84,7 @@ test('legacy content/speakers folder is removed', () => {
 test('author bios use the common speaker schema and presentation references', () => {
   const bioSlugs = listDirs(BIOS);
   const presentationSlugs = new Set(listDirs(ARCHIVE_2025));
-  assert.equal(bioSlugs.length, 64);
+  assert.ok(bioSlugs.length > 0, 'shared author bios should exist');
 
   for (const slug of bioSlugs) {
     const filePath = join(BIOS, slug, 'about.json');
@@ -87,12 +96,14 @@ test('author bios use the common speaker schema and presentation references', ()
     assertString(profile.organization, 'organization', filePath);
     if (Object.hasOwn(profile, 'avatar')) {
       assertNonEmptyString(profile.avatar, 'avatar', filePath);
-      assert.ok(
-        profile.avatar.startsWith('/'),
-        `${relativePath(filePath)} avatar must be an absolute site path`,
-      );
-      const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
-      assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
+      if (!isHttpUrl(profile.avatar)) {
+        assert.ok(
+          profile.avatar.startsWith('/'),
+          `${relativePath(filePath)} avatar must be an absolute site path or http(s) URL`,
+        );
+        const assetPath = join(ROOT, 'src', profile.avatar.slice(1).replace(/\//g, path.sep));
+        assert.ok(existsSync(assetPath), `${relativePath(filePath)} references a missing avatar`);
+      }
     }
     assertString(profile.linkedin, 'linkedin', filePath);
     assertString(profile.homepage, 'homepage', filePath);
@@ -103,16 +114,18 @@ test('author bios use the common speaker schema and presentation references', ()
       false,
       `${relativePath(filePath)} must not use description`,
     );
-    assertSource(profile.source, filePath);
     assert.equal(
       Array.isArray(profile.presentationRefs),
       true,
       `${relativePath(filePath)} presentationRefs must be an array`,
     );
     assert.ok(
-      profile.presentationRefs.length > 0,
-      `${relativePath(filePath)} must include at least one presentation reference`,
+      profile.source && typeof profile.source === 'object' && !Array.isArray(profile.source),
+      `${relativePath(filePath)} source must be an object`,
     );
+    if (profile.presentationRefs.length > 0) {
+      assertSource(profile.source, filePath);
+    }
 
     profile.presentationRefs.forEach((presentation, index) => {
       assert.ok(

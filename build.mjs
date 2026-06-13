@@ -22,6 +22,20 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = join(ROOT, 'src');
 const DIST = join(ROOT, 'dist');
 const CONTENT = join(ROOT, 'content');
+const PEOPLE_IMAGES_SITE_DIR = '/images/people';
+const PEOPLE_IMAGES_DIR = join(SRC, 'images', 'people');
+const REMOTE_AVATAR_MAX_BYTES = 10 * 1024 * 1024;
+const REMOTE_AVATAR_TIMEOUT_MS = 15_000;
+const IMAGE_EXTENSIONS = ['.avif', '.gif', '.jpg', '.jpeg', '.png', '.webp'];
+const IMAGE_EXTENSION_SET = new Set(IMAGE_EXTENSIONS);
+const IMAGE_EXTENSION_BY_CONTENT_TYPE = new Map([
+  ['image/avif', '.avif'],
+  ['image/gif', '.gif'],
+  ['image/jpeg', '.jpg'],
+  ['image/jpg', '.jpg'],
+  ['image/png', '.png'],
+  ['image/webp', '.webp'],
+]);
 
 // ── Config ──────────────────────────────────────────────────────────
 
@@ -284,7 +298,10 @@ function requireString(value, filePath, label, options = {}) {
 function assertSourceAssetExists(assetPath, filePath, label) {
   if (!assetPath.startsWith('/')) {
     throw new Error(
-      `Expected "${label}" to be an absolute site path in ${relative(ROOT, filePath)}`,
+      `Expected "${label}" to be an absolute site path or http(s) URL in ${relative(
+        ROOT,
+        filePath,
+      )}`,
     );
   }
 
@@ -292,6 +309,225 @@ function assertSourceAssetExists(assetPath, filePath, label) {
   if (!existsSync(sourcePath)) {
     throw new Error(`Missing asset "${assetPath}" referenced in ${relative(ROOT, filePath)}`);
   }
+}
+
+function isHttpUrl(value) {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function normalizeImageExtension(extension) {
+  const normalized = String(extension || '').toLowerCase();
+  if (!IMAGE_EXTENSION_SET.has(normalized)) return '';
+  return normalized === '.jpeg' ? '.jpg' : normalized;
+}
+
+function imageExtensionFromUrl(value) {
+  try {
+    return normalizeImageExtension(path.posix.extname(new URL(value).pathname));
+  } catch {
+    return '';
+  }
+}
+
+function imageExtensionFromContentType(value) {
+  const mime = String(value || '')
+    .split(';')[0]
+    .trim()
+    .toLowerCase();
+  return IMAGE_EXTENSION_BY_CONTENT_TYPE.get(mime) || '';
+}
+
+function safeAvatarFileStem(value) {
+  return (
+    String(value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'avatar'
+  );
+}
+
+function underscoreAvatarFileStem(value) {
+  return safeAvatarFileStem(value).replace(/-/g, '_');
+}
+
+function avatarFileStemCandidates(slug, name) {
+  return [
+    safeAvatarFileStem(slug),
+    underscoreAvatarFileStem(slug),
+    safeAvatarFileStem(name),
+    underscoreAvatarFileStem(name),
+  ].filter((stem, index, stems) => stem && stems.indexOf(stem) === index);
+}
+
+function generatedAvatarSitePath(slug, extension = '.jpg') {
+  const safeExtension = normalizeImageExtension(extension) || '.jpg';
+  return `${PEOPLE_IMAGES_SITE_DIR}/${safeAvatarFileStem(slug)}${safeExtension}`;
+}
+
+function findExistingPeopleImage({ slug, name, preferredExtension }, options = {}) {
+  const peopleDir = options.peopleDir || PEOPLE_IMAGES_DIR;
+  const extensions = [normalizeImageExtension(preferredExtension), ...IMAGE_EXTENSIONS]
+    .filter(Boolean)
+    .map((extension) => (extension === '.jpeg' ? '.jpg' : extension))
+    .filter((extension, index, allExtensions) => allExtensions.indexOf(extension) === index);
+
+  for (const stem of avatarFileStemCandidates(slug, name)) {
+    for (const extension of extensions) {
+      const filename = `${stem}${extension}`;
+      const candidate = join(peopleDir, filename);
+      if (existsSync(candidate) && statSync(candidate).isFile()) {
+        return {
+          path: candidate,
+          sitePath: `${PEOPLE_IMAGES_SITE_DIR}/${filename}`,
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
+function resolveAuthorAvatar(avatar, filePath, slug, name = '', options = {}) {
+  const avatarUrl = isHttpUrl(avatar) ? avatar : '';
+  if (avatar && !avatarUrl) {
+    assertSourceAssetExists(avatar, filePath, 'avatar');
+    return { avatar, avatarSourceUrl: '' };
+  }
+
+  const existingPeopleImage = findExistingPeopleImage(
+    { slug, name, preferredExtension: imageExtensionFromUrl(avatarUrl) },
+    options,
+  );
+  if (existingPeopleImage) {
+    return { avatar: existingPeopleImage.sitePath, avatarSourceUrl: '' };
+  }
+
+  if (!avatar) return { avatar: '', avatarSourceUrl: '' };
+
+  if (avatarUrl) {
+    return {
+      avatar: generatedAvatarSitePath(slug, imageExtensionFromUrl(avatarUrl) || '.jpg'),
+      avatarSourceUrl: avatarUrl,
+    };
+  }
+}
+
+function sitePathToRootedPath(sitePath, rootDir, label) {
+  if (!sitePath.startsWith('/')) {
+    throw new Error(`Expected generated avatar path "${sitePath}" to be an absolute site path.`);
+  }
+
+  const resolvedRoot = path.resolve(rootDir);
+  const targetPath = path.resolve(join(resolvedRoot, sitePath.slice(1).replace(/\//g, path.sep)));
+  if (targetPath !== resolvedRoot && !targetPath.startsWith(`${resolvedRoot}${path.sep}`)) {
+    throw new Error(`Refusing to write generated avatar outside ${label}`);
+  }
+  return targetPath;
+}
+
+function sitePathToSourcePath(sitePath) {
+  return sitePathToRootedPath(sitePath, SRC, relative(ROOT, SRC));
+}
+
+function sitePathToDistPath(sitePath, distDir = DIST) {
+  return sitePathToRootedPath(sitePath, distDir, relative(ROOT, distDir));
+}
+
+async function fetchRemoteAuthorAvatar(profile, options = {}) {
+  const sourceUrl = profile?.avatarSourceUrl || '';
+  if (!sourceUrl) return false;
+
+  const fetcher = options.fetchImpl || globalThis.fetch;
+  if (typeof fetcher !== 'function') {
+    throw new Error(
+      'Cannot fetch remote author avatars because no fetch implementation is available.',
+    );
+  }
+
+  const timeoutMs = options.timeoutMs ?? REMOTE_AVATAR_TIMEOUT_MS;
+  const controller = typeof AbortController === 'function' ? new AbortController() : null;
+  const timeout =
+    controller && timeoutMs > 0 ? setTimeout(() => controller.abort(), timeoutMs) : null;
+  let response;
+
+  try {
+    response = await fetcher(sourceUrl, {
+      redirect: 'follow',
+      signal: controller?.signal,
+    });
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch avatar for "${profile.slug}" from ${sourceUrl}: ${error.message}`,
+      { cause: error },
+    );
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+
+  if (!response?.ok) {
+    const status = response?.status ? ` ${response.status}` : '';
+    const statusText = response?.statusText ? ` ${response.statusText}` : '';
+    throw new Error(
+      `Failed to fetch avatar for "${profile.slug}" from ${sourceUrl}:${status}${statusText}`,
+    );
+  }
+
+  const contentType = response.headers?.get?.('content-type') || '';
+  const mime = contentType.split(';')[0].trim().toLowerCase();
+  const urlExtension = imageExtensionFromUrl(sourceUrl);
+  if (
+    mime &&
+    !mime.startsWith('image/') &&
+    !(mime === 'application/octet-stream' && urlExtension)
+  ) {
+    throw new Error(
+      `Expected image content for avatar "${sourceUrl}", but received "${contentType}".`,
+    );
+  }
+
+  const extension = imageExtensionFromContentType(contentType) || urlExtension || '.jpg';
+  profile.avatar = generatedAvatarSitePath(profile.slug, extension);
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  if (!buffer.byteLength) {
+    throw new Error(`Fetched avatar for "${profile.slug}" from ${sourceUrl}, but it was empty.`);
+  }
+  if (buffer.byteLength > REMOTE_AVATAR_MAX_BYTES) {
+    throw new Error(
+      `Fetched avatar for "${profile.slug}" from ${sourceUrl}, but it exceeded ${REMOTE_AVATAR_MAX_BYTES} bytes.`,
+    );
+  }
+
+  const sourcePath = options.peopleDir
+    ? join(options.peopleDir, `${safeAvatarFileStem(profile.slug)}${extension}`)
+    : sitePathToSourcePath(profile.avatar);
+  mkdirSync(path.dirname(sourcePath), { recursive: true });
+  writeFileSync(sourcePath, buffer);
+
+  const targetPath = sitePathToDistPath(profile.avatar, options.distDir || DIST);
+  mkdirSync(path.dirname(targetPath), { recursive: true });
+  cpSync(sourcePath, targetPath);
+  return true;
+}
+
+async function fetchRemoteAuthorAvatars(sharedProfiles, options = {}) {
+  const profiles = Array.from(sharedProfiles?.values?.() || sharedProfiles || []).filter(
+    (profile) => profile?.avatarSourceUrl,
+  );
+
+  const results = await Promise.all(
+    profiles.map((profile) => fetchRemoteAuthorAvatar(profile, options)),
+  );
+  return {
+    fetched: results.filter(Boolean).length,
+    total: profiles.length,
+  };
 }
 
 function optionalString(value) {
@@ -370,15 +606,14 @@ function loadSharedAuthorBios() {
       data.bio === undefined ? '' : requireString(data.bio, filePath, 'bio', { allowEmpty: true });
     const presentationRefs = readPresentationRefs(data.presentationRefs, filePath);
     const source = readOptionalObject(data.source, filePath, 'source');
+    const resolvedAvatar = resolveAuthorAvatar(avatar, filePath, slug, name);
 
-    if (avatar) assertSourceAssetExists(avatar, filePath, 'avatar');
-
-    profiles.set(slug, {
+    const profile = {
       id: slug,
       slug,
       name,
       profession,
-      avatar,
+      avatar: resolvedAvatar.avatar,
       linkedin,
       homepage,
       email,
@@ -387,7 +622,10 @@ function loadSharedAuthorBios() {
       bio,
       bioHtml: markdownToHtml(bio),
       presentationRefs,
-    });
+    };
+    if (resolvedAvatar.avatarSourceUrl) profile.avatarSourceUrl = resolvedAvatar.avatarSourceUrl;
+
+    profiles.set(slug, profile);
   }
 
   return profiles;
@@ -505,11 +743,54 @@ function loadArchiveProgramDataForYear(year, sharedProfiles) {
   return programData.serializeProgram(programData.normalizeArchiveProgram(rawProgram, { year }));
 }
 
-function buildArchiveProgramData() {
+function buildConferencePaperPresenterProfiles(sharedProfiles) {
+  return Array.from(sharedProfiles?.values?.() || sharedProfiles || [])
+    .map((profile) => ({
+      slug: optionalString(profile?.slug || profile?.id),
+      name: optionalString(profile?.name),
+      avatar: optionalString(profile?.avatar),
+      linkedin: optionalString(profile?.linkedin),
+      homepage: optionalString(profile?.homepage),
+    }))
+    .filter((profile) => profile.name && (profile.avatar || profile.linkedin || profile.homepage))
+    .sort((left, right) => {
+      const name = left.name.localeCompare(right.name);
+      return name || left.slug.localeCompare(right.slug);
+    });
+}
+
+function writeConferencePaperPresenterProfiles(sharedProfiles, options = {}) {
+  const profiles = buildConferencePaperPresenterProfiles(sharedProfiles);
+  if (!profiles.length) return profiles;
+
+  const targetDir = join(options.distDir || DIST, 'data', 'conference', '2026');
+  mkdirSync(targetDir, { recursive: true });
+  writeFileSync(
+    join(targetDir, 'paper-presenter-profiles.json'),
+    JSON.stringify(profiles, null, 2) + '\n',
+  );
+  console.log(
+    `  data/conference/2026/paper-presenter-profiles.json  (${profiles.length} profiles)`,
+  );
+  return profiles;
+}
+
+async function buildArchiveProgramData() {
   if (!existsSync(CONTENT)) return;
 
   const sharedProfiles = loadSharedAuthorBios();
   if (!sharedProfiles.size) return;
+
+  const remoteAvatarStats = await fetchRemoteAuthorAvatars(sharedProfiles);
+  if (remoteAvatarStats.total) {
+    console.log(
+      `  images/people/  (${remoteAvatarStats.total} remote avatar${
+        remoteAvatarStats.total === 1 ? '' : 's'
+      }: ${remoteAvatarStats.fetched} fetched)`,
+    );
+  }
+
+  writeConferencePaperPresenterProfiles(sharedProfiles);
 
   const yearDirs = readdirSync(CONTENT, { withFileTypes: true }).filter(
     (entry) => entry.isDirectory() && entry.name !== 'bios' && entry.name !== 'speakers',
@@ -587,13 +868,13 @@ function assembleDist() {
 
 // ── Main ────────────────────────────────────────────────────────────
 
-function main() {
+async function main() {
   // Step 1: Copy src/ to dist/
   console.log('\nbuild.mjs -> assembling dist/\n');
   assembleDist();
 
   console.log('build.mjs -> generating archive program data\n');
-  buildArchiveProgramData();
+  await buildArchiveProgramData();
 
   // Step 2: Process HTML files in dist/ (NOT src/)
   const config = loadConfig();
@@ -624,7 +905,18 @@ function main() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main();
+  main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }
 
-export { buildArchiveProgramData, loadArchiveProgramDataForYear, loadSharedAuthorBios };
+export {
+  buildArchiveProgramData,
+  buildConferencePaperPresenterProfiles,
+  fetchRemoteAuthorAvatars,
+  loadArchiveProgramDataForYear,
+  loadSharedAuthorBios,
+  resolveAuthorAvatar,
+  writeConferencePaperPresenterProfiles,
+};

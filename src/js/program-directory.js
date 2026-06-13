@@ -322,6 +322,7 @@
         source: route.source,
         year: route.year,
         fallbackAvatar,
+        categorySlug: route.category,
       });
       renderProgram(program);
       setStatus('');

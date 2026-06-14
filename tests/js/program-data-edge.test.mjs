@@ -252,6 +252,47 @@ test('program data filters and sections cover include and exclude branches', () 
   );
 });
 
+test('paper presenter sections match presentation topics in configured order', () => {
+  const config = data.getProgramCategoryConfig('paper-presenters', '2026');
+  const speaker = (topic) => ({
+    name: `${topic || 'Untopiced'} Speaker`,
+    presentations: [
+      {
+        categorySlug: 'paper-presenters',
+        presentationType: 'paper',
+        topic,
+      },
+    ],
+  });
+
+  assert.deepEqual(
+    config.sections.map((section) => section.title),
+    [
+      'Emerging Technologies & AI Systems',
+      'Organizational Quality & Leadership',
+      'Quality Engineering & Systems Reliability',
+      'Tools & Productivity',
+    ],
+  );
+  assert.equal(
+    data.getSectionForItem(speaker('Emerging Technologies & AI Systems'), config).key,
+    'emerging-technologies-ai-systems',
+  );
+  assert.equal(
+    data.getSectionForItem(speaker('Organizational Quality & Leadership'), config).key,
+    'organizational-quality-leadership',
+  );
+  assert.equal(
+    data.getSectionForItem(speaker('Quality Engineering & Systems Reliability'), config).key,
+    'quality-engineering-systems-reliability',
+  );
+  assert.equal(
+    data.getSectionForItem(speaker('Tools & Productivity'), config).key,
+    'tools-productivity',
+  );
+  assert.equal(data.getSectionForItem(speaker(''), config).key, 'emerging-technologies-ai-systems');
+});
+
 test('program data loaders cover failed responses, missing fetchers, empty submissions, and direct field arrays', async () => {
   data.clearProgramCache();
   await assert.rejects(

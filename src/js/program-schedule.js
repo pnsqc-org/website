@@ -120,15 +120,6 @@
         }
         return merged;
       });
-    const sortPeopleByLastName =
-      programData.sortPeopleByLastName ||
-      ((people) =>
-        asArray(people)
-          .slice()
-          .sort((left, right) =>
-            normalizeSpace(left?.name).localeCompare(normalizeSpace(right?.name)),
-          ));
-
     const PLACEHOLDER_TITLE = 'Unassigned Meeting';
     const FALLBACK_AVATAR = '/images/brand/pnsqc-logo.jpg';
 
@@ -353,6 +344,55 @@
       });
     }
 
+    function getPresenterAuthorCandidates(rawPresentation) {
+      return []
+        .concat(rawPresentation?.presenterAuthor ? [rawPresentation.presenterAuthor] : [])
+        .concat(rawPresentation?.presenter_author ? [rawPresentation.presenter_author] : []);
+    }
+
+    function getSchedulePresenterNameKeys(item, presentation) {
+      const keys = [];
+      const addPerson = (person) => {
+        const key = TextUtils.normalizeCompareText(formatPersonName(person));
+        if (key && !keys.includes(key)) keys.push(key);
+      };
+
+      if (Array.isArray(item?._scheduleItems)) {
+        item._scheduleItems.forEach((entry) => {
+          getPresenterAuthorCandidates(entry?.presentation || {}).forEach(addPerson);
+        });
+      } else {
+        getPresenterAuthorCandidates(item?.presentation || {}).forEach(addPerson);
+      }
+
+      asArray(presentation?.presenterSpeakers).forEach(addPerson);
+      asArray(presentation?.bioSpeakers).forEach(addPerson);
+      return keys;
+    }
+
+    function sortScheduleSpeakers(speakers, presenterKeys = []) {
+      const sorted = asArray(speakers)
+        .slice()
+        .sort((left, right) => {
+          const leftName = normalizeSpace(left?.name);
+          const rightName = normalizeSpace(right?.name);
+          const leftFirst = leftName.split(/\s+/)[0] || '';
+          const rightFirst = rightName.split(/\s+/)[0] || '';
+          return leftFirst.localeCompare(rightFirst) || leftName.localeCompare(rightName);
+        });
+      if (!presenterKeys.length) return sorted;
+
+      const presenterKeyOrder = new Map(presenterKeys.map((key, index) => [key, index]));
+      return sorted.slice().sort((left, right) => {
+        const leftOrder = presenterKeyOrder.get(TextUtils.normalizeCompareText(left?.name));
+        const rightOrder = presenterKeyOrder.get(TextUtils.normalizeCompareText(right?.name));
+        if (leftOrder !== undefined && rightOrder !== undefined) return leftOrder - rightOrder;
+        if (leftOrder !== undefined) return -1;
+        if (rightOrder !== undefined) return 1;
+        return 0;
+      });
+    }
+
     function getPrimarySubmissionAuthorNames(detail) {
       const authors = asArray(detail?.authors);
       const presenters = authors.filter((author) => author?.isPresenter);
@@ -395,6 +435,7 @@
       return {
         ...merged,
         speakers: mergedSpeakers,
+        presenterSpeakers: bioSpeakers.length ? bioSpeakers : asArray(merged.presenterSpeakers),
         bioSpeakers: bioSpeakers.length ? bioSpeakers : asArray(merged.bioSpeakers),
       };
     }
@@ -445,6 +486,27 @@
         normalizeSpace(presentation?.objectives) ||
         normalizeSpace(presentation?.objectivesHtml)
       );
+    }
+
+    function hasLearningObjectives(presentation) {
+      return !!(
+        normalizeSpace(presentation?.objectives) || normalizeSpace(presentation?.objectivesHtml)
+      );
+    }
+
+    function hasSpeakerBio(speaker) {
+      return !!(normalizeSpace(speaker?.bio) || normalizeSpace(speaker?.bioHtml));
+    }
+
+    function presentationNeedsSubmissionDetail(presentation) {
+      if (!hasPresentationDetail(presentation)) return true;
+      if (presentation?.presentationType === 'paper' && !hasLearningObjectives(presentation)) {
+        return true;
+      }
+      const speakers = asArray(presentation?.presenterSpeakers).length
+        ? asArray(presentation.presenterSpeakers)
+        : asArray(presentation?.speakers);
+      return speakers.some((speaker) => !hasSpeakerBio(speaker));
     }
 
     class ScheduleRenderer {
@@ -580,7 +642,10 @@
           const key = TextUtils.normalizeCompareText(speaker?.name);
           if (key) speakersByName.set(key, speaker);
         });
-        return sortPeopleByLastName(Array.from(speakersByName.values()));
+        return sortScheduleSpeakers(
+          Array.from(speakersByName.values()),
+          getSchedulePresenterNameKeys(item, presentation),
+        );
       }
 
       buildPresentationDetail({ item, session, dayIso, abstractMap }) {
@@ -616,10 +681,13 @@
           presentation = mergeScheduleSubmissionDetail(presentation, submissionDetail);
         }
 
-        presentation.speakers = sortPeopleByLastName(this.resolveSpeakers(item, presentation));
+        presentation.speakers = this.resolveSpeakers(item, presentation);
         if (submissionDetail) {
           presentation = mergeScheduleSubmissionDetail(presentation, submissionDetail);
-          presentation.speakers = sortPeopleByLastName(presentation.speakers);
+          presentation.speakers = sortScheduleSpeakers(
+            presentation.speakers,
+            getSchedulePresenterNameKeys(item, presentation),
+          );
         }
         return presentation;
       }
@@ -703,21 +771,19 @@
         button.setAttribute('data-details-modal-label', 'Presentation');
         if (submissionId) button.setAttribute('data-schedule-submission-id', submissionId);
 
-        if (shouldLazyLoad) {
-          button.setAttribute('data-schedule-submission-trigger', 'true');
-          return button;
-        }
-
         const templateId = this.nextTemplateId('schedule-presentation');
         this.registerTemplate(
           this.detailRenderer.buildPresentationModalTemplate({
-            presentation,
+            presentation: shouldLazyLoad
+              ? { ...presentation, isLoadingSubmissionDetail: true }
+              : presentation,
             templateId,
             categoryLabel:
               presentation.presentationType === 'workshop' ? 'Workshop' : 'Presentation',
           }),
         );
         button.setAttribute('data-details-modal-open', templateId);
+        if (shouldLazyLoad) button.setAttribute('data-schedule-submission-trigger', 'true');
         return button;
       }
 
@@ -824,7 +890,7 @@
           const submissionId = getScheduleItemSubmissionId(item);
           const submissionLoaded = submissionId && this.submissionDetails.has(submissionId);
           const shouldLazyLoad =
-            !!submissionId && !submissionLoaded && !hasPresentationDetail(presentation);
+            !!submissionId && !submissionLoaded && presentationNeedsSubmissionDetail(presentation);
           const row = showPresentationTimes
             ? Dom.el('div', 'grid gap-x-4 gap-y-1 sm:grid-cols-[140px,1fr]')
             : Dom.el('div');
@@ -1050,9 +1116,6 @@
                 ? event.target.closest('[data-schedule-submission-trigger="true"]')
                 : null;
             if (!(trigger instanceof HTMLButtonElement)) return;
-            if (trigger.hasAttribute('data-details-modal-open')) return;
-            event.preventDefault();
-            event.stopPropagation();
             this.loadSubmissionDetails(trigger);
           });
         }
@@ -1098,17 +1161,42 @@
           });
           this.renderer.submissionDetails.set(submissionId, detail || null);
           if (this.renderer.scheduleCache) {
+            const templateId = trigger.getAttribute('data-details-modal-open') || '';
             this.renderer.render(this.renderer.scheduleCache);
-            const updatedTrigger = this.findSubmissionTrigger(submissionId);
-            if (updatedTrigger instanceof HTMLButtonElement) updatedTrigger.click();
+            document.dispatchEvent(
+              new CustomEvent('pnsqc:details-modal-refresh', {
+                detail: { templateId },
+              }),
+            );
           }
         } catch (error) {
           console.error(error);
-          this.openTemporaryMessage(
-            trigger,
-            trigger.getAttribute('data-details-modal-title') || 'Details',
-            'We could not load those details right now. Please try again.',
-          );
+          if (trigger.hasAttribute('data-details-modal-open')) {
+            const templateId = trigger.getAttribute('data-details-modal-open');
+            const template = document.createElement('template');
+            const wrapper = Dom.el('div', 'space-y-3');
+            wrapper.appendChild(
+              Dom.el(
+                'p',
+                'text-sm leading-7 text-pnsqc-slate',
+                'We could not load those details right now. Please try again.',
+              ),
+            );
+            template.id = templateId;
+            template.content.appendChild(wrapper);
+            document.getElementById(templateId)?.replaceWith(template);
+            document.dispatchEvent(
+              new CustomEvent('pnsqc:details-modal-refresh', {
+                detail: { templateId },
+              }),
+            );
+          } else {
+            this.openTemporaryMessage(
+              trigger,
+              trigger.getAttribute('data-details-modal-title') || 'Details',
+              'We could not load those details right now. Please try again.',
+            );
+          }
         } finally {
           trigger.removeAttribute('data-schedule-loading');
           trigger.removeAttribute('aria-busy');

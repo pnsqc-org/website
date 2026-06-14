@@ -71,15 +71,28 @@ function installScheduleGlobals(dataOverrides = {}) {
       }),
     ),
     loadProgramPayload: vi.fn(() => Promise.resolve(createSchedulePayload())),
-    mergeMeetingHandSubmissionDetail: vi.fn((presentation, detail) => ({
-      ...presentation,
-      abstractHtml: detail?.abstractHtml || presentation.abstractHtml,
-      descriptionHtml: detail?.abstractHtml || presentation.descriptionHtml,
-      speakers: (presentation.speakers || []).map((speaker) => ({
+    mergeMeetingHandSubmissionDetail: vi.fn((presentation, detail) => {
+      const speakers = (presentation.speakers || []).map((speaker) => ({
         ...speaker,
         bioHtml: speaker.bioHtml || detail?.bioHtml || '',
-      })),
-    })),
+      }));
+      const presenterNames = new Set(
+        (detail?.authors || [])
+          .filter((author) => author?.isPresenter)
+          .map((author) => normalizeSpace(author?.name).toLowerCase())
+          .filter(Boolean),
+      );
+      const presenterSpeakers = speakers.filter((speaker) =>
+        presenterNames.has(normalizeSpace(speaker?.name).toLowerCase()),
+      );
+      return {
+        ...presentation,
+        abstractHtml: detail?.abstractHtml || presentation.abstractHtml,
+        descriptionHtml: detail?.abstractHtml || presentation.descriptionHtml,
+        speakers,
+        ...(presenterSpeakers.length ? { presenterSpeakers } : {}),
+      };
+    }),
     normalizeCompareText: (value) =>
       normalizeSpace(String(value || '').replace(/<[^>]*>/g, ' '))
         .replace(/:\s*$/, '')
@@ -359,6 +372,104 @@ test('schedule app loads the paper presenter enriched program for at-a-glance sp
   });
 });
 
+test('schedule app lists the presenter first and uses their image for multi-author papers', async () => {
+  const loadProgram = vi.fn(() =>
+    Promise.resolve({
+      presentations: [],
+      speakers: [
+        { name: 'Harold Wilson', slug: 'harold-wilson', avatar: '/images/people/harold.jpg' },
+        { name: 'Amy Zulu', slug: 'amy-zulu', avatar: '/images/people/amy.jpg' },
+        { name: 'Monika Alpha', slug: 'monika-alpha', avatar: '/images/people/monika.jpg' },
+        { name: 'Zara Author', slug: 'zara-author', avatar: '/images/people/zara.jpg' },
+      ],
+    }),
+  );
+  const data = installScheduleGlobals({
+    loadProgram,
+    loadProgramPayload: vi.fn(() =>
+      Promise.resolve({
+        data: {
+          schedule: [
+            {
+              date: '2026-10-12',
+              sessions: [
+                {
+                  end: '10:00',
+                  start: '09:00',
+                  title: 'Technical Papers',
+                  items: [
+                    {
+                      duration: 30,
+                      id: 'agentic-reliability',
+                      order: 1,
+                      type: 'submission',
+                      participant_submission_id: 'agentic-reliability',
+                      presentation: {
+                        id: 'agentic-reliability',
+                        title: 'Agentic Reliability Testing',
+                        presentation_type: 'Paper',
+                        presenterAuthor: {
+                          firstname: 'Harold',
+                          lastname: 'Wilson',
+                        },
+                        authors: [
+                          {
+                            firstname: 'Zara',
+                            lastname: 'Author',
+                          },
+                          {
+                            firstname: 'Harold',
+                            lastname: 'Wilson',
+                          },
+                          {
+                            firstname: 'Monika',
+                            lastname: 'Alpha',
+                          },
+                          {
+                            firstname: 'Amy',
+                            lastname: 'Zulu',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          start_date: '2026-10-12',
+          end_date: '2026-10-12',
+          time_format: 'h12',
+          timezone: { key: 'America/Los_Angeles' },
+        },
+      }),
+    ),
+  });
+  document.body.innerHTML = '';
+  await importFreshSrcModule('program-schedule.js');
+  document.body.innerHTML = scheduleContainerHtml();
+  const app = globalThis.PNSQCProgramSchedule.createScheduleApp(
+    document.querySelector('[data-program-schedule]'),
+  );
+  await app.init();
+
+  const buttons = Array.from(
+    document.querySelectorAll('[data-details-modal-title="Agentic Reliability Testing"]'),
+  ).map((button) => button.textContent);
+  const avatar = document.querySelector('[data-schedule-root] img');
+
+  assert.equal(data.loadProgramPayload.mock.calls.length, 1);
+  assert.deepEqual(buttons, [
+    'Agentic Reliability Testing',
+    'Harold Wilson',
+    'Amy Zulu',
+    'Monika Alpha',
+    'Zara Author',
+  ]);
+  assert.equal(avatar.getAttribute('alt'), 'Harold Wilson');
+  assert.match(avatar.getAttribute('src'), /\/images\/people\/harold\.jpg$/);
+});
+
 test('schedule app lazy-loads submission details, re-renders, and handles submission failures', async () => {
   const data = installScheduleGlobals();
   document.body.innerHTML = '';
@@ -393,9 +504,16 @@ test('schedule app lazy-loads submission details, re-renders, and handles submis
   const templateText = Array.from(document.querySelectorAll('[data-schedule-templates] template'))
     .map((template) => template.content.textContent)
     .join('\n');
-  assert.match(templateText, /Speakers Existing Speaker,New Speaker/);
+  assert.match(templateText, /Speakers New Speaker,Existing Speaker/);
   assert.match(templateText, /New Speaker:<p>Loaded bio\.<\/p>/);
   assert.doesNotMatch(templateText, /Bios .*Existing Speaker/);
+  const hydratedPaper = app.renderer.buildPresentationDetail({
+    item: app.renderer.scheduleCache.schedule[0].sessions[0].items[1],
+    session: app.renderer.scheduleCache.schedule[0].sessions[0],
+    dayIso: app.renderer.scheduleCache.schedule[0].date,
+    abstractMap: new Map(),
+  });
+  assert.equal(hydratedPaper.presenterSpeakers[0].bioHtml, '<p>Loaded bio.</p>');
 
   const failingData = installScheduleGlobals({
     loadMeetingHandSubmission: vi.fn(() => Promise.reject(new Error('offline'))),
@@ -413,10 +531,10 @@ test('schedule app lazy-loads submission details, re-renders, and handles submis
   await flushPromises();
 
   assert.equal(failingData.loadMeetingHandSubmission.mock.calls.length, 1);
-  assert.equal(failingTrigger.getAttribute('data-details-modal-label'), 'Details');
-  const errorTemplate = Array.from(
-    document.querySelectorAll('[data-schedule-templates] template'),
-  ).at(-1);
+  assert.equal(failingTrigger.getAttribute('data-details-modal-label'), 'Presentation');
+  const errorTemplate = document.getElementById(
+    failingTrigger.getAttribute('data-details-modal-open'),
+  );
   assert.match(errorTemplate.content.textContent, /could not load/);
 });
 

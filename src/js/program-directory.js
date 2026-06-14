@@ -87,9 +87,11 @@
   const getSpeakerPresentationDetail = (speaker) => {
     const presentation = data.asArray(speaker?.presentations)[0] || null;
     if (!presentation) return null;
+    const speakerSummary = getSpeakerSummary(speaker);
     return {
       ...presentation,
-      speakers: [getSpeakerSummary(speaker)],
+      speakers: [speakerSummary],
+      presenterSpeakers: [speakerSummary],
     };
   };
 
@@ -170,9 +172,41 @@
     return presentationNeedsSubmissionDetail(item) ? [item] : [];
   };
 
+  const getItemWithLoadingSubmissionState = (item) => {
+    if (config.cardType === 'speaker') {
+      const pendingKeys = new Set(
+        getPresentationsNeedingSubmissionDetail(item)
+          .map((presentation) => normalizeSpace(presentation?.slug || presentation?.id || ''))
+          .filter(Boolean),
+      );
+      if (!pendingKeys.size) return item;
+      return {
+        ...item,
+        presentations: data.asArray(item?.presentations).map((presentation) => {
+          const key = normalizeSpace(presentation?.slug || presentation?.id || '');
+          return key && pendingKeys.has(key)
+            ? { ...presentation, isLoadingSubmissionDetail: true }
+            : presentation;
+        }),
+      };
+    }
+
+    return getPresentationsNeedingSubmissionDetail(item).length
+      ? { ...item, isLoadingSubmissionDetail: true }
+      : item;
+  };
+
   const replaceTemplate = ({ templateId, item, categoryLabel }) => {
     const { modal } = getModalConfig({ item, templateId, categoryLabel });
     document.getElementById(templateId)?.replaceWith(modal.template);
+  };
+
+  const refreshOpenModal = (templateId) => {
+    document.dispatchEvent(
+      new CustomEvent('pnsqc:details-modal-refresh', {
+        detail: { templateId },
+      }),
+    );
   };
 
   const mergeSubmissionDetail = (presentation, detail) =>
@@ -225,7 +259,12 @@
     const categoryLabel = sectionConfig.label || config.defaultLabel;
     if (config.cardType === 'speaker') {
       const templateId = getTemplateId('speaker', item, index);
-      const { label, modal, subtitle, title } = getModalConfig({ item, templateId, categoryLabel });
+      const modalItem = getItemWithLoadingSubmissionState(item);
+      const { label, modal, subtitle, title } = getModalConfig({
+        item: modalItem,
+        templateId,
+        categoryLabel,
+      });
       const card = renderer.buildSpeakerCard({
         speaker: item,
         templateId: modal.templateId,
@@ -244,7 +283,8 @@
     }
 
     const templateId = getTemplateId('presentation', item, index);
-    const { modal, subtitle } = getModalConfig({ item, templateId, categoryLabel });
+    const modalItem = getItemWithLoadingSubmissionState(item);
+    const { modal, subtitle } = getModalConfig({ item: modalItem, templateId, categoryLabel });
     const card = renderer.buildPresentationCard({
       presentation: item,
       templateId: modal.templateId,
@@ -267,22 +307,19 @@
 
     trigger.setAttribute('data-program-loading', 'true');
     trigger.setAttribute('aria-busy', 'true');
-    if (trigger instanceof HTMLButtonElement) trigger.disabled = true;
 
     try {
       const hydrated = await hydrateItemSubmissionDetails(record.item);
       modalRecords.set(templateId, { ...record, item: hydrated });
       replaceTemplate({ ...record, item: hydrated });
+      refreshOpenModal(templateId);
     } catch (error) {
       console.error(error);
     } finally {
       trigger.removeAttribute('data-program-loading');
       trigger.removeAttribute('aria-busy');
       trigger.removeAttribute('data-program-submission-trigger');
-      if (trigger instanceof HTMLButtonElement) trigger.disabled = false;
     }
-
-    trigger.click();
   };
 
   root.addEventListener('click', (event) => {
@@ -291,8 +328,6 @@
         ? event.target.closest('[data-program-submission-trigger="true"]')
         : null;
     if (!trigger) return;
-    event.preventDefault();
-    event.stopPropagation();
     openHydratedModal(trigger);
   });
 

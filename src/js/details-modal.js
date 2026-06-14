@@ -6,6 +6,7 @@
     }
 
     let lastFocused = null;
+    let currentTemplateId = '';
 
     const closeModal = () => {
       if (modal.classList.contains('hidden')) return;
@@ -13,6 +14,7 @@
       modal.classList.add('hidden');
       document.body.classList.remove('overflow-hidden');
       body.replaceChildren();
+      currentTemplateId = '';
 
       if (lastFocused instanceof HTMLElement) {
         lastFocused.focus();
@@ -26,6 +28,7 @@
       label = 'Overview',
       subtitle = '',
       trigger,
+      templateId = '',
     } = {}) => {
       body.replaceChildren(...(content ? [content] : []));
       titleEl.textContent = title;
@@ -35,10 +38,20 @@
         subtitleEl.hidden = !subtitle;
       }
       lastFocused = trigger instanceof HTMLElement ? trigger : document.activeElement;
+      currentTemplateId = templateId;
 
       modal.classList.remove('hidden');
       document.body.classList.add('overflow-hidden');
       closeButton.focus();
+    };
+
+    const refreshModal = ({ templateId } = {}) => {
+      if (!templateId || templateId !== currentTemplateId || modal.classList.contains('hidden')) {
+        return;
+      }
+      const template = document.getElementById(templateId);
+      if (!(template instanceof HTMLTemplateElement)) return;
+      body.replaceChildren(template.content.cloneNode(true));
     };
 
     closeButton.addEventListener('click', closeModal);
@@ -52,7 +65,7 @@
       }
     });
 
-    return { closeModal, openModal };
+    return { closeModal, openModal, refreshModal };
   };
 
   const buildModalRefs = (modal, prefix) => ({
@@ -144,6 +157,11 @@
       label: trigger.getAttribute('data-details-modal-label') || 'Overview',
       subtitle: trigger.getAttribute('data-details-modal-subtitle') || '',
       trigger,
+      templateId,
     });
+  });
+
+  document.addEventListener('pnsqc:details-modal-refresh', (event) => {
+    modalController.refreshModal({ templateId: event.detail?.templateId || '' });
   });
 })();

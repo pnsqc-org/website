@@ -29,6 +29,9 @@
     return [route.year, sourceLabel].map((part) => data.normalizeSpace(part || '')).filter(Boolean);
   };
 
+  const getDetailCategorySlug = (route) =>
+    route?.source === 'conference' && route?.year === '2026' ? 'paper-presenters' : '';
+
   const setDocumentTitle = (title) => {
     const normalizedTitle = data.normalizeSpace(title || '');
     const titleParts = [normalizedTitle, ...pageTitleHierarchy, pageTitleSuffix].filter(Boolean);
@@ -223,6 +226,7 @@
         source: route.source,
         year: route.year,
         fallbackAvatar,
+        categorySlug: getDetailCategorySlug(route),
       });
       const item =
         route.type === 'speaker'

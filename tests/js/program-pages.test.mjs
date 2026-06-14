@@ -479,6 +479,12 @@ test('program detail page renders and hydrates conference speakers and presentat
   await flushPromises();
   await flushPromises();
 
+  assert.deepEqual(data.loadProgram.mock.calls[0][0], {
+    source: 'conference',
+    year: '2026',
+    fallbackAvatar: '/configured.jpg',
+    categorySlug: 'paper-presenters',
+  });
   assert.equal(data.loadMeetingHandSubmission.mock.calls[0][0].id, 'sub-1');
   assert.equal(data.mergeMeetingHandSubmissionDetailIntoSpeaker.mock.calls.length, 1);
   assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Paper Speaker');
@@ -528,6 +534,12 @@ test('program detail page renders and hydrates conference speakers and presentat
   await flushPromises();
   await flushPromises();
 
+  assert.deepEqual(panelDetailData.loadProgram.mock.calls[0][0], {
+    source: 'conference',
+    year: '2026',
+    fallbackAvatar: '/fallback-conference-2026.jpg',
+    categorySlug: 'paper-presenters',
+  });
   assert.equal(panelDetailData.loadMeetingHandSubmission.mock.calls[0][0].id, 'panel-sub-2');
   assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Panel Title');
   assert.equal(document.querySelector('[data-program-detail-subtitle]').textContent, 'Speaker One');
@@ -570,6 +582,12 @@ test('program detail page leaves archive details unhydrated and hides empty subt
   await importFreshSrcModule('program-detail-page.js');
   await flushPromises();
 
+  assert.deepEqual(data.loadProgram.mock.calls[0][0], {
+    source: 'archive',
+    year: '2025',
+    fallbackAvatar: '/fallback-archive-2025.jpg',
+    categorySlug: '',
+  });
   assert.equal(data.loadMeetingHandSubmission.mock.calls.length, 0);
   assert.equal(
     document.querySelector('[data-program-detail-subtitle]').textContent,

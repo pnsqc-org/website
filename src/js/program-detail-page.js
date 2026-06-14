@@ -44,13 +44,15 @@
     statusEl.hidden = !text;
   };
 
-  const setHeader = ({ eyebrow, title, subtitle }) => {
+  const setHeader = ({ eyebrow, title, subtitle, subtitleTone = 'muted' }) => {
     if (eyebrowEl) eyebrowEl.textContent = eyebrow;
     if (titleEl) titleEl.textContent = title;
     setDocumentTitle(title);
     if (subtitleEl) {
       subtitleEl.textContent = subtitle || '';
       subtitleEl.hidden = !subtitle;
+      subtitleEl.classList.toggle('text-pnsqc-cyan/90', subtitleTone === 'topic');
+      subtitleEl.classList.toggle('text-pnsqc-slate', subtitleTone !== 'topic');
     }
   };
 
@@ -80,12 +82,18 @@
     return presentationTitle || '';
   };
 
-  const getPresentationSubtitle = (presentation) =>
-    data
-      .asArray(presentation.speakers)
-      .map((speaker) => speaker.name)
-      .filter(Boolean)
-      .join(', ');
+  const getPresentationSubtitle = (presentation) => {
+    const topic = data.normalizeSpace(presentation?.topic || '');
+    if (topic) return { text: topic, tone: 'topic' };
+    return {
+      text: data
+        .asArray(presentation.speakers)
+        .map((speaker) => speaker.name)
+        .filter(Boolean)
+        .join(', '),
+      tone: 'muted',
+    };
+  };
 
   const hasDetailText = (value) => !!data.normalizeSpace(value || '');
 
@@ -176,13 +184,15 @@
   const renderDetail = ({ route, item }) => {
     const isSpeaker = route.type === 'speaker';
     const title = isSpeaker ? item.name : item.title;
-    const subtitle = isSpeaker ? getSpeakerSubtitle(item) : getPresentationSubtitle(item);
+    const presentationSubtitle = isSpeaker ? null : getPresentationSubtitle(item);
+    const subtitle = isSpeaker ? getSpeakerSubtitle(item) : presentationSubtitle.text;
+    const subtitleTone = isSpeaker ? 'muted' : presentationSubtitle.tone;
     const eyebrow = getEyebrow(route);
     const content = isSpeaker
       ? renderer.buildSpeakerDetailsContent(item)
       : renderer.buildPresentationDetailsContent(item);
 
-    setHeader({ eyebrow, title, subtitle });
+    setHeader({ eyebrow, title, subtitle, subtitleTone });
     setStatus('');
     if (contentEl) contentEl.replaceChildren(content);
   };

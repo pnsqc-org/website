@@ -1386,12 +1386,22 @@
     const normalized = {
       slug: normalizeSpace(profile.slug || profile.id || ''),
       name: normalizeSpace(profile.name || ''),
+      profession: normalizeSpace(profile.profession || ''),
+      organization: normalizeSpace(profile.organization || ''),
       avatar: normalizeSpace(profile.avatar || ''),
       linkedin: normalizeSpace(profile.linkedin || ''),
       homepage: normalizeSpace(profile.homepage || ''),
     };
     if (!normalized.name) return null;
-    if (!normalized.avatar && !normalized.linkedin && !normalized.homepage) return null;
+    if (
+      !normalized.profession &&
+      !normalized.organization &&
+      !normalized.avatar &&
+      !normalized.linkedin &&
+      !normalized.homepage
+    ) {
+      return null;
+    }
     return normalized;
   }
 
@@ -1443,6 +1453,14 @@
 
     if (profile.avatar && isFallbackAvatar(merged.avatar, options)) {
       merged.avatar = profile.avatar;
+      changed = true;
+    }
+    if (profile.profession && !normalizeSpace(merged.profession)) {
+      merged.profession = profile.profession;
+      changed = true;
+    }
+    if (profile.organization && !normalizeSpace(merged.organization)) {
+      merged.organization = profile.organization;
       changed = true;
     }
     if (profile.linkedin && !normalizeSpace(merged.linkedin)) {

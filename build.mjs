@@ -748,11 +748,21 @@ function buildConferencePaperPresenterProfiles(sharedProfiles) {
     .map((profile) => ({
       slug: optionalString(profile?.slug || profile?.id),
       name: optionalString(profile?.name),
+      profession: optionalString(profile?.profession),
+      organization: optionalString(profile?.organization),
       avatar: optionalString(profile?.avatar),
       linkedin: optionalString(profile?.linkedin),
       homepage: optionalString(profile?.homepage),
     }))
-    .filter((profile) => profile.name && (profile.avatar || profile.linkedin || profile.homepage))
+    .filter(
+      (profile) =>
+        profile.name &&
+        (profile.profession ||
+          profile.organization ||
+          profile.avatar ||
+          profile.linkedin ||
+          profile.homepage),
+    )
     .sort((left, right) => {
       const name = left.name.localeCompare(right.name);
       return name || left.slug.localeCompare(right.slug);

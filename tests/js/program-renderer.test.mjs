@@ -102,14 +102,15 @@ test('program renderer builds speaker cards, details, templates, and compatibili
   });
   assert.equal(card.querySelector('h3').textContent, 'Alpha Speaker');
   assert.equal(
-    card.querySelector('[data-details-modal-open="speaker-template"]').getAttribute(
-      'data-details-modal-subtitle',
-    ),
+    card
+      .querySelector('[data-details-modal-open="speaker-template"]')
+      .getAttribute('data-details-modal-subtitle'),
     'Emerging Technologies & AI Systems',
   );
+  assert.match(card.textContent, /Quality Lead - Alpha Co/);
+  assert.doesNotMatch(card.textContent, /Emerging Technologies & AI Systems/);
   assert.equal(
-    card.textContent.indexOf('Emerging Technologies & AI Systems') <
-      card.textContent.indexOf('First Talk'),
+    card.textContent.indexOf('Quality Lead - Alpha Co') < card.textContent.indexOf('First Talk'),
     true,
   );
   assert.equal(
@@ -127,8 +128,26 @@ test('program renderer builds speaker cards, details, templates, and compatibili
     true,
   );
   assert.match(details.textContent, /Second Talk/);
-  assert.match(details.textContent, /Alpha Co/);
+  assert.match(details.textContent, /Quality Lead - Alpha Co/);
   assert.equal(details.querySelector('img').getAttribute('src'), '/alpha.jpg');
+
+  const organizationOnlyCard = renderer.buildSpeakerCard({
+    speaker: {
+      name: 'Organization Only',
+      organization: 'Solo Org',
+      presentations: [{ title: 'Org Talk', topic: 'Hidden Topic' }],
+    },
+    templateId: 'organization-only-template',
+    categoryLabel: 'Paper Presenter',
+  });
+  assert.match(organizationOnlyCard.textContent, /Solo Org/);
+  assert.equal(
+    organizationOnlyCard.textContent.indexOf('Solo Org') <
+      organizationOnlyCard.textContent.indexOf('Org Talk'),
+    true,
+  );
+  assert.doesNotMatch(organizationOnlyCard.textContent, /Solo Org -/);
+  assert.doesNotMatch(organizationOnlyCard.textContent, /Hidden Topic/);
 
   const noBioDetails = renderer.buildSpeakerDetailsContent({
     name: 'No Bio',
@@ -179,9 +198,9 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.equal(card.querySelector('h3').textContent, 'Quality Paper');
   assert.equal(card.querySelectorAll('img').length, 2);
   assert.equal(
-    card.querySelector('[data-details-modal-open="presentation-template"]').getAttribute(
-      'data-details-modal-subtitle',
-    ),
+    card
+      .querySelector('[data-details-modal-open="presentation-template"]')
+      .getAttribute('data-details-modal-subtitle'),
     'Quality Engineering & Systems Reliability',
   );
   assert.equal(

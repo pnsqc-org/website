@@ -283,6 +283,11 @@
       return topic ? createEl('p', className, topic) : null;
     };
 
+    const getSpeakerAffiliation = (speaker) =>
+      [normalizeSpace(speaker?.profession || ''), normalizeSpace(speaker?.organization || '')]
+        .filter(Boolean)
+        .join(' - ');
+
     const getObjectivesHtml = (presentation) =>
       presentation?.objectivesHtml || textToHtml(presentation?.objectives || '');
 
@@ -379,16 +384,15 @@
         }),
       );
 
-      const topContent = createEl('div', 'space-y-2');
+      const topContent = createEl('div', 'space-y-1');
       topContent.appendChild(createEl('h3', 'text-lg font-semibold text-white', speakerName));
-      if (speaker?.profession) {
-        topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', speaker.profession));
-      }
-      if (speaker?.organization) {
-        topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', speaker.organization));
-      }
+      const affiliation = getSpeakerAffiliation(speaker);
+      if (affiliation)
+        topContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', affiliation));
       if (displayPresentation) {
-        topContent.appendChild(createEl('p', 'text-sm text-pnsqc-gold', displayPresentation.title));
+        topContent.appendChild(
+          createEl('p', 'pt-1 text-sm text-pnsqc-gold', displayPresentation.title),
+        );
         const topic = createPresentationTopic(displayPresentation, 'text-sm text-pnsqc-cyan/90');
         if (topic) topContent.appendChild(topic);
       }
@@ -462,20 +466,13 @@
             }),
           );
 
-          const speakerContent = createEl('div', 'space-y-2');
+          const speakerContent = createEl('div', 'space-y-1');
           speakerContent.appendChild(
             createEl('h4', 'text-base font-semibold text-white', speakerName),
           );
-          if (speaker.profession) {
-            speakerContent.appendChild(
-              createEl('p', 'text-sm text-pnsqc-slate', speaker.profession),
-            );
-          }
-          if (speaker.organization) {
-            speakerContent.appendChild(
-              createEl('p', 'text-sm text-pnsqc-slate', speaker.organization),
-            );
-          }
+          const affiliation = getSpeakerAffiliation(speaker);
+          if (affiliation)
+            speakerContent.appendChild(createEl('p', 'text-sm text-pnsqc-slate', affiliation));
           const links = createSpeakerLinks(speaker, 'flex flex-wrap items-center gap-2');
           if (links) speakerContent.appendChild(links);
           speakerRow.appendChild(speakerContent);
@@ -567,20 +564,15 @@
 
       const links = createSpeakerLinks(speaker, 'ml-auto flex shrink-0 items-center gap-2');
       content.appendChild(createCardHeader({ title: speakerName, links }));
-      if (speaker.profession) {
-        content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', speaker.profession));
-      }
-      if (speaker.organization) {
-        content.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', speaker.organization));
+      const affiliation = getSpeakerAffiliation(speaker);
+      if (affiliation) {
+        content.appendChild(
+          createEl('p', 'mt-0.5 text-sm leading-snug text-pnsqc-slate', affiliation),
+        );
       }
       if (displayPresentation) {
-        const topic = createPresentationTopic(
-          displayPresentation,
-          'mt-3 text-xs text-pnsqc-cyan/90',
-        );
-        if (topic) content.appendChild(topic);
         content.appendChild(
-          createEl('p', 'mt-2 text-sm text-pnsqc-gold', displayPresentation.title),
+          createEl('p', 'mt-3 text-sm text-pnsqc-gold', displayPresentation.title),
         );
       }
       /*
@@ -669,10 +661,9 @@
         speakerItem.appendChild(
           createEl('p', 'text-sm text-pnsqc-gold', speaker.name || 'Presenter'),
         );
-        if (speaker.profession) {
-          speakerItem.appendChild(
-            createEl('p', 'mt-1 text-sm text-pnsqc-slate', speaker.profession),
-          );
+        const affiliation = getSpeakerAffiliation(speaker);
+        if (affiliation) {
+          speakerItem.appendChild(createEl('p', 'mt-1 text-sm text-pnsqc-slate', affiliation));
         }
         speakerList.appendChild(speakerItem);
       });

@@ -415,10 +415,7 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
     selectedSpeakers.map((speaker) => speaker.name),
     ['Jeyasekar Marimuthu'],
   );
-  assert.equal(
-    selectedSpeakers[0].presentations[0].topic,
-    'Emerging Technologies & AI Systems',
-  );
+  assert.equal(selectedSpeakers[0].presentations[0].topic, 'Emerging Technologies & AI Systems');
   assert.equal(
     programData.getSectionForItem(selectedSpeakers[0], paperPresenters).key,
     'emerging-technologies-ai-systems',
@@ -466,6 +463,8 @@ test('loadProgram enriches 2026 paper presenters with local profile supplements'
                         firstname: 'Future',
                         lastname: 'Presenter',
                         avatar: 'https://meetinghand.example/future.jpg',
+                        profession: 'MeetingHand Role',
+                        organization: 'MeetingHand Org',
                         linkedin: 'https://meetinghand.example/future-linkedin',
                         homepage: 'https://meetinghand.example/future-home',
                       },
@@ -483,6 +482,8 @@ test('loadProgram enriches 2026 paper presenters with local profile supplements'
     {
       slug: 'austin-peck',
       name: 'Austin Peck',
+      profession: 'Paper Presenter',
+      organization: 'Austin Co',
       avatar: '/images/people/austin-peck.png',
       linkedin: 'https://www.linkedin.com/in/austin-peck-861393234',
       homepage: 'https://austin.example',
@@ -490,6 +491,8 @@ test('loadProgram enriches 2026 paper presenters with local profile supplements'
     {
       slug: 'future-presenter',
       name: 'Future Presenter',
+      profession: 'Local Role',
+      organization: 'Local Org',
       avatar: '/images/people/future-presenter.png',
       linkedin: 'https://local.example/future-linkedin',
       homepage: 'https://local.example/future-home',
@@ -532,10 +535,16 @@ test('loadProgram enriches 2026 paper presenters with local profile supplements'
     '/data/conference/2026/paper-presenter-profiles.json',
   ]);
   assert.equal(austin.avatar, '/images/people/austin-peck.png');
+  assert.equal(austin.profession, 'Paper Presenter');
+  assert.equal(austin.organization, 'Austin Co');
   assert.equal(austin.linkedin, 'https://www.linkedin.com/in/austin-peck-861393234');
   assert.equal(austin.homepage, 'https://austin.example');
   assert.equal(austinPresentation.speakers[0].avatar, '/images/people/austin-peck.png');
+  assert.equal(austinPresentation.speakers[0].profession, 'Paper Presenter');
+  assert.equal(austinPresentation.speakers[0].organization, 'Austin Co');
   assert.equal(future.avatar, 'https://meetinghand.example/future.jpg');
+  assert.equal(future.profession, 'MeetingHand Role');
+  assert.equal(future.organization, 'MeetingHand Org');
   assert.equal(future.linkedin, 'https://meetinghand.example/future-linkedin');
   assert.equal(future.homepage, 'https://meetinghand.example/future-home');
 });

@@ -150,11 +150,22 @@ test('conference paper presenter profiles include only public routed supplement 
         {
           id: 'linked-speaker',
           name: 'Linked Speaker',
+          profession: 'Quality Lead',
+          organization: 'Linked Co',
           avatar: '',
           linkedin: 'https://linkedin.example/linked',
           homepage: '',
           email: 'linked@example.com',
           avatarSourceUrl: 'https://source.example/avatar.jpg',
+        },
+      ],
+      [
+        'affiliation-speaker',
+        {
+          slug: 'affiliation-speaker',
+          name: 'Affiliation Speaker',
+          profession: '',
+          organization: 'Org Only',
         },
       ],
       [
@@ -173,8 +184,19 @@ test('conference paper presenter profiles include only public routed supplement 
 
   assert.deepEqual(profiles, [
     {
+      slug: 'affiliation-speaker',
+      name: 'Affiliation Speaker',
+      profession: '',
+      organization: 'Org Only',
+      avatar: '',
+      linkedin: '',
+      homepage: '',
+    },
+    {
       slug: 'avatar-speaker',
       name: 'Avatar Speaker',
+      profession: '',
+      organization: '',
       avatar: '/images/people/avatar-speaker.jpg',
       linkedin: '',
       homepage: 'https://avatar.example',
@@ -182,6 +204,8 @@ test('conference paper presenter profiles include only public routed supplement 
     {
       slug: 'linked-speaker',
       name: 'Linked Speaker',
+      profession: 'Quality Lead',
+      organization: 'Linked Co',
       avatar: '',
       linkedin: 'https://linkedin.example/linked',
       homepage: '',

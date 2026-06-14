@@ -522,6 +522,7 @@ test('program detail page renders and hydrates conference speakers and presentat
   const presentation = {
     slug: 'panel',
     title: 'Panel Title',
+    topic: 'Quality Engineering & Systems Reliability',
     presentationType: 'panel',
     submissionId: 'panel-sub-2',
     abstractHtml: '',
@@ -566,7 +567,16 @@ test('program detail page renders and hydrates conference speakers and presentat
   });
   assert.equal(panelDetailData.loadMeetingHandSubmission.mock.calls[0][0].id, 'panel-sub-2');
   assert.equal(document.querySelector('[data-program-detail-title]').textContent, 'Panel Title');
-  assert.equal(document.querySelector('[data-program-detail-subtitle]').textContent, 'Speaker One');
+  assert.equal(
+    document.querySelector('[data-program-detail-subtitle]').textContent,
+    'Quality Engineering & Systems Reliability',
+  );
+  assert.equal(
+    document
+      .querySelector('[data-program-detail-subtitle]')
+      .classList.contains('text-pnsqc-cyan/90'),
+    true,
+  );
   assert.equal(document.title, 'Panel Title - 2026 - Conference - PNSQC');
 });
 

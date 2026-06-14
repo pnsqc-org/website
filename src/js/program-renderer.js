@@ -242,16 +242,23 @@
     const createDetailsText = (text) =>
       createEl('p', 'whitespace-pre-line text-sm leading-7 text-pnsqc-slate', text);
 
+    const createLoadingText = (text) =>
+      createEl('p', 'animate-pulse whitespace-pre-line text-sm leading-7 text-pnsqc-slate', text);
+
     const createHtmlContent = (html, className = 'details-modal-content') => {
       const content = createEl('div', `${className} space-y-3 text-sm leading-7 text-pnsqc-slate`);
       content.innerHTML = html;
       return content;
     };
 
-    const appendHtmlOrFallback = ({ parent, html, fallbackText, className }) => {
+    const appendHtmlOrFallback = ({ parent, html, fallbackText, className, loadingText }) => {
       const sanitized = sanitizeHtmlFragment(html || '');
       if (sanitized) {
         parent.appendChild(createHtmlContent(sanitized, className));
+        return;
+      }
+      if (loadingText) {
+        parent.appendChild(createLoadingText(loadingText));
         return;
       }
       parent.appendChild(createDetailsText(fallbackText));
@@ -278,6 +285,35 @@
 
     const getObjectivesHtml = (presentation) =>
       presentation?.objectivesHtml || textToHtml(presentation?.objectives || '');
+
+    const getPresentationSpeakerDetails = (presentation) => {
+      const speakers = getSortedSpeakers(presentation?.speakers);
+      return getSortedSpeakers(
+        asArray(presentation?.presenterSpeakers).length ? presentation.presenterSpeakers : speakers,
+      );
+    };
+
+    const buildAdditionalAuthorsSection = (additionalAuthors) => {
+      const authors = asArray(additionalAuthors)
+        .map((author) => normalizeSpace(author?.name || author?.full_name || author))
+        .filter(Boolean)
+        .sort((left, right) => {
+          const leftFirst = normalizeSpace(left).split(/\s+/)[0] || '';
+          const rightFirst = normalizeSpace(right).split(/\s+/)[0] || '';
+          const firstNameSort = leftFirst.localeCompare(rightFirst);
+          return firstNameSort || left.localeCompare(right);
+        });
+      if (!authors.length) return null;
+
+      const section = createEl('div', 'space-y-2');
+      appendSectionHeading(section, 'Additional Authors');
+      const list = createEl('ul', 'space-y-1 text-sm leading-7 text-pnsqc-slate');
+      authors.forEach((name) => {
+        list.appendChild(createEl('li', 'font-semibold text-white', name));
+      });
+      section.appendChild(list);
+      return section;
+    };
 
     const buildPresentationListSection = (presentations) => {
       const section = createEl('div', 'space-y-3');
@@ -388,26 +424,30 @@
     };
 
     const buildPresentationDetailsContent = (presentation) => {
-      const speakers = getSortedSpeakers(presentation?.speakers);
+      const isLoadingSubmissionDetail = !!presentation?.isLoadingSubmissionDetail;
+      const presenterSpeakers = getPresentationSpeakerDetails(presentation);
       const bioSpeakers = getSortedSpeakers(
         Array.isArray(presentation?.bioSpeakers) && presentation.bioSpeakers.length
           ? presentation.bioSpeakers
-          : speakers,
+          : presenterSpeakers,
       );
       const wrapper = createEl('div', 'space-y-6');
       const speakersSection = createEl('div', 'space-y-3');
-      appendSectionHeading(speakersSection, speakers.length === 1 ? 'Speaker' : 'Speakers');
+      appendSectionHeading(
+        speakersSection,
+        presenterSpeakers.length === 1 ? 'Speaker' : 'Speakers',
+      );
 
-      if (speakers.length) {
+      if (presenterSpeakers.length) {
         const speakersList = createEl(
           'div',
-          speakers.length > 1 ? 'grid gap-4 sm:grid-cols-2' : 'space-y-4',
+          presenterSpeakers.length > 1 ? 'grid gap-4 sm:grid-cols-2' : 'space-y-4',
         );
-        speakers.forEach((speaker) => {
+        presenterSpeakers.forEach((speaker) => {
           const speakerName = speaker.name || 'Presenter';
           const speakerRow = createEl(
             'div',
-            speakers.length > 1
+            presenterSpeakers.length > 1
               ? 'flex items-start gap-4 rounded-lg border border-white/10 bg-white/[0.02] p-3'
               : 'flex flex-col items-start gap-4 sm:flex-row',
           );
@@ -416,7 +456,7 @@
               src: speaker.avatar,
               alt: `${speakerName} avatar`,
               className:
-                speakers.length > 1
+                presenterSpeakers.length > 1
                   ? 'h-16 w-16 shrink-0 rounded-lg object-cover ring-2 ring-pnsqc-gold/30'
                   : 'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30',
             }),
@@ -447,6 +487,11 @@
       }
       wrapper.appendChild(speakersSection);
 
+      const additionalAuthorsSection = buildAdditionalAuthorsSection(
+        presentation?.additionalAuthors,
+      );
+      if (additionalAuthorsSection) wrapper.appendChild(additionalAuthorsSection);
+
       const abstractSection = createEl('div', 'space-y-2');
       appendSectionHeading(
         abstractSection,
@@ -456,17 +501,26 @@
         parent: abstractSection,
         html: getPresentationHtml(presentation),
         fallbackText: 'Abstract details are coming soon.',
+        loadingText: isLoadingSubmissionDetail
+          ? presentation?.presentationType === 'workshop'
+            ? 'Loading description...'
+            : 'Loading abstract...'
+          : '',
         className: 'rich-content rich-content--compact',
       });
       wrapper.appendChild(abstractSection);
 
       const objectivesHtml = sanitizeHtmlFragment(getObjectivesHtml(presentation));
-      if (objectivesHtml) {
+      if (objectivesHtml || isLoadingSubmissionDetail) {
         const objectivesSection = createEl('div', 'space-y-2');
         appendSectionHeading(objectivesSection, 'Learning Objectives');
-        objectivesSection.appendChild(
-          createHtmlContent(objectivesHtml, 'rich-content rich-content--compact'),
-        );
+        if (objectivesHtml) {
+          objectivesSection.appendChild(
+            createHtmlContent(objectivesHtml, 'rich-content rich-content--compact'),
+          );
+        } else {
+          objectivesSection.appendChild(createLoadingText('Loading learning objectives...'));
+        }
         wrapper.appendChild(objectivesSection);
       }
 
@@ -483,11 +537,16 @@
             parent: bioSection,
             html: speaker.bioHtml || textToHtml(speaker.bio || ''),
             fallbackText: bioFallbackText,
+            loadingText: isLoadingSubmissionDetail ? 'Loading bio...' : '',
             className: 'rich-content rich-content--compact',
           });
         });
       } else {
-        bioSection.appendChild(createDetailsText(bioFallbackText));
+        bioSection.appendChild(
+          isLoadingSubmissionDetail
+            ? createLoadingText('Loading bio...')
+            : createDetailsText(bioFallbackText),
+        );
       }
       wrapper.appendChild(bioSection);
       return wrapper;

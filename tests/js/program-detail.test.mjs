@@ -361,15 +361,19 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
                       title: 'Agentic DataCards to Data Quality Gates',
                       topic: 'Emerging Technologies & AI Systems',
                       presentation_type: 'Paper',
-                      speaker: {
-                        firstname: 'Ignored',
-                        lastname: 'Speaker',
+                      presenterAuthor: {
+                        firstname: 'Jeyasekar',
+                        lastname: 'Marimuthu',
                       },
                       authors: [
                         {
                           firstname: 'Jeyasekar',
                           lastname: 'Marimuthu',
                           avatar: 'https://example.com/jeyasekar.jpg',
+                        },
+                        {
+                          firstname: 'Co',
+                          lastname: 'Author',
                         },
                       ],
                     },
@@ -402,6 +406,11 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
     paper.speakers.map((speaker) => speaker.name),
     ['Jeyasekar Marimuthu'],
   );
+  assert.deepEqual(paper.additionalAuthors, [{ name: 'Co Author' }]);
+  assert.deepEqual(
+    paper.presenterSpeakers.map((speaker) => speaker.name),
+    ['Jeyasekar Marimuthu'],
+  );
   assert.deepEqual(
     selectedSpeakers.map((speaker) => speaker.name),
     ['Jeyasekar Marimuthu'],
@@ -409,6 +418,10 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   assert.equal(
     selectedSpeakers[0].presentations[0].topic,
     'Emerging Technologies & AI Systems',
+  );
+  assert.equal(
+    programData.getSectionForItem(selectedSpeakers[0], paperPresenters).key,
+    'emerging-technologies-ai-systems',
   );
 });
 
@@ -800,6 +813,7 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
   const workshops = programData.getProgramCategoryConfig('workshops', '2026');
   const keynotes = programData.getProgramCategoryConfig('keynotes-invited-speakers', '2026');
   const paperPresenters = programData.getProgramCategoryConfig('paper-presenters', '2026');
+  const topicSections = paperPresenters.sections.map((section) => section.title);
 
   assert.deepEqual(
     programData.selectPresentations(program, workshops).map((item) => item.slug),
@@ -819,6 +833,12 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
     programData.selectSpeakers(program, paperPresenters).map((item) => item.slug),
     ['speaker-one'],
   );
+  assert.deepEqual(topicSections, [
+    'Emerging Technologies & AI Systems',
+    'Organizational Quality & Leadership',
+    'Quality Engineering & Systems Reliability',
+    'Tools & Productivity',
+  ]);
 });
 
 test('detail routes parse singular speaker and presentation query targets', () => {

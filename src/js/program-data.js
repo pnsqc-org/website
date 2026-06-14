@@ -127,11 +127,36 @@
       },
       sections: [
         {
-          key: 'paper-presenters',
-          title: 'Paper Presenters',
+          key: 'emerging-technologies-ai-systems',
+          title: 'Emerging Technologies & AI Systems',
           label: 'Paper Presenter',
           categorySlugs: ['paper-presenters'],
+          topics: ['Emerging Technologies & AI Systems'],
           headingClass: 'text-pnsqc-gold',
+        },
+        {
+          key: 'organizational-quality-leadership',
+          title: 'Organizational Quality & Leadership',
+          label: 'Paper Presenter',
+          categorySlugs: ['paper-presenters'],
+          topics: ['Organizational Quality & Leadership'],
+          headingClass: 'text-pnsqc-cyan',
+        },
+        {
+          key: 'quality-engineering-systems-reliability',
+          title: 'Quality Engineering & Systems Reliability',
+          label: 'Paper Presenter',
+          categorySlugs: ['paper-presenters'],
+          topics: ['Quality Engineering & Systems Reliability'],
+          headingClass: 'text-pnsqc-gold',
+        },
+        {
+          key: 'tools-productivity',
+          title: 'Tools & Productivity',
+          label: 'Paper Presenter',
+          categorySlugs: ['paper-presenters'],
+          topics: ['Tools & Productivity'],
+          headingClass: 'text-pnsqc-cyan',
         },
       ],
     },
@@ -458,6 +483,43 @@
     );
   }
 
+  function getPersonNameKey(person) {
+    return normalizeCompareText(
+      normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
+        getMeetingHandPersonName(person),
+    );
+  }
+
+  function getPaperPresenterAuthorKeys(presentation) {
+    const presenterAuthors = []
+      .concat(presentation?.presenterAuthor ? [presentation.presenterAuthor] : [])
+      .concat(presentation?.presenter_author ? [presentation.presenter_author] : []);
+    return new Set(presenterAuthors.map(getPersonNameKey).filter(Boolean));
+  }
+
+  function getPaperPresenterAuthors(presentation) {
+    const authors = asArray(presentation?.authors);
+    const presenterKeys = getPaperPresenterAuthorKeys(presentation);
+    if (!presenterKeys.size) return authors;
+    return authors.filter((author) => presenterKeys.has(getPersonNameKey(author)));
+  }
+
+  function getAdditionalAuthors(presentation, presenterCandidates = []) {
+    const presenterKeys = new Set(
+      asArray(presenterCandidates).map(getPersonNameKey).filter(Boolean),
+    );
+    const seen = new Set();
+    return asArray(presentation?.authors)
+      .filter((author) => {
+        const key = getPersonNameKey(author);
+        if (!key || presenterKeys.has(key) || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      })
+      .map((author) => ({ name: getMeetingHandPersonName(author) }))
+      .filter((author) => author.name);
+  }
+
   function getSchedulePresentationSpeakerCandidates(presentation, options = {}) {
     const explicitType = normalizePresentationType(presentation?.presentation_type || options.type);
     const candidates =
@@ -612,7 +674,9 @@
             ),
             sortOrder: Number(rawSpeaker.order ?? Number.MAX_SAFE_INTEGER),
             speakerSlugs: [],
+            presenterSpeakerSlugs: [],
             speakers: [],
+            additionalAuthors: [],
           };
           groupsByKey.set(key, group);
           groups.push(group);
@@ -742,7 +806,9 @@
               order: Number(item?.order ?? Number.MAX_SAFE_INTEGER),
               sortOrder: Number(item?.order ?? Number.MAX_SAFE_INTEGER),
               speakerSlugs: [],
+              presenterSpeakerSlugs: [],
               speakers: [],
+              additionalAuthors: [],
               source,
             });
 
@@ -776,14 +842,35 @@
             if (!group.source[key]) group.source[key] = value;
           });
 
-          getSchedulePresentationSpeakerCandidates(rawPresentation, { type: item?.type }).forEach(
-            (rawSpeaker) => {
-              const speaker = ensureScheduleSpeaker(rawSpeaker);
-              if (speaker && !group.speakerSlugs.includes(speaker.slug)) {
-                group.speakerSlugs.push(speaker.slug);
+          const presenterCandidates =
+            normalizedPresentationType === 'paper'
+              ? getPaperPresenterAuthors(rawPresentation)
+              : getSchedulePresentationSpeakerCandidates(rawPresentation, { type: item?.type });
+
+          presenterCandidates.forEach((rawSpeaker) => {
+            const speaker = ensureScheduleSpeaker(rawSpeaker);
+            if (!speaker) return;
+            if (!group.speakerSlugs.includes(speaker.slug)) group.speakerSlugs.push(speaker.slug);
+            if (!group.presenterSpeakerSlugs.includes(speaker.slug)) {
+              group.presenterSpeakerSlugs.push(speaker.slug);
+            }
+          });
+
+          if (normalizedPresentationType === 'paper') {
+            const additionalAuthors = getAdditionalAuthors(rawPresentation, presenterCandidates);
+            const existingAuthors = new Set(
+              asArray(group.additionalAuthors)
+                .map((author) => normalizeCompareText(author?.name))
+                .filter(Boolean),
+            );
+            additionalAuthors.forEach((author) => {
+              const key = normalizeCompareText(author?.name);
+              if (key && !existingAuthors.has(key)) {
+                group.additionalAuthors.push(author);
+                existingAuthors.add(key);
               }
-            },
-          );
+            });
+          }
         });
       });
     });
@@ -925,7 +1012,13 @@
   }
 
   function toPresentationSummary(presentation) {
-    return compactRecord({
+    const additionalAuthors = asArray(presentation.additionalAuthors)
+      .map((author) => compactRecord({ name: normalizeSpace(author?.name || '') }))
+      .filter((author) => author.name);
+    const presenterSpeakers = sortPeopleByLastName(
+      asArray(presentation.presenterSpeakers).map(toSpeakerSummary),
+    );
+    const summary = compactRecord({
       id: presentation.id,
       slug: presentation.slug,
       title: presentation.title,
@@ -947,6 +1040,9 @@
       sortOrder: presentation.sortOrder,
       source: presentation.source,
     });
+    if (additionalAuthors.length) summary.additionalAuthors = additionalAuthors;
+    if (presenterSpeakers.length) summary.presenterSpeakers = presenterSpeakers;
+    return summary;
   }
 
   function crossLinkProgram(program) {
@@ -958,6 +1054,14 @@
     program.presentations.forEach((presentation) => {
       presentation.speakerSlugs = asArray(presentation.speakerSlugs).filter(Boolean);
       presentation.speakers = presentation.speakerSlugs
+        .map((slug) => speakerBySlug.get(slug))
+        .filter(Boolean)
+        .map(toSpeakerSummary)
+        .sort(comparePeopleByLastName);
+      presentation.presenterSpeakerSlugs = asArray(presentation.presenterSpeakerSlugs).filter(
+        Boolean,
+      );
+      presentation.presenterSpeakers = presentation.presenterSpeakerSlugs
         .map((slug) => speakerBySlug.get(slug))
         .filter(Boolean)
         .map(toSpeakerSummary)
@@ -1021,6 +1125,12 @@
   }
 
   function serializePresentationSummary(presentation) {
+    const additionalAuthors = asArray(presentation?.additionalAuthors)
+      .map((author) => compactRecord({ name: normalizeSpace(author?.name || '') }))
+      .filter((author) => author.name);
+    const presenterSpeakers = sortPeopleByLastName(
+      asArray(presentation?.presenterSpeakers).map(serializeSpeakerSummary),
+    );
     const serialized = compactRecord({
       id: presentation?.id,
       slug: presentation?.slug,
@@ -1041,6 +1151,8 @@
       location: presentation?.location,
       source: presentation?.source,
     });
+    if (additionalAuthors.length) serialized.additionalAuthors = additionalAuthors;
+    if (presenterSpeakers.length) serialized.presenterSpeakers = presenterSpeakers;
     if (hasMeaningfulNumber(presentation?.order)) serialized.order = presentation.order;
     if (hasMeaningfulNumber(presentation?.sortOrder)) serialized.sortOrder = presentation.sortOrder;
     return serialized;
@@ -1065,6 +1177,10 @@
     serialized.speakerSlugs = asArray(presentation?.speakerSlugs)
       .map((slug) => normalizeSpace(typeof slug === 'string' ? slug : slug?.slug || slug?.id || ''))
       .filter(Boolean);
+    const presenterSpeakerSlugs = asArray(presentation?.presenterSpeakerSlugs)
+      .map((slug) => normalizeSpace(typeof slug === 'string' ? slug : slug?.slug || slug?.id || ''))
+      .filter(Boolean);
+    if (presenterSpeakerSlugs.length) serialized.presenterSpeakerSlugs = presenterSpeakerSlugs;
     serialized.speakers = sortPeopleByLastName(
       asArray(presentation?.speakers).map(serializeSpeakerSummary),
     );
@@ -1204,6 +1320,7 @@
     const scheduleSessionTitle =
       normalizeSpace(presentation.scheduleSessionTitle || '') ||
       normalizeSpace(presentation.source?.scheduleSessionTitle || '');
+    const topic = normalizeSpace(presentation.topic || '');
     if (
       section.categoryIds?.length &&
       !section.categoryIds.includes(toNullableNumber(presentation.categoryId))
@@ -1217,6 +1334,9 @@
       return false;
     }
     if (!titleMatches(scheduleSessionTitle, section.scheduleSessionTitles)) {
+      return false;
+    }
+    if (!titleMatches(topic, section.topics)) {
       return false;
     }
     return true;
@@ -1475,6 +1595,25 @@
   function mergeMeetingHandSubmissionDetail(presentation, detail) {
     if (!detail) return presentation;
     const merged = { ...(presentation || {}) };
+    let presenterAuthorKeys = new Set();
+
+    if (asArray(detail.authors).length) {
+      presenterAuthorKeys = new Set(
+        asArray(detail.authors)
+          .filter((author) => author?.isPresenter)
+          .map((author) => normalizeCompareText(author?.name))
+          .filter(Boolean),
+      );
+      const additionalAuthors = asArray(detail.authors)
+        .filter((author) => {
+          const key = normalizeCompareText(author?.name);
+          return key && !presenterAuthorKeys.has(key);
+        })
+        .map((author) => ({ name: normalizeSpace(author?.name || '') }))
+        .filter((author) => author.name);
+
+      if (additionalAuthors.length) merged.additionalAuthors = additionalAuthors;
+    }
 
     if (detail.abstractHtml) {
       merged.abstract = detail.abstract || merged.abstract || '';
@@ -1496,6 +1635,13 @@
           bioHtml: detail.bioHtml,
         };
       });
+    }
+
+    if (presenterAuthorKeys.size) {
+      const presenterSpeakers = asArray(merged.speakers).filter((speaker) =>
+        presenterAuthorKeys.has(normalizeCompareText(speaker?.name)),
+      );
+      if (presenterSpeakers.length) merged.presenterSpeakers = presenterSpeakers;
     }
 
     return merged;

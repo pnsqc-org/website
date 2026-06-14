@@ -164,18 +164,38 @@ test('program directory renders speaker sections and hydrates lazy submission de
         submissionId: 'sub-1',
         abstractHtml: '',
         speakers: [],
+        presenterSpeakers: [{ name: 'Paper Speaker', bioHtml: '' }],
       },
     ],
   };
-  const { data } = installProgramGlobals({
-    loadProgram: vi.fn(() => Promise.resolve({ speakers: [speaker], presentations: [] })),
-    parseProgramListRoute: vi.fn(() => ({
-      config,
-      source: 'conference',
-      year: '2026',
-    })),
-    selectProgramItems: vi.fn(() => [speaker]),
-  });
+  const { data } = installProgramGlobals(
+    {
+      loadProgram: vi.fn(() => Promise.resolve({ speakers: [speaker], presentations: [] })),
+      parseProgramListRoute: vi.fn(() => ({
+        config,
+        source: 'conference',
+        year: '2026',
+      })),
+      selectProgramItems: vi.fn(() => [speaker]),
+    },
+    {
+      buildPresentationModalTemplate({ presentation, templateId, categoryLabel }) {
+        return {
+          categoryLabel,
+          template: createTemplate(
+            templateId,
+            `Presentation template: ${presentation.title || ''} ${
+              presentation.abstractHtml || ''
+            } ${(presentation.presenterSpeakers || [])
+              .map((presenter) => presenter.bioHtml || '')
+              .join(' ')}`,
+          ),
+          templateId,
+          title: presentation.title || 'Presentation TBA',
+        };
+      },
+    },
+  );
   resetDom(
     `
       <div data-program-directory data-program-fallback-avatar="/configured.jpg">
@@ -214,6 +234,10 @@ test('program directory renders speaker sections and hydrates lazy submission de
   assert.match(
     document.getElementById(trigger.getAttribute('data-details-modal-open')).innerHTML,
     /Hydrated/,
+  );
+  assert.match(
+    document.getElementById(trigger.getAttribute('data-details-modal-open')).innerHTML,
+    /Hydrated bio/,
   );
 });
 

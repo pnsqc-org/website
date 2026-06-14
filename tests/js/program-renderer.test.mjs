@@ -205,6 +205,30 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.match(primaryBioDetails.textContent, /Alpha bio/);
   assert.doesNotMatch(primaryBioDetails.textContent, /No bio yet/);
 
+  const additionalAuthorDetails = renderer.buildPresentationDetailsContent({
+    ...paperPresentation,
+    presenterSpeakers: [speakerAlpha],
+    additionalAuthors: [{ name: 'Charlie Tester' }, { name: 'Beta Speaker' }],
+    bioSpeakers: [speakerAlpha],
+  });
+  assert.match(additionalAuthorDetails.textContent, /Speaker/);
+  assert.match(additionalAuthorDetails.textContent, /Additional Authors/);
+  assert.equal(
+    additionalAuthorDetails.textContent.indexOf('Alpha Speaker') <
+      additionalAuthorDetails.textContent.indexOf('Additional Authors'),
+    true,
+  );
+  assert.equal(
+    additionalAuthorDetails.textContent.indexOf('Additional Authors') <
+      additionalAuthorDetails.textContent.indexOf('Beta Speaker'),
+    true,
+  );
+  assert.equal(
+    additionalAuthorDetails.textContent.indexOf('Beta Speaker') <
+      additionalAuthorDetails.textContent.indexOf('Charlie Tester'),
+    true,
+  );
+
   const workshopDetails = renderer.buildPresentationDetailsContent({
     title: 'Workshop',
     presentationType: 'workshop',

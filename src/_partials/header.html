@@ -175,38 +175,6 @@
                 class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
                 >Monthly Meetups</a
               >
-              <div class="relative group/stemfair" data-submenu-root>
-                <button
-                  class="w-full flex items-center justify-between px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                >
-                  STEM Fair
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-                <div
-                  class="absolute left-full top-0 ml-1 w-56 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover/stemfair:opacity-100 group-hover/stemfair:visible transition-all duration-200"
-                  data-submenu-menu
-                >
-                  <div class="py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
-                    <a
-                      href="/stem-fair/"
-                      class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                      >STEM Fair - Register</a
-                    >
-                    <a
-                      href="/stem-fair/sponsors/"
-                      class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
-                      >STEM Fair - Sponsor</a
-                    >
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -249,6 +217,40 @@
                 href="/become-a-sponsor/"
                 class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
                 >Become a Sponsor</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Innovation Day Dropdown -->
+        <div class="relative group" data-dropdown-root>
+          <button
+            class="header-nav-item-desktop px-2.5 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg flex items-center gap-1"
+          >
+            Innovation Day
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <div
+            class="absolute left-0 mt-0 w-64 max-w-[calc(100vw-1rem)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+            data-dropdown-menu
+          >
+            <div class="mt-2 py-2 bg-pnsqc-blue border border-pnsqc-gold/20 rounded-lg shadow-xl">
+              <a
+                href="/innovation-day/"
+                class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
+                >Register</a
+              >
+              <a
+                href="/innovation-day/sponsors/"
+                class="block px-4 py-2 text-sm text-pnsqc-slate hover:text-white hover:bg-pnsqc-gold/10 transition-colors"
+                >Sponsor</a
               >
             </div>
           </div>
@@ -646,40 +648,6 @@
               class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
               >Monthly Meetups</a
             >
-            <div>
-              <button
-                id="mobile-stem-fair-toggle"
-                class="w-full flex items-center justify-between px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-              >
-                <span>STEM Fair</span>
-                <svg
-                  id="mobile-stem-fair-chevron"
-                  class="w-4 h-4 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div id="mobile-stem-fair-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
-                <a
-                  href="/stem-fair/"
-                  class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                  >STEM Fair - Register</a
-                >
-                <a
-                  href="/stem-fair/sponsors/"
-                  class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                  >STEM Fair - Sponsor</a
-                >
-              </div>
-            </div>
           </div>
         </div>
 
@@ -724,6 +692,42 @@
               href="/become-a-sponsor/"
               class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
               >Become a Sponsor</a
+            >
+          </div>
+        </div>
+
+        <!-- Innovation Day Section (Expandable) -->
+        <div>
+          <button
+            id="mobile-innovation-day-toggle"
+            class="header-nav-item-mobile w-full flex items-center justify-between px-3 py-2 text-pnsqc-slate hover:text-white transition-colors rounded-lg"
+          >
+            <span>Innovation Day</span>
+            <svg
+              id="mobile-innovation-day-chevron"
+              class="w-4 h-4 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <div id="mobile-innovation-day-submenu" class="hidden ml-4 flex flex-col gap-1 mt-1">
+            <a
+              href="/innovation-day/"
+              class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
+              >Register</a
+            >
+            <a
+              href="/innovation-day/sponsors/"
+              class="px-3 py-2 text-sm text-pnsqc-slate hover:text-white transition-colors rounded-lg hover:bg-white/5"
+              >Sponsor</a
             >
           </div>
         </div>
@@ -1157,18 +1161,6 @@
         });
       }
 
-      // Mobile STEM Fair menu toggle (nested under Events)
-      const mobileStemFairToggle = document.getElementById('mobile-stem-fair-toggle');
-      const mobileStemFairSubmenu = document.getElementById('mobile-stem-fair-submenu');
-      const mobileStemFairChevron = document.getElementById('mobile-stem-fair-chevron');
-
-      if (mobileStemFairToggle && mobileStemFairSubmenu && mobileStemFairChevron) {
-        mobileStemFairToggle.addEventListener('click', () => {
-          mobileStemFairSubmenu.classList.toggle('hidden');
-          mobileStemFairChevron.classList.toggle('rotate-180');
-        });
-      }
-
       // Mobile Archive menu toggle
       const mobileArchiveToggle = document.getElementById('mobile-archive-toggle');
       const mobileArchiveSubmenu = document.getElementById('mobile-archive-submenu');
@@ -1202,6 +1194,18 @@
         mobileInvolvedToggle.addEventListener('click', () => {
           mobileInvolvedSubmenu.classList.toggle('hidden');
           mobileInvolvedChevron.classList.toggle('rotate-180');
+        });
+      }
+
+      // Mobile Innovation Day menu toggle
+      const mobileInnovationDayToggle = document.getElementById('mobile-innovation-day-toggle');
+      const mobileInnovationDaySubmenu = document.getElementById('mobile-innovation-day-submenu');
+      const mobileInnovationDayChevron = document.getElementById('mobile-innovation-day-chevron');
+
+      if (mobileInnovationDayToggle && mobileInnovationDaySubmenu && mobileInnovationDayChevron) {
+        mobileInnovationDayToggle.addEventListener('click', () => {
+          mobileInnovationDaySubmenu.classList.toggle('hidden');
+          mobileInnovationDayChevron.classList.toggle('rotate-180');
         });
       }
 

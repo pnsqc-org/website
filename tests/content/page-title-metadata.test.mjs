@@ -13,7 +13,7 @@ const TITLE_LABELS = {
   archive: 'Archive',
   conference: 'Conference',
   governance: 'Governance',
-  'stem-fair': 'STEM Fair',
+  'innovation-day': 'Innovation Day',
 };
 const TITLE_EXCEPTIONS = {
   'src/index.html': 'Pacific Northwest Software Quality Conference - PNSQC',

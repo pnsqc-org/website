@@ -29,7 +29,7 @@ const DEFAULT_HEADER_LOGO = {
   alt: 'PNSQC — Pacific Northwest Software Quality Conference',
 };
 const INNOVATION_DAY_HEADER_LOGO = {
-  src: '/images/brand/PNSQC-Innovation-Day-Logo.png',
+  src: '/images/brand/pnsqc-innovation-day-logo.png',
   alt: 'PNSQC Innovation Day logo',
 };
 const HEADER_LOGO_SRC_PLACEHOLDER = '__HEADER_LOGO_SRC__';

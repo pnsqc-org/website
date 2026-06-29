@@ -10,18 +10,15 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DIST = join(ROOT, 'dist');
 
 test('innovation-day routes use the innovation day header logo', () => {
-  assert.deepEqual(
-    getHeaderLogoForPage(join(DIST, 'innovation-day', 'index.html'), DIST),
-    {
-      src: '/images/brand/PNSQC-Innovation-Day-Logo.png',
-      alt: 'PNSQC Innovation Day logo',
-    },
-  );
+  assert.deepEqual(getHeaderLogoForPage(join(DIST, 'innovation-day', 'index.html'), DIST), {
+    src: '/images/brand/pnsqc-innovation-day-logo.png',
+    alt: 'PNSQC Innovation Day logo',
+  });
 
   assert.deepEqual(
     getHeaderLogoForPage(join(DIST, 'innovation-day', 'sponsors', 'index.html'), DIST),
     {
-      src: '/images/brand/PNSQC-Innovation-Day-Logo.png',
+      src: '/images/brand/pnsqc-innovation-day-logo.png',
       alt: 'PNSQC Innovation Day logo',
     },
   );

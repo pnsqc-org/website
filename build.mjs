@@ -24,6 +24,16 @@ const DIST = join(ROOT, 'dist');
 const CONTENT = join(ROOT, 'content');
 const PEOPLE_IMAGES_SITE_DIR = '/images/people';
 const PEOPLE_IMAGES_DIR = join(SRC, 'images', 'people');
+const DEFAULT_HEADER_LOGO = {
+  src: '/images/brand/pnsqc-logo-2026.jpg',
+  alt: 'PNSQC — Pacific Northwest Software Quality Conference',
+};
+const INNOVATION_DAY_HEADER_LOGO = {
+  src: '/images/brand/pnsqc-innovation-day-logo.png',
+  alt: 'PNSQC Innovation Day logo',
+};
+const HEADER_LOGO_SRC_PLACEHOLDER = '__HEADER_LOGO_SRC__';
+const HEADER_LOGO_ALT_PLACEHOLDER = '__HEADER_LOGO_ALT__';
 const REMOTE_AVATAR_MAX_BYTES = 10 * 1024 * 1024;
 const REMOTE_AVATAR_TIMEOUT_MS = 15_000;
 const IMAGE_EXTENSIONS = ['.avif', '.gif', '.jpg', '.jpeg', '.png', '.webp'];
@@ -88,6 +98,19 @@ function insertBeforeHeadClose(html, lines) {
     const block = normalizedLines.map((line) => `${childIndent}${line}`).join('\n');
     return `${block}\n${indent}</head>`;
   });
+}
+
+function getRoutePath(filePath, baseDir) {
+  const relPath = relative(baseDir, filePath).split(path.sep).join('/');
+  return '/' + relPath.replace(/index\.html$/, '').replace(/\.html$/, '');
+}
+
+function getHeaderLogoForPage(filePath, baseDir) {
+  const routePath = getRoutePath(filePath, baseDir);
+  if (routePath === '/innovation-day/' || routePath.startsWith('/innovation-day/')) {
+    return INNOVATION_DAY_HEADER_LOGO;
+  }
+  return DEFAULT_HEADER_LOGO;
 }
 
 // ── Inject <head> meta tags ─────────────────────────────────────────
@@ -192,7 +215,7 @@ function escAttr(s) {
 
 // ── Inject partials ─────────────────────────────────────────────────
 
-function injectPartials(html) {
+function injectPartials(html, filePath, baseDir) {
   const partials = [
     { tag: 'header', label: 'HEADER', file: 'src/_partials/header.html' },
     { tag: 'footer', label: 'FOOTER', file: 'src/_partials/footer.html' },
@@ -205,6 +228,13 @@ function injectPartials(html) {
       partialContent = readFileSync(partialPath, 'utf8').trimEnd();
     } catch {
       continue; // partial file missing, skip
+    }
+
+    if (tag === 'header') {
+      const headerLogo = getHeaderLogoForPage(filePath, baseDir);
+      partialContent = partialContent
+        .replaceAll(HEADER_LOGO_SRC_PLACEHOLDER, headerLogo.src)
+        .replaceAll(HEADER_LOGO_ALT_PLACEHOLDER, headerLogo.alt);
     }
 
     // Match from the marker comment through the closing tag
@@ -897,7 +927,7 @@ async function main() {
     const meta = parseMeta(html);
     const relFile = relative(DIST, file);
 
-    html = injectPartials(html);
+    html = injectPartials(html, file, DIST);
     html = wrapPrimaryContentInMain(html);
     html = injectHead(html, meta, config, file, DIST); // Pass DIST as baseDir
     html = injectGoogleTag(html, config);
@@ -925,6 +955,7 @@ export {
   buildArchiveProgramData,
   buildConferencePaperPresenterProfiles,
   fetchRemoteAuthorAvatars,
+  getHeaderLogoForPage,
   loadArchiveProgramDataForYear,
   loadSharedAuthorBios,
   resolveAuthorAvatar,

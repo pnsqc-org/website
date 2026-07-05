@@ -48,10 +48,14 @@
       });
     const formatPersonName =
       programData.getMeetingHandPersonName ||
-      ((person) =>
-        normalizeSpace(person?.name) ||
-        normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
-        normalizeSpace(person?.full_name));
+      ((person) => {
+        const name =
+          normalizeSpace(person?.name) ||
+          normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
+          normalizeSpace(person?.full_name);
+        const title = normalizeSpace(person?.title);
+        return name && title ? `${title} ${name}` : name;
+      });
     const getPresenterDetails =
       programData.getPresenterDetails ||
       ((person) => {

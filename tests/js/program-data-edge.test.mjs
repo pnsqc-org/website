@@ -39,6 +39,18 @@ test('program data helpers cover route, endpoint, date, presenter, and type edge
     organization: 'Numeric Org',
   });
   assert.equal(data.getMeetingHandSpeakerName({}), 'Presenter');
+  assert.equal(
+    data.getMeetingHandSpeakerName({ title: 'Dr.', firstname: 'Gwendolyn', lastname: 'Avington' }),
+    'Dr. Gwendolyn Avington',
+  );
+  assert.equal(
+    data.getMeetingHandPersonName({ title: 'Dr.', full_name: 'Gwendolyn Avington' }),
+    'Dr. Gwendolyn Avington',
+  );
+  assert.equal(
+    data.getMeetingHandPersonName({ title: 'Dr.', name: 'Dr Gwendolyn Avington' }),
+    'Dr Gwendolyn Avington',
+  );
 
   assert.equal(data.normalizePresentationType('Half-day Workshop'), 'workshop');
   assert.equal(data.normalizePresentationType('Opening Keynote'), 'keynote');
@@ -325,7 +337,13 @@ test('program data loaders cover failed responses, missing fetchers, empty submi
     data.normalizeMeetingHandSubmission({
       data: {
         authors: [
-          { firstname: 'Primary', lastname: 'Author', is_presenter: true, order: 2 },
+          {
+            title: 'Dr.',
+            firstname: 'Primary',
+            lastname: 'Author',
+            is_presenter: true,
+            order: 2,
+          },
           { firstname: 'Secondary', lastname: 'Author', is_presenter: false, order: 1 },
         ],
       },
@@ -342,7 +360,13 @@ test('program data loaders cover failed responses, missing fetchers, empty submi
     data.normalizeMeetingHandSubmission({
       data: {
         authors: [
-          { firstname: 'Primary', lastname: 'Author', is_presenter: true, order: 2 },
+          {
+            title: 'Dr.',
+            firstname: 'Primary',
+            lastname: 'Author',
+            is_presenter: true,
+            order: 2,
+          },
           { firstname: 'Secondary', lastname: 'Author', is_presenter: false, order: 1 },
         ],
       },
@@ -350,7 +374,7 @@ test('program data loaders cover failed responses, missing fetchers, empty submi
     }).authors,
     [
       { name: 'Secondary Author', isPresenter: false, order: 1 },
-      { name: 'Primary Author', isPresenter: true, order: 2 },
+      { name: 'Dr. Primary Author', isPresenter: true, order: 2 },
     ],
   );
 });

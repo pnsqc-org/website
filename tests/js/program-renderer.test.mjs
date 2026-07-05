@@ -215,6 +215,14 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.match(details.textContent, /Alpha bio/);
   assert.match(details.textContent, /No bio yet/);
 
+  const presenterImages = card.querySelectorAll('img');
+  const presenterImageGroup = presenterImages[0].parentElement;
+  assert.equal(presenterImages.length, 2);
+  assert.equal(presenterImageGroup.classList.contains('sm:grid-flow-col'), true);
+  assert.equal(presenterImageGroup.classList.contains('sm:grid-rows-2'), true);
+  assert.equal(presenterImages[0].classList.contains('sm:h-28'), true);
+  assert.equal(presenterImages[0].classList.contains('sm:w-28'), true);
+
   const primaryBioDetails = renderer.buildPresentationDetailsContent({
     ...paperPresentation,
     bioSpeakers: [speakerAlpha],

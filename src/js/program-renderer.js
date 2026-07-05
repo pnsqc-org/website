@@ -606,7 +606,7 @@
       const avatarWrap = createEl(
         'div',
         speakers.length > 1
-          ? 'flex shrink-0 -space-x-4 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-x-0'
+          ? 'flex shrink-0 -space-x-4 sm:grid sm:grid-flow-col sm:grid-rows-2 sm:gap-2 sm:space-x-0'
           : 'flex shrink-0 -space-x-4 sm:block sm:space-x-0',
       );
 
@@ -617,7 +617,7 @@
           alt: `${speakerName} avatar`,
           className:
             speakers.length > 1
-              ? 'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30'
+              ? 'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30 sm:h-28 sm:w-28'
               : 'h-20 w-20 rounded-lg object-cover ring-2 ring-pnsqc-gold/30 sm:h-32 sm:w-32',
         });
         avatar.style.zIndex = String(speakers.length - index);

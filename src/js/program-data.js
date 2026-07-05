@@ -304,8 +304,29 @@
     };
   }
 
+  function getMeetingHandPersonBaseName(person) {
+    return (
+      normalizeSpace(person?.name) ||
+      normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
+      normalizeSpace(person?.full_name)
+    );
+  }
+
+  function getMeetingHandPersonName(person) {
+    const name = getMeetingHandPersonBaseName(person);
+    const title = normalizeSpace(person?.title);
+    if (!name || !title) return name;
+
+    const comparableName = name.toLowerCase().replace(/\./g, '');
+    const comparableTitle = title.toLowerCase().replace(/\./g, '');
+    if (comparableName === comparableTitle || comparableName.startsWith(`${comparableTitle} `)) {
+      return name;
+    }
+    return `${title} ${name}`;
+  }
+
   function getMeetingHandSpeakerName(speaker) {
-    return `${speaker?.firstname || ''} ${speaker?.lastname || ''}`.trim() || 'Presenter';
+    return getMeetingHandPersonName(speaker) || 'Presenter';
   }
 
   function getSessionRecord(presentation) {
@@ -475,19 +496,8 @@
     return `speaker-${speaker?.id || 'unknown'}`;
   }
 
-  function getMeetingHandPersonName(person) {
-    return (
-      normalizeSpace(person?.name) ||
-      normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
-      normalizeSpace(person?.full_name)
-    );
-  }
-
   function getPersonNameKey(person) {
-    return normalizeCompareText(
-      normalizeSpace(`${person?.firstname || ''} ${person?.lastname || ''}`) ||
-        getMeetingHandPersonName(person),
-    );
+    return normalizeCompareText(getMeetingHandPersonBaseName(person));
   }
 
   function getPaperPresenterAuthorKeys(presentation) {
@@ -717,9 +727,7 @@
         id: normalizeSpace(String(rawSpeaker?.id ?? `schedule-${nameKey}`)),
         slug: getUniqueSlug(name, usedSpeakerSlugs, 'speaker'),
         name,
-        profession: normalizeSpace(
-          rawSpeaker?.profession || rawSpeaker?.title || details.profession || '',
-        ),
+        profession: normalizeSpace(rawSpeaker?.profession || details.profession || ''),
         organization: normalizeSpace(rawSpeaker?.organization || details.organization || ''),
         avatar: normalizeSpace(rawSpeaker?.avatar || details.avatar || '') || fallbackAvatar,
         linkedin: normalizeSpace(rawSpeaker?.linkedin || details.linkedin || ''),

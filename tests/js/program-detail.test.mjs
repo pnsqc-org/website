@@ -799,6 +799,15 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
         speakerSlugs: [],
       },
       {
+        slug: 'special-guest-talk',
+        title: 'Special Guest Talk',
+        presentationType: 'invited',
+        categoryId: 133,
+        date: '2026-10-12',
+        start: '10:00',
+        speakerSlugs: [],
+      },
+      {
         slug: 'panel-talk',
         title: 'Panel Talk',
         presentationType: 'panel',
@@ -830,13 +839,13 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
   );
   assert.deepEqual(
     programData.selectPresentations(program, keynotes).map((item) => item.slug),
-    ['keynote-talk', 'invited-talk', 'panel-talk'],
+    ['keynote-talk', 'invited-talk', 'special-guest-talk', 'panel-talk'],
   );
   assert.deepEqual(
     programData
       .selectPresentations(program, keynotes)
       .map((item) => programData.getSectionForItem(item, keynotes).key),
-    ['keynotes', 'invited', 'panels'],
+    ['keynotes', 'invited', 'special-guests', 'panels'],
   );
   assert.deepEqual(
     programData.selectSpeakers(program, paperPresenters).map((item) => item.slug),

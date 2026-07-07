@@ -46,7 +46,7 @@
       slug: 'keynotes-invited-speakers',
       sourceKinds: ['conference'],
       cardType: 'presentation',
-      title: 'Keynotes & Invited Speakers',
+      title: 'Keynotes, Invited Speakers & Special Guests',
       defaultLabel: 'Speaker',
       loadingText: 'Loading speakers...',
       errorText: 'Speakers will be announced soon.',
@@ -54,7 +54,7 @@
       filters: {
         anyOf: [
           {
-            includeCategoryIds: [111, 104],
+            includeCategoryIds: [111, 104, 133],
             excludeWorkshopDate: true,
           },
           {
@@ -72,10 +72,17 @@
         },
         {
           key: 'invited',
-          title: 'Invited Speakers / Special Guests',
+          title: 'Invited Speakers',
           label: 'Invited Speaker',
           categoryIds: [104],
           headingClass: 'text-pnsqc-cyan',
+        },
+        {
+          key: 'special-guests',
+          title: 'Special Guests',
+          label: 'Special Guest',
+          categoryIds: [133],
+          headingClass: 'text-pnsqc-gold',
         },
         {
           key: 'panels',
@@ -84,7 +91,7 @@
           categorySlugs: [PANELS_CATEGORY_SLUG],
           scheduleSessionTitles: [PANELS_SESSION_TITLE],
           emptyText: 'Panels will be announced soon.',
-          headingClass: 'text-pnsqc-gold',
+          headingClass: 'text-pnsqc-cyan',
         },
       ],
     },

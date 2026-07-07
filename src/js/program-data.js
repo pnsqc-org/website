@@ -129,7 +129,7 @@
       emptyText: 'Check back soon for our accepted paper presenters!',
       filters: {
         includePresentationTypes: ['paper'],
-        excludeCategoryIds: [111, 104],
+        excludeCategoryIds: [111, 104, 133],
         excludeWorkshopDate: true,
       },
       sections: [

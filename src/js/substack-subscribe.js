@@ -25,11 +25,23 @@
       emailInput.disabled = loading;
     };
 
+    const showInvalidEmail = () => {
+      showMsg(
+        'That email address is invalid. Check that it\u2019s spelled correctly and try again.',
+        'error',
+      );
+    };
+
+    emailInput.addEventListener('invalid', showInvalidEmail);
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const email = emailInput.value.trim();
-      if (!email) return;
+      if (!email || !emailInput.checkValidity()) {
+        showInvalidEmail();
+        return;
+      }
 
       setLoading(true);
       showMsg(defaultMsg, 'default');

@@ -1,3 +1,4 @@
+// Homepage handler: injects the recent-events carousel into the static `/` response.
 import { getLumaMap } from './_lib/luma-map.mjs';
 import { fetchMeetupRecentEvents } from './_lib/meetup-api.mjs';
 import {

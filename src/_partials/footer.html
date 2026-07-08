@@ -65,14 +65,12 @@
             </svg>
           </a>
           <a
-            href="https://twitter.com/PNSQC"
+            href="https://newsletter.pnsqc.org"
             class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-pnsqc-slate hover:text-pnsqc-gold hover:bg-white/10 transition-colors"
-            aria-label="Twitter/X"
+            aria-label="PNSQC Newsletter on Substack"
           >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-              />
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 1h20v3.2H2V1zm0 5h20v3.2H2V6zm0 5h20v13l-10-6.7L2 24V11z" />
             </svg>
           </a>
         </div>
@@ -165,13 +163,69 @@
       </div>
     </div>
 
+    <!-- Newsletter signup -->
+    <section
+      class="mt-10 rounded-xl border border-pnsqc-gold/20 bg-white/5 p-5 sm:p-6"
+      aria-labelledby="footer-newsletter-title"
+    >
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div class="max-w-xl">
+          <h2 id="footer-newsletter-title" class="text-lg font-semibold text-white">
+            Stay in the Loop
+          </h2>
+          <p class="mt-1 text-sm leading-relaxed text-pnsqc-slate">
+            Get updates on upcoming events, call for proposals, and community news.<br />No
+            spam&mdash;just quality content.
+          </p>
+        </div>
+
+        <div class="w-full lg:max-w-xl">
+          <form
+            action="https://newsletter.pnsqc.org/api/v1/free?nojs=true"
+            method="post"
+            target="_blank"
+            class="flex flex-col gap-2 sm:flex-row sm:items-end"
+            data-substack-form
+          >
+            <div class="min-w-0 flex-1">
+              <label
+                for="footer-newsletter-email"
+                class="mb-1.5 block text-sm font-medium text-white"
+                >Email address</label
+              >
+              <input
+                type="email"
+                name="email"
+                id="footer-newsletter-email"
+                autocomplete="email"
+                placeholder="you@example.com"
+                required
+                class="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder-pnsqc-slate focus:border-pnsqc-gold/50 focus:outline-none focus:ring-2 focus:ring-pnsqc-gold/20 transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              class="button-gold rounded-lg px-5 py-2.5 font-semibold whitespace-nowrap transition-colors"
+            >
+              Subscribe
+            </button>
+          </form>
+          <p class="mt-2 text-xs text-pnsqc-slate" data-substack-msg aria-live="polite">
+            Powered by Substack
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- Bottom bar -->
     <div
-      class="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4"
+      class="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4"
     >
       <p class="text-pnsqc-slate text-xs">
         &copy; 2026 Pacific NW Software Quality Conference. All rights reserved.
       </p>
     </div>
   </div>
+
+  <script src="/js/substack-subscribe.js" defer></script>
 </footer>

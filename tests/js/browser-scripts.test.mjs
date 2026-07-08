@@ -295,7 +295,7 @@ test('substack subscribe posts encoded form data, toggles loading, and handles f
     `
       <div>
         <form data-substack-form target="_blank">
-          <input name="email" value=" reader@example.com ">
+          <input type="email" name="email" value=" reader@example.com ">
           <button type="submit">Join</button>
         </form>
         <p data-substack-msg>Default copy</p>
@@ -331,6 +331,19 @@ test('substack subscribe posts encoded form data, toggles loading, and handles f
   assert.match(document.querySelector('[data-substack-msg]').textContent, /Thanks/);
   assert.equal(
     document.querySelector('[data-substack-msg]').classList.contains('text-pnsqc-cyan'),
+    true,
+  );
+
+  input.value = 'invalid';
+  input.dispatchEvent(new Event('invalid'));
+  assert.match(
+    document.querySelector('[data-substack-msg]').textContent,
+    /email address is invalid/i,
+  );
+  assert.match(document.querySelector('[data-substack-msg]').textContent, /spelled correctly/i);
+  assert.equal(input.value, 'invalid');
+  assert.equal(
+    document.querySelector('[data-substack-msg]').classList.contains('text-red-400'),
     true,
   );
 

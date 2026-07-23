@@ -36,6 +36,7 @@
   const WORKSHOP_DATES = {
     2026: '2026-10-14',
   };
+  const PNSQC_PANEL_SPEAKER_NAME = 'PNSQC Panel';
   const PANELS_SESSION_TITLE = 'Panels';
   const PANELS_CATEGORY_SLUG = 'panels';
   const CONFERENCE_PAPER_PROFILE_YEAR = '2026';
@@ -776,6 +777,18 @@
           const explicitType = normalizePresentationType(
             rawPresentation?.presentation_type || item?.type,
           );
+          const scheduleSpeakerCandidates = getSchedulePresentationSpeakerCandidates(
+            rawPresentation,
+            {
+              type: item?.type,
+            },
+          );
+          const hasPnsqcPanelSpeaker = scheduleSpeakerCandidates.some(
+            (speaker) =>
+              normalizeCompareText(getMeetingHandPersonName(speaker)) ===
+              normalizeCompareText(PNSQC_PANEL_SPEAKER_NAME),
+          );
+          const isPanelPresentation = isPanelSession || hasPnsqcPanelSpeaker;
           const presentationType = presentationTypeFor({
             categoryId: null,
             date,
@@ -783,7 +796,7 @@
             categorySlug: explicitType === 'paper' ? 'paper-presenters' : '',
             explicitType,
           });
-          const normalizedPresentationType = isPanelSession ? 'panel' : presentationType;
+          const normalizedPresentationType = isPanelPresentation ? 'panel' : presentationType;
           const categorySlug =
             normalizedPresentationType === 'panel'
               ? PANELS_CATEGORY_SLUG
@@ -847,10 +860,11 @@
           if (!group.scheduleSessionTitle && sessionTitle)
             group.scheduleSessionTitle = sessionTitle;
           if (!group.topic && topic) group.topic = topic;
-          if (isPanelSession) {
+          if (isPanelPresentation) {
+            group.categoryId = null;
             group.categorySlug = PANELS_CATEGORY_SLUG;
             group.presentationType = 'panel';
-            group.scheduleSessionTitle = sessionTitle;
+            group.scheduleSessionTitle = PANELS_SESSION_TITLE;
           } else if (!group.categorySlug && categorySlug) {
             group.categorySlug = categorySlug;
           }
@@ -865,7 +879,7 @@
           const presenterCandidates =
             normalizedPresentationType === 'paper'
               ? getPaperPresenterAuthors(rawPresentation)
-              : getSchedulePresentationSpeakerCandidates(rawPresentation, { type: item?.type });
+              : scheduleSpeakerCandidates;
 
           presenterCandidates.forEach((rawSpeaker) => {
             const speaker = ensureScheduleSpeaker(rawSpeaker);

@@ -339,8 +339,35 @@ test('Meetinghand normalization includes schedule-only paper presenters', () => 
   const normalized = programData.normalizeMeetingHandProgram(
     {
       data: {
-        speaker_categories: [],
-        speakers: [],
+        speaker_categories: [
+          { id: 104, name: 'Invited Speakers / Special Guests', order: 1 },
+        ],
+        speakers: [
+          {
+            id: 5260,
+            firstname: 'PNSQC',
+            lastname: 'Panel',
+            event_speaker_category_id: 104,
+            order: 1,
+            publish: true,
+            presentations: [
+              {
+                id: 5541,
+                title: 'Quality Leadership Panel',
+                session: {
+                  order: 1,
+                  session: {
+                    id: 13532,
+                    day: { date: '2026-10-14T00:00:00.000000Z' },
+                    start: '14:00',
+                    end: '15:00',
+                    title: 'Invited Speakers',
+                  },
+                },
+              },
+            ],
+          },
+        ],
         schedule: [
           {
             date: '2026-10-12T00:00:00.000000Z',
@@ -605,7 +632,7 @@ test('paper presenter profile supplements are route-scoped, cached, and optional
   assert.equal(profileRequests, 1);
 });
 
-test('Meetinghand normalization includes only schedule Panels as panel presentations', () => {
+test('Meetinghand normalization recognizes panel sessions by title or PNSQC Panel speaker', () => {
   const normalized = programData.normalizeMeetingHandProgram(
     {
       data: {
@@ -661,6 +688,25 @@ test('Meetinghand normalization includes only schedule Panels as panel presentat
                   },
                 ],
               },
+              {
+                title: 'Invited Speakers',
+                start: '14:00',
+                end: '15:00',
+                items: [
+                  {
+                    id: 9607,
+                    type: 'speaker_presentation',
+                    event_speaker_presentation_id: 5541,
+                    presentation: {
+                      id: 5541,
+                      title: 'Quality Leadership Panel',
+                      speaker: {
+                        name: 'PNSQC Panel',
+                      },
+                    },
+                  },
+                ],
+              },
             ],
           },
         ],
@@ -671,6 +717,9 @@ test('Meetinghand normalization includes only schedule Panels as panel presentat
 
   const panel = normalized.presentations.find(
     (presentation) => presentation.title === 'AI in the Testing Room: Real Results, Real Limits',
+  );
+  const speakerMarkedPanel = normalized.presentations.find(
+    (presentation) => presentation.title === 'Quality Leadership Panel',
   );
   const keynotes = programData.getProgramCategoryConfig('keynotes-invited-speakers', '2026');
   const selectedPanels = programData
@@ -689,11 +738,22 @@ test('Meetinghand normalization includes only schedule Panels as panel presentat
     ['Panel Moderator'],
   );
   assert.match(panel.speakers[0].bioHtml, /Panel moderator bio/);
+  assert.ok(speakerMarkedPanel);
+  assert.equal(speakerMarkedPanel.presentationType, 'panel');
+  assert.equal(speakerMarkedPanel.categoryId, null);
+  assert.equal(speakerMarkedPanel.categorySlug, 'panels');
+  assert.equal(speakerMarkedPanel.scheduleSessionTitle, 'Panels');
+  assert.equal(speakerMarkedPanel.source.scheduleSessionTitle, 'Invited Speakers');
+  assert.deepEqual(
+    speakerMarkedPanel.speakers.map((speaker) => speaker.name),
+    ['PNSQC Panel'],
+  );
   assert.deepEqual(
     selectedPanels.map((presentation) => presentation.title),
-    ['AI in the Testing Room: Real Results, Real Limits'],
+    ['AI in the Testing Room: Real Results, Real Limits', 'Quality Leadership Panel'],
   );
   assert.equal(programData.getSectionForItem(panel, keynotes).key, 'panels');
+  assert.equal(programData.getSectionForItem(speakerMarkedPanel, keynotes).key, 'panels');
 });
 
 test('submission detail helpers merge lazy Meetinghand fields into program items', () => {

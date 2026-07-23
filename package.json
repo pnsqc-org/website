@@ -31,24 +31,24 @@
   },
   "homepage": "https://github.com/pnsqc-org/website#readme",
   "dependencies": {
-    "@tailwindcss/cli": "^4.3.0",
-    "marked": "^18.0.5",
+    "@tailwindcss/cli": "^4.3.3",
+    "marked": "^18.0.7",
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
+    "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^10.0.1",
-    "@html-eslint/eslint-plugin": "^0.61.0",
-    "@html-eslint/parser": "^0.61.0",
+    "@html-eslint/eslint-plugin": "^0.64.0",
+    "@html-eslint/parser": "^0.64.0",
     "@vitest/coverage-v8": "^4.1.8",
-    "axe-core": "^4.12.0",
-    "eslint": "^10.4.1",
-    "globals": "^17.6.0",
+    "axe-core": "^4.12.1",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "playwright": "^1.60.0",
-    "prettier": "^3.8.3",
+    "playwright": "^1.61.1",
+    "prettier": "^3.9.6",
     "vitest": "^4.1.8",
-    "wrangler": "^4.98.0"
+    "wrangler": "^4.113.0"
   }
 }

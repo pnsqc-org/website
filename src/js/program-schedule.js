@@ -14,6 +14,7 @@
   typeof globalThis !== 'undefined' ? globalThis : this,
   function (programData, rendererModule, slugs) {
     const asArray = programData.asArray || ((value) => (Array.isArray(value) ? value : []));
+    const PRESENTATION_BREAK_MINUTES = 15;
     const normalizeSpace =
       programData.normalizeSpace ||
       ((value) =>
@@ -536,6 +537,7 @@
         this.fallbackAvatar = fallbackAvatar || FALLBACK_AVATAR;
         this.detailRenderer = rendererModule.createRenderer?.({
           fallbackAvatar: this.fallbackAvatar,
+          presentationFallbackText: 'Presentation details are coming soon.',
         });
         this.displayTimeZone = 'local';
         this.scheduleCache = null;
@@ -876,13 +878,14 @@
 
         groupScheduleItems(items).forEach((item, index) => {
           const duration = Number(item?.duration) || 0;
+          const isTextItem = normalizeSpace(item?.type).toLowerCase() === 'text';
           const startMinutes =
             index === 0
               ? baseStartMinutes
               : typeof lastEndMinutes === 'number'
-                ? lastEndMinutes + 10
+                ? lastEndMinutes + PRESENTATION_BREAK_MINUTES
                 : null;
-          const endMinutes = typeof startMinutes === 'number' ? startMinutes + duration - 10 : null;
+          const endMinutes = typeof startMinutes === 'number' ? startMinutes + duration - 15 : null;
           lastEndMinutes = endMinutes;
 
           const presentation = this.buildPresentationDetail({
@@ -914,6 +917,19 @@
           }
 
           const detail = Dom.el('div', 'space-y-1');
+          if (isTextItem) {
+            detail.appendChild(
+              Dom.el(
+                'p',
+                'font-medium text-white',
+                normalizeSpace(item?.text) || PLACEHOLDER_TITLE,
+              ),
+            );
+            row.appendChild(detail);
+            list.appendChild(row);
+            return;
+          }
+
           const titleRowInner = Dom.el('div', 'flex items-start gap-2');
           const speakers = asArray(presentation.speakers);
           if (speakers[0]?.avatar) {

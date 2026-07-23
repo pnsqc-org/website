@@ -99,7 +99,7 @@ html {
 }
 
 .page-shell--wide {
-  max-width: 112rem;
+  max-width: 125rem;
 }
 
 @media (min-width: 40rem) {

@@ -299,6 +299,25 @@ test('program renderer builds presentation cards and details for multiple and mi
   assert.equal(sessionTemplate.templateId, 'session-details');
 });
 
+test('program renderer supports schedule-specific presentation fallback text', () => {
+  const renderer = createRenderer({
+    presentationFallbackText: 'Presentation details are coming soon.',
+  });
+
+  const presentationDetails = renderer.buildPresentationDetailsContent({
+    title: 'Details Pending',
+    speakers: [],
+  });
+  assert.match(presentationDetails.textContent, /Presentation details are coming soon/);
+  assert.doesNotMatch(presentationDetails.textContent, /Abstract details are coming soon/);
+
+  const speakerDetails = renderer.buildSpeakerDetailsContent({
+    name: 'Pending Speaker',
+    presentations: [{ title: 'Details Pending' }],
+  });
+  assert.match(speakerDetails.textContent, /Presentation details are coming soon/);
+});
+
 test('program renderer creates standalone templates and normalizes exported helpers', () => {
   const renderer = createRenderer();
   const content = document.createElement('p');

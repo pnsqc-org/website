@@ -821,6 +821,26 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
         speakerSlugs: [],
       },
       {
+        id: '5662',
+        slug: 'welcome-to-pnsqc-2026',
+        title: 'Welcome to PNSQC 2026!',
+        presentationType: 'paper',
+        categoryId: 133,
+        date: '2026-10-12',
+        start: '08:00',
+        speakerSlugs: ['special-guest'],
+      },
+      {
+        id: '5663',
+        slug: 'closing-thoughts',
+        title: 'Closing Thoughts',
+        presentationType: 'paper',
+        categoryId: 133,
+        date: '2026-10-13',
+        start: '17:00',
+        speakerSlugs: ['special-guest'],
+      },
+      {
         slug: 'special-guest-paper-fallback',
         title: 'Special Guest Paper Fallback',
         presentationType: 'paper',
@@ -868,6 +888,8 @@ test('category filters select workshops, keynotes, panels, and paper presenters'
       'panel-talk',
     ],
   );
+  assert.ok(program.presentationBySlug.has('welcome-to-pnsqc-2026'));
+  assert.ok(program.presentationBySlug.has('closing-thoughts'));
   assert.deepEqual(
     programData
       .selectPresentations(program, keynotes)

@@ -40,6 +40,10 @@
   const PANELS_CATEGORY_SLUG = 'panels';
   const CONFERENCE_PAPER_PROFILE_YEAR = '2026';
   const CONFERENCE_PAPER_PROFILE_CATEGORY = 'paper-presenters';
+  const SCHEDULE_ONLY_FEATURED_PRESENTATION_IDS = [
+    5662, // Welcome to PNSQC 2026!
+    5663, // Closing Thoughts
+  ];
 
   const CATEGORY_CONFIGS = {
     'keynotes-invited-speakers': {
@@ -52,6 +56,7 @@
       errorText: 'Speakers will be announced soon.',
       emptyText: 'More speakers to be announced.',
       filters: {
+        excludePresentationIds: SCHEDULE_ONLY_FEATURED_PRESENTATION_IDS,
         anyOf: [
           {
             includeCategoryIds: [111, 104, 133],
@@ -1270,6 +1275,7 @@
       normalizeSpace(presentation.scheduleSessionTitle || '') ||
       normalizeSpace(presentation.source?.scheduleSessionTitle || '');
 
+    if (idsExcluded(presentation.id, filters.excludePresentationIds)) return false;
     if (!idsMatch(presentation.categoryId, filters.includeCategoryIds)) return false;
     if (idsExcluded(presentation.categoryId, filters.excludeCategoryIds)) return false;
     if (!slugsMatch(presentation.categorySlug, filters.includeCategorySlugs)) return false;

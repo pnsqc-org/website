@@ -230,6 +230,14 @@ function createSchedulePayload() {
                     },
                   },
                 },
+                {
+                  duration: 60,
+                  id: 'item-5',
+                  order: 4,
+                  type: 'text',
+                  presentation: null,
+                  text: 'TBA',
+                },
               ],
             },
             {
@@ -315,6 +323,13 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
   );
   await app.init();
 
+  assert.equal(
+    globalThis.PNSQCProgramRenderer.createRenderer.mock.calls.some(
+      ([options]) =>
+        options?.presentationFallbackText === 'Presentation details are coming soon.',
+    ),
+    true,
+  );
   assert.match(
     document.querySelector('[data-schedule-event-meta]').textContent,
     /10\/12\/2026 - 10\/14\/2026/,
@@ -333,6 +348,18 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
     document.querySelectorAll('[data-schedule-submission-trigger="true"]').length > 0,
     true,
   );
+  const tbaLabel = Array.from(document.querySelectorAll('[data-schedule-root] p')).find(
+    (node) => node.textContent === 'TBA',
+  );
+  assert.equal(tbaLabel?.tagName, 'P');
+  assert.equal(tbaLabel?.closest('button'), null);
+  assert.equal(
+    Array.from(document.querySelectorAll('[data-schedule-root] button')).some(
+      (button) => button.textContent === 'TBA',
+    ),
+    false,
+  );
+  assert.doesNotMatch(document.querySelector('[data-schedule-root]').textContent, /Unassigned Meeting/);
 
   document
     .querySelector('[data-timezone-option="event"]')
@@ -345,6 +372,70 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
     .querySelector('[data-timezone-option="event"]')
     .dispatchEvent(new MouseEvent('click', { bubbles: true }));
   assert.equal(app.renderer.displayTimeZone, 'event');
+});
+
+test('schedule renderer excludes the included 15-minute break from presentation duration', async () => {
+  installScheduleGlobals({
+    loadProgramPayload: vi.fn(() =>
+      Promise.resolve({
+        data: {
+          schedule: [
+            {
+              date: '2026-10-12',
+              sessions: [
+                {
+                  end: '11:45',
+                  start: '10:00',
+                  title: 'Technical Papers',
+                  items: [
+                    {
+                      duration: 60,
+                      id: 'anna-sharpe',
+                      order: 1,
+                      presentation: {
+                        id: 'anna-sharpe',
+                        title: 'Anna Sharpe Presentation',
+                        speakers: [{ name: 'Anna Sharpe' }],
+                      },
+                    },
+                    {
+                      duration: 60,
+                      id: 'kevin-pyles',
+                      order: 2,
+                      presentation: {
+                        id: 'kevin-pyles',
+                        title: 'Kevin Pyles Presentation',
+                        speakers: [{ name: 'Kevin Pyles' }],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          start_date: '2026-10-12',
+          end_date: '2026-10-12',
+          time_format: 'h12',
+          timezone: { key: 'America/Los_Angeles' },
+        },
+      }),
+    ),
+  });
+  document.body.innerHTML = '';
+  await importFreshSrcModule('program-schedule.js');
+  document.body.innerHTML = scheduleContainerHtml();
+  const app = globalThis.PNSQCProgramSchedule.createScheduleApp(
+    document.querySelector('[data-program-schedule]'),
+  );
+  await app.init();
+
+  document
+    .querySelector('[data-timezone-option="event"]')
+    .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+  const scheduleText = document.querySelector('[data-schedule-root]').textContent;
+  assert.match(scheduleText, /10:00 am - 10:45 am/);
+  assert.match(scheduleText, /11:00 am - 11:45 am/);
 });
 
 test('schedule app loads the paper presenter enriched program for at-a-glance speakers', async () => {

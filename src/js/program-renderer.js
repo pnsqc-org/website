@@ -30,6 +30,7 @@
   function createRenderer({
     fallbackAvatar = '/images/brand/pnsqc-logo.jpg',
     bioFallbackText = 'Bio coming soon.',
+    presentationFallbackText = 'Abstract details are coming soon.',
   } = {}) {
     const createEl = (tag, className, text) => {
       const el = document.createElement(tag);
@@ -333,7 +334,7 @@
         appendHtmlOrFallback({
           parent: section,
           html: getPresentationHtml(presentations[0]),
-          fallbackText: 'Abstract details are coming soon.',
+          fallbackText: presentationFallbackText,
           className: 'rich-content rich-content--compact',
         });
         return section;
@@ -359,7 +360,7 @@
         appendHtmlOrFallback({
           parent: item,
           html: getPresentationHtml(presentation),
-          fallbackText: 'Abstract details are coming soon.',
+          fallbackText: presentationFallbackText,
           className: 'rich-content rich-content--compact',
         });
         list.appendChild(item);
@@ -497,7 +498,7 @@
       appendHtmlOrFallback({
         parent: abstractSection,
         html: getPresentationHtml(presentation),
-        fallbackText: 'Abstract details are coming soon.',
+        fallbackText: presentationFallbackText,
         loadingText: isLoadingSubmissionDetail
           ? presentation?.presentationType === 'workshop'
             ? 'Loading description...'

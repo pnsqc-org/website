@@ -344,6 +344,10 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
   assert.match(document.querySelector('[data-schedule-root]').textContent, /Break/);
   assert.match(document.querySelector('[data-schedule-root]').textContent, /Sessions for this day/);
   assert.match(document.querySelector('[data-schedule-root]').textContent, /Day 2 \| Workshops/);
+  const groupedSessions = document.querySelector('.schedule-sessions-grid');
+  assert.equal(groupedSessions?.dataset.sessionCount, '2');
+  assert.equal(groupedSessions?.style.getPropertyValue('--grid-columns'), '2');
+  assert.equal(groupedSessions?.querySelectorAll('.schedule-presentation-row').length, 3);
   assert.equal(
     document.querySelectorAll('[data-schedule-submission-trigger="true"]').length > 0,
     true,

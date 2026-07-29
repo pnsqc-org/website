@@ -1278,6 +1278,19 @@ a.gold-readable--tinted:focus-visible {
   gap: 1.5rem;
 }
 
+@media (min-width: 118rem) {
+  .schedule-sessions-grid[data-session-count='6'] {
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .schedule-sessions-grid[data-session-count='6'] .schedule-presentation-row {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 0.125rem;
+  }
+}
+
 @media (max-width: 640px) {
   .schedule-sessions-grid {
     grid-template-columns: 1fr;

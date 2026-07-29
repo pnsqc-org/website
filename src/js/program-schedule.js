@@ -899,7 +899,10 @@
           const shouldLazyLoad =
             !!submissionId && !submissionLoaded && presentationNeedsSubmissionDetail(presentation);
           const row = showPresentationTimes
-            ? Dom.el('div', 'grid gap-x-4 gap-y-1 sm:grid-cols-[140px,1fr]')
+            ? Dom.el(
+                'div',
+                'schedule-presentation-row grid gap-x-4 gap-y-1 sm:grid-cols-[140px,1fr]',
+              )
             : Dom.el('div');
 
           if (showPresentationTimes) {
@@ -1050,6 +1053,7 @@
 
             if (group.length > 1) {
               const row = Dom.el('div', 'schedule-sessions-grid grid gap-6');
+              row.dataset.sessionCount = String(group.length);
               row.style.setProperty('--grid-columns', group.length);
               group.forEach((session) => {
                 row.appendChild(

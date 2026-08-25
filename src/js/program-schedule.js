@@ -14,7 +14,7 @@
   typeof globalThis !== 'undefined' ? globalThis : this,
   function (programData, rendererModule, slugs) {
     const asArray = programData.asArray || ((value) => (Array.isArray(value) ? value : []));
-    const PRESENTATION_BREAK_MINUTES = 15;
+    const PRESENTATION_BREAK_MINUTES = 10;
     const normalizeSpace =
       programData.normalizeSpace ||
       ((value) =>
@@ -885,7 +885,10 @@
               : typeof lastEndMinutes === 'number'
                 ? lastEndMinutes + PRESENTATION_BREAK_MINUTES
                 : null;
-          const endMinutes = typeof startMinutes === 'number' ? startMinutes + duration - 15 : null;
+          const endMinutes =
+            typeof startMinutes === 'number'
+              ? startMinutes + duration - PRESENTATION_BREAK_MINUTES
+              : null;
           lastEndMinutes = endMinutes;
 
           const presentation = this.buildPresentationDetail({

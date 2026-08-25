@@ -378,7 +378,7 @@ test('schedule renderer renders event headers, day nav, grouped sessions, lazy b
   assert.equal(app.renderer.displayTimeZone, 'event');
 });
 
-test('schedule renderer excludes the included 15-minute break from presentation duration', async () => {
+test('schedule renderer excludes the included 10-minute break from presentation duration', async () => {
   installScheduleGlobals({
     loadProgramPayload: vi.fn(() =>
       Promise.resolve({
@@ -438,8 +438,8 @@ test('schedule renderer excludes the included 15-minute break from presentation 
     .dispatchEvent(new MouseEvent('click', { bubbles: true }));
 
   const scheduleText = document.querySelector('[data-schedule-root]').textContent;
-  assert.match(scheduleText, /10:00 am - 10:45 am/);
-  assert.match(scheduleText, /11:00 am - 11:45 am/);
+  assert.match(scheduleText, /10:00 am - 10:50 am/);
+  assert.match(scheduleText, /11:00 am - 11:50 am/);
 });
 
 test('schedule app loads the paper presenter enriched program for at-a-glance speakers', async () => {
